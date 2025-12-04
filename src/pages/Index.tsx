@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { agents, Agent } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
 import { SideNav } from "@/components/SideNav";
-import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle, Mail, Calendar, MessageSquare, Camera, User, Briefcase, HardDrive } from "lucide-react";
+import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle, Mail, Calendar, MessageSquare, Camera, User, Briefcase, HardDrive, ChevronLeft, ChevronRight } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const Index = () => {
@@ -222,6 +222,9 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
           </div>
         </div>
       </section>
+
+      {/* Full-Screen Agent Carousel - Sintra Style */}
+      <AgentCarousel agents={agents} onSelectAgent={onSelectAgent} />
 
       {/* Automation Section */}
       <section className="bg-background py-16 md:py-32 relative overflow-hidden">
@@ -523,6 +526,119 @@ const AgentThumbnail = ({ agent, index, isActive, onHover, onClick }: AgentThumb
         <p className="text-white/70 text-sm">{agent.shortRole}</p>
       </div>
     </motion.button>
+  );
+};
+
+interface AgentCarouselProps {
+  agents: Agent[];
+  onSelectAgent: (agent: Agent) => void;
+}
+
+const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const currentAgent = agents[currentIndex];
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev - 1 + agents.length) % agents.length);
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % agents.length);
+  };
+
+  return (
+    <section className="bg-background py-8 md:py-16">
+      <div className="max-w-7xl mx-auto px-4 md:px-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-8"
+        >
+          <h2 className="text-2xl md:text-4xl font-bold text-foreground">
+            Your AI Workforce
+          </h2>
+        </motion.div>
+
+        {/* Carousel Container */}
+        <div className="relative">
+          {/* Main Card */}
+          <motion.div
+            key={currentAgent.id}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            className="relative mx-auto rounded-3xl overflow-hidden"
+            style={{
+              background: getAgentGradient(currentAgent.glowColor),
+            }}
+          >
+            {/* Agent Image - Full screen mobile style */}
+            <div 
+              className="relative aspect-[3/4] md:aspect-[4/3] cursor-pointer"
+              onClick={() => onSelectAgent(currentAgent)}
+            >
+              <img
+                src={currentAgent.image}
+                alt={currentAgent.name}
+                className="w-full h-full object-contain object-bottom"
+              />
+              
+              {/* Navigation Arrows */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToPrevious();
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-colors z-10"
+              >
+                <ChevronLeft className="w-6 h-6 text-white" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToNext();
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-colors z-10"
+              >
+                <ChevronRight className="w-6 h-6 text-white" />
+              </button>
+            </div>
+          </motion.div>
+
+          {/* Agent Info Below */}
+          <motion.div
+            key={currentAgent.id + '-info'}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="mt-6 px-2"
+          >
+            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+              {currentAgent.name}
+            </h3>
+            <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
+              {currentAgent.shortRole}. {currentAgent.description}
+            </p>
+          </motion.div>
+
+          {/* Dots Indicator */}
+          <div className="flex justify-center gap-2 mt-6">
+            {agents.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  currentIndex === index
+                    ? 'bg-accent w-6'
+                    : 'bg-muted-foreground/30 w-2 hover:bg-muted-foreground/50'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 
