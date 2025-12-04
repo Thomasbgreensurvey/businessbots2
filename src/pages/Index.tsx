@@ -91,9 +91,9 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
         </div>
       </motion.header>
 
-      {/* Hero Section - Full Viewport with Sintra-style layout */}
+      {/* Hero Section */}
       <section 
-        className="relative min-h-screen overflow-hidden transition-colors duration-700"
+        className="relative h-[85vh] md:h-screen overflow-hidden transition-colors duration-700"
         style={{
           background: getAgentGradient(featuredAgent.glowColor),
         }}
@@ -120,8 +120,8 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
           </motion.span>
         </div>
 
-        {/* Hero Content - Bottom-left aligned like Sintra */}
-        <div className="absolute bottom-[18%] md:bottom-[20%] left-6 md:left-12 lg:left-20 z-20 max-w-xl">
+        {/* Hero Content - Left aligned */}
+        <div className="absolute bottom-[28%] md:bottom-[30%] left-6 md:left-12 lg:left-20 z-20 max-w-xl">
           <motion.div
             key={featuredAgent.id + '-content'}
             initial={{ opacity: 0, y: 40 }}
