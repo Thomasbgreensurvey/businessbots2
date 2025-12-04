@@ -168,6 +168,9 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             alt={featuredAgent.name}
             className="w-full h-auto object-contain max-h-[85vh] cursor-pointer drop-shadow-2xl pointer-events-auto"
             onClick={() => onSelectAgent(featuredAgent)}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
         </motion.div>
 
