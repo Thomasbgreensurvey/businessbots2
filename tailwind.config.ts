@@ -15,6 +15,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
+        robotic: ["Orbitron", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
