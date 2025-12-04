@@ -6,54 +6,45 @@
 
 @layer base {
   :root {
-    --background: 0 0% 2%;
+    --background: 30 15% 8%;
     --foreground: 0 0% 98%;
 
-    --card: 0 0% 6%;
+    --card: 30 10% 12%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 6%;
+    --popover: 30 10% 12%;
     --popover-foreground: 0 0% 98%;
 
     --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 2%;
+    --primary-foreground: 30 15% 8%;
 
-    --secondary: 0 0% 12%;
+    --secondary: 30 8% 18%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 55%;
+    --muted: 30 5% 25%;
+    --muted-foreground: 30 5% 65%;
 
-    --accent: 0 0% 15%;
+    --accent: 217 91% 60%;
     --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 0 0% 30%;
+    --border: 30 8% 20%;
+    --input: 30 8% 20%;
+    --ring: 217 91% 60%;
 
     --radius: 1rem;
 
-    /* Agent Glow Colors */
-    --glow-emerald: 145 80% 42%;
-    --glow-rose: 340 82% 65%;
-    --glow-indigo: 270 70% 60%;
-    --glow-cyan: 190 95% 55%;
-    --glow-amber: 38 95% 55%;
-    --glow-orange: 15 90% 55%;
-    --glow-teal: 175 85% 45%;
-    --glow-fuchsia: 295 75% 60%;
-
-    /* Gradient colors for CTA */
-    --gradient-start: 239 84% 67%;
-    --gradient-end: 271 81% 56%;
-  }
-
-  .dark {
-    --background: 0 0% 2%;
-    --foreground: 0 0% 98%;
+    /* Agent Background Colors - Warmer, Sintra-like */
+    --bg-emerald: 145 60% 35%;
+    --bg-rose: 340 70% 50%;
+    --bg-indigo: 250 60% 45%;
+    --bg-cyan: 190 70% 45%;
+    --bg-amber: 38 90% 50%;
+    --bg-orange: 25 95% 50%;
+    --bg-teal: 175 70% 40%;
+    --bg-fuchsia: 295 65% 50%;
   }
 }
 
@@ -72,28 +63,6 @@
     overflow-x: hidden;
   }
 
-  /* Deep radial gradient background with noise */
-  .bg-deep-space {
-    background: 
-      radial-gradient(ellipse 80% 50% at 50% -20%, hsla(270 70% 50% / 0.15) 0%, transparent 50%),
-      radial-gradient(ellipse 60% 40% at 80% 100%, hsla(270 70% 50% / 0.08) 0%, transparent 40%),
-      hsl(0 0% 2%);
-  }
-
-  /* Noise texture overlay */
-  .noise-overlay::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.03;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    z-index: 1;
-  }
-
   /* Hide scrollbar but keep functionality */
   .scrollbar-hide {
     -ms-overflow-style: none;
@@ -106,109 +75,37 @@
 }
 
 @layer utilities {
-  /* Glass morphism card */
-  .glass-card {
-    @apply bg-white/[0.05] backdrop-blur-xl border border-white/10 rounded-3xl;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .glass-card:hover {
-    @apply border-[hsl(270_70%_60%/0.5)] scale-105;
-    box-shadow: 0 0 30px hsla(270 70% 60% / 0.2);
-  }
-
-  /* Agent card glow effects */
-  .glow-emerald {
-    box-shadow: 0 0 60px 10px hsla(var(--glow-emerald) / 0.3),
-                0 0 100px 40px hsla(var(--glow-emerald) / 0.1);
+  /* Agent gradient backgrounds - warm, vibrant */
+  .bg-agent-emerald {
+    background: linear-gradient(145deg, hsl(145 55% 30%) 0%, hsl(155 50% 20%) 100%);
   }
   
-  .glow-rose {
-    box-shadow: 0 0 60px 10px hsla(var(--glow-rose) / 0.3),
-                0 0 100px 40px hsla(var(--glow-rose) / 0.1);
+  .bg-agent-rose {
+    background: linear-gradient(145deg, hsl(340 65% 45%) 0%, hsl(350 60% 30%) 100%);
   }
   
-  .glow-indigo {
-    box-shadow: 0 0 60px 10px hsla(var(--glow-indigo) / 0.3),
-                0 0 100px 40px hsla(var(--glow-indigo) / 0.1);
+  .bg-agent-indigo {
+    background: linear-gradient(145deg, hsl(250 55% 40%) 0%, hsl(260 50% 25%) 100%);
   }
   
-  .glow-cyan {
-    box-shadow: 0 0 60px 10px hsla(var(--glow-cyan) / 0.3),
-                0 0 100px 40px hsla(var(--glow-cyan) / 0.1);
+  .bg-agent-cyan {
+    background: linear-gradient(145deg, hsl(190 65% 40%) 0%, hsl(200 60% 25%) 100%);
   }
   
-  .glow-amber {
-    box-shadow: 0 0 60px 10px hsla(var(--glow-amber) / 0.3),
-                0 0 100px 40px hsla(var(--glow-amber) / 0.1);
+  .bg-agent-amber {
+    background: linear-gradient(145deg, hsl(38 85% 45%) 0%, hsl(30 80% 30%) 100%);
   }
   
-  .glow-orange {
-    box-shadow: 0 0 60px 10px hsla(var(--glow-orange) / 0.3),
-                0 0 100px 40px hsla(var(--glow-orange) / 0.1);
+  .bg-agent-orange {
+    background: linear-gradient(145deg, hsl(25 90% 45%) 0%, hsl(15 85% 30%) 100%);
   }
   
-  .glow-teal {
-    box-shadow: 0 0 60px 10px hsla(var(--glow-teal) / 0.3),
-                0 0 100px 40px hsla(var(--glow-teal) / 0.1);
+  .bg-agent-teal {
+    background: linear-gradient(145deg, hsl(175 65% 35%) 0%, hsl(185 60% 22%) 100%);
   }
   
-  .glow-fuchsia {
-    box-shadow: 0 0 60px 10px hsla(var(--glow-fuchsia) / 0.3),
-                0 0 100px 40px hsla(var(--glow-fuchsia) / 0.1);
-  }
-
-  /* Radial gradient backgrounds */
-  .bg-glow-emerald {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-emerald) / 0.2) 0%, transparent 70%);
-  }
-  
-  .bg-glow-rose {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-rose) / 0.2) 0%, transparent 70%);
-  }
-  
-  .bg-glow-indigo {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-indigo) / 0.2) 0%, transparent 70%);
-  }
-  
-  .bg-glow-cyan {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-cyan) / 0.2) 0%, transparent 70%);
-  }
-  
-  .bg-glow-amber {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-amber) / 0.2) 0%, transparent 70%);
-  }
-  
-  .bg-glow-orange {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-orange) / 0.2) 0%, transparent 70%);
-  }
-  
-  .bg-glow-teal {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-teal) / 0.2) 0%, transparent 70%);
-  }
-  
-  .bg-glow-fuchsia {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-fuchsia) / 0.2) 0%, transparent 70%);
-  }
-
-  /* Premium gradient CTA button */
-  .btn-gradient {
-    background: linear-gradient(135deg, hsl(var(--gradient-start)) 0%, hsl(var(--gradient-end)) 100%);
-    box-shadow: 
-      inset 0 1px 0 0 hsla(0 0% 100% / 0.2),
-      0 4px 20px -4px hsla(270 70% 60% / 0.5);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .btn-gradient:hover {
-    box-shadow: 
-      inset 0 1px 0 0 hsla(0 0% 100% / 0.25),
-      0 8px 30px -4px hsla(270 70% 60% / 0.6);
-    transform: translateY(-1px);
-  }
-
-  .btn-gradient:active {
-    transform: scale(0.98) translateY(0);
+  .bg-agent-fuchsia {
+    background: linear-gradient(145deg, hsl(295 60% 45%) 0%, hsl(305 55% 28%) 100%);
   }
 
   /* Snap scroll */
@@ -220,28 +117,42 @@
     scroll-snap-align: center;
   }
 
-  /* Button press effect */
-  .press-effect {
-    @apply transition-transform duration-100 active:scale-95;
+  /* Button styles */
+  .btn-primary {
+    @apply px-6 py-3 rounded-full font-semibold text-sm;
+    @apply bg-accent text-white;
+    @apply hover:opacity-90 transition-all duration-200;
+    @apply active:scale-95;
+  }
+
+  .btn-outline {
+    @apply px-6 py-3 rounded-full font-semibold text-sm;
+    @apply bg-white/10 backdrop-blur-sm border border-white/20 text-white;
+    @apply hover:bg-white/20 transition-all duration-200;
+    @apply active:scale-95;
   }
 
   /* Typography */
-  .heading-xl {
-    @apply text-5xl md:text-7xl font-extrabold tracking-tight text-foreground;
+  .heading-hero {
+    @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white;
     letter-spacing: -0.02em;
+    line-height: 1.1;
   }
 
-  .heading-lg {
-    @apply text-4xl md:text-6xl font-extrabold tracking-tight text-foreground;
-    letter-spacing: -0.02em;
-  }
-
-  .heading-md {
-    @apply text-2xl md:text-3xl font-bold tracking-tight text-foreground;
+  .heading-display {
+    @apply text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white;
     letter-spacing: -0.01em;
   }
 
-  .text-subtle {
-    @apply text-muted-foreground font-medium;
+  .text-subtitle {
+    @apply text-base sm:text-lg text-white/70 font-medium;
+  }
+
+  /* Watermark text */
+  .text-watermark {
+    @apply text-[12rem] sm:text-[16rem] md:text-[20rem] lg:text-[28rem] font-extrabold;
+    @apply text-white/[0.06] select-none pointer-events-none;
+    letter-spacing: -0.04em;
+    line-height: 0.8;
   }
 }
