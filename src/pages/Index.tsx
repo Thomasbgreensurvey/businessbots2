@@ -120,8 +120,8 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
           </motion.span>
         </div>
 
-        {/* Hero Content - Left aligned like Sintra */}
-        <div className="absolute bottom-[20%] md:bottom-[25%] left-6 md:left-12 lg:left-20 z-20 max-w-xl">
+      {/* Hero Content - Left aligned like Sintra */}
+        <div className="absolute top-1/2 -translate-y-1/2 left-6 md:left-12 lg:left-20 z-20 max-w-xl">
           <motion.div
             key={featuredAgent.id + '-content'}
             initial={{ opacity: 0, y: 40 }}
@@ -207,6 +207,205 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
           </div>
         </div>
       </section>
+
+      {/* Automation Section */}
+      <section className="bg-gradient-to-b from-background to-background/95 py-20 md:py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-accent/5 via-transparent to-transparent" />
+        <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-6">
+              Automates work.<br />
+              <span className="text-muted-foreground">Even while you sleep.</span>
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Automate tasks with intelligent AI tools—create social media posts, respond to customers, manage emails, and more—freeing your team from repetitive tasks.
+            </p>
+          </motion.div>
+
+          {/* Automation Cards */}
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                agent: "Banjo",
+                task: "Schedule social media posts for me",
+                description: "Automate your social media game. Write, create, and post content effortlessly with AI-powered solutions.",
+                gradient: "from-indigo-500/20 to-purple-500/20"
+              },
+              {
+                agent: "Timi",
+                task: "Check my customer messages",
+                description: "Engage your audience with intelligent responses. Use AI for customer support to analyze and craft personalized replies.",
+                gradient: "from-cyan-500/20 to-blue-500/20"
+              },
+              {
+                agent: "Sprout",
+                task: "Create my email campaigns",
+                description: "Boost productivity with AI. Streamline email marketing with automated campaigns and personalized content.",
+                gradient: "from-emerald-500/20 to-green-500/20"
+              }
+            ].map((item, index) => (
+              <motion.div
+                key={item.agent}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className={`rounded-3xl bg-gradient-to-br ${item.gradient} border border-white/10 p-8 backdrop-blur-sm hover:border-white/20 transition-colors`}
+              >
+                <p className="text-accent font-semibold mb-2">{item.agent}</p>
+                <h3 className="text-xl font-bold text-foreground mb-4">"{item.task}"</h3>
+                <p className="text-muted-foreground">{item.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="bg-background py-20 md:py-32">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-4xl md:text-5xl font-extrabold text-foreground mb-6">
+                A co-worker who's always on the clock.
+              </h2>
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-2xl">🌙</span>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground mb-1">Available 24/7</h3>
+                    <p className="text-muted-foreground">AI tools are always on and available around the clock to support your business. The only helpers who love overtime.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-2xl">🌍</span>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground mb-1">Speaks 100+ languages</h3>
+                    <p className="text-muted-foreground">Go global—communicate and complete your work in over 100 languages with native-level fluency.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-2xl">⚡</span>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground mb-1">Lightning fast</h3>
+                    <p className="text-muted-foreground">Complete tasks in seconds that would take humans hours. Save your most valuable asset—your time.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="aspect-square rounded-3xl bg-gradient-to-br from-accent/20 via-accent/5 to-transparent border border-white/10 flex items-center justify-center">
+                <div className="text-center p-8">
+                  <div className="text-8xl mb-4">🤖</div>
+                  <p className="text-2xl font-bold text-foreground">Never sleeps</p>
+                  <p className="text-muted-foreground">Always ready to help</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Learning Section */}
+      <section className="bg-gradient-to-b from-background to-background/95 py-20 md:py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-accent/5 via-transparent to-transparent" />
+        <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-6">
+              They learn your business.<br />
+              <span className="text-muted-foreground">Just like real employees.</span>
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Add files, instructions, and your website for more unique results. The more information they have, the better the outcome.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { icon: "🧠", title: "Improves over time", desc: "Your AI team gets smarter with every interaction, learning your preferences and business needs." },
+              { icon: "📁", title: "Remembers everything", desc: "Files, websites, facts—they never forget the context that matters to your business." },
+              { icon: "💬", title: "Asks guided questions", desc: "Smart follow-ups ensure they understand exactly what you need before delivering results." }
+            ].map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="w-20 h-20 rounded-3xl bg-accent/10 flex items-center justify-center mx-auto mb-6">
+                  <span className="text-4xl">{item.icon}</span>
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-3">{item.title}</h3>
+                <p className="text-muted-foreground">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-background py-20 md:py-32">
+        <div className="max-w-4xl mx-auto px-6 md:px-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-6">
+              Ready to meet your new team?
+            </h2>
+            <p className="text-muted-foreground text-lg mb-10 max-w-xl mx-auto">
+              Join thousands of businesses already scaling with AI employees. Start your journey today.
+            </p>
+            <button 
+              onClick={() => onSelectAgent(agents[0])}
+              className="btn-primary text-lg px-10 py-5 shadow-lg shadow-accent/25"
+            >
+              Get Started with Business Bots
+            </button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-background border-t border-white/10 py-12">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <img src={logo} alt="Business Bots UK" className="h-8 w-auto" />
+            <p className="text-muted-foreground text-sm">
+              © {new Date().getFullYear()} Business Bots UK. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
