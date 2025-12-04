@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { agents, Agent } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
 import { SideNav } from "@/components/SideNav";
-import { ArrowRight, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const Index = () => {
@@ -68,101 +68,111 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="fixed top-0 left-0 right-0 z-40 px-6 md:px-10 py-5"
+        className="fixed top-0 left-0 right-0 z-40 px-6 md:px-10 py-4"
       >
         <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <button
               onClick={onOpenNav}
-              className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-colors"
+              className="w-10 h-10 rounded-full bg-white/5 backdrop-blur-md flex items-center justify-center hover:bg-white/10 transition-colors border border-white/10"
             >
               <Menu className="w-5 h-5 text-white" />
             </button>
-            <span className="text-lg font-bold text-white">Business Bots UK</span>
+            <img src={logo} alt="Business Bots UK" className="h-10 w-auto" />
           </div>
-          <button className="btn-primary flex items-center gap-2">
-            Get Started
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-3">
+            <button className="hidden md:block text-white/80 hover:text-white transition-colors text-sm font-medium px-4 py-2">
+              Log in
+            </button>
+            <button className="btn-primary flex items-center gap-2 text-sm">
+              Get Started
+            </button>
+          </div>
         </div>
       </motion.header>
 
-      {/* Hero Section - Full Viewport */}
+      {/* Hero Section - Full Viewport with Sintra-style layout */}
       <section 
-        className={`
-          relative min-h-screen flex items-end justify-center overflow-hidden
-          bg-agent-${featuredAgent.glowColor}
-          transition-colors duration-700
-        `}
+        className="relative min-h-screen overflow-hidden transition-colors duration-700"
         style={{
           background: getAgentGradient(featuredAgent.glowColor),
         }}
       >
-        {/* Watermark Name */}
-        <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+        {/* Atmospheric overlay - darker at bottom */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none" />
+        
+        {/* Vignette effect */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%)'
+        }} />
+
+        {/* Watermark Name - More subtle */}
+        <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
           <motion.span 
             key={featuredAgent.name}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="text-watermark whitespace-nowrap"
+            className="text-[10rem] sm:text-[14rem] md:text-[18rem] lg:text-[24rem] font-extrabold text-white/[0.04] whitespace-nowrap select-none"
+            style={{ letterSpacing: '-0.04em', lineHeight: 0.8 }}
           >
             {featuredAgent.name}
           </motion.span>
         </div>
 
-        {/* Logo - Centered */}
-        <div className="absolute top-24 left-0 right-0 z-20 flex justify-center">
-          <motion.img
-            src={logo}
-            alt="Business Bots UK"
-            className="h-20 md:h-28 w-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          />
-        </div>
-
-        {/* Hero Content */}
-        <div className="absolute top-1/3 left-6 md:left-10 lg:left-16 z-20 max-w-lg">
+        {/* Hero Content - Left aligned like Sintra */}
+        <div className="absolute bottom-[20%] md:bottom-[25%] left-6 md:left-12 lg:left-20 z-20 max-w-xl">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            key={featuredAgent.id + '-content'}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <p className="text-subtitle mb-3">
-              {featuredAgent.role}
-            </p>
-            <h1 className="heading-hero mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6" style={{ letterSpacing: '-0.02em', lineHeight: 1.05 }}>
               AI Bots: Your Helpers That Never Sleep
             </h1>
-            <p className="text-subtitle mb-8 max-w-md">
+            <p className="text-white/60 text-base md:text-lg mb-8 max-w-md font-medium">
               Build, grow, and scale your business with a team of AI employees.
             </p>
             <button 
               onClick={() => onSelectAgent(featuredAgent)}
-              className="btn-primary text-base px-8 py-4"
+              className="btn-primary text-base px-8 py-4 shadow-lg shadow-accent/25"
             >
-              Meet {featuredAgent.name}
+              Get Business Bots
             </button>
           </motion.div>
         </div>
 
-        {/* Featured Agent Image */}
+        {/* Featured Agent Image - Right side, large like Sintra */}
         <motion.div
           key={featuredAgent.id}
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ opacity: 0, x: 50, scale: 0.95 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="relative z-10 w-full max-w-2xl mx-auto px-6"
+          className="absolute right-0 bottom-0 z-10 w-[60%] md:w-[50%] lg:w-[45%] h-full flex items-end justify-center"
         >
           <img
             src={featuredAgent.image}
             alt={featuredAgent.name}
-            className="w-full h-auto object-contain max-h-[70vh] cursor-pointer"
+            className="w-full h-auto object-contain max-h-[85vh] cursor-pointer drop-shadow-2xl"
             onClick={() => onSelectAgent(featuredAgent)}
           />
         </motion.div>
+
+        {/* Agent indicator dots - bottom center */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+          {agents.map((agent, index) => (
+            <button
+              key={agent.id}
+              onClick={() => setFeaturedIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                featuredIndex === index 
+                  ? 'bg-white w-6' 
+                  : 'bg-white/30 hover:bg-white/50'
+              }`}
+            />
+          ))}
+        </div>
       </section>
 
       {/* Agent Roster Section */}
