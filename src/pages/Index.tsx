@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { agents, Agent } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
 import { SideNav } from "@/components/SideNav";
-import { Menu } from "lucide-react";
+import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const Index = () => {
@@ -120,8 +120,8 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
           </motion.span>
         </div>
 
-      {/* Hero Content - Left aligned like Sintra */}
-        <div className="absolute top-1/2 -translate-y-1/2 left-6 md:left-12 lg:left-20 z-20 max-w-xl">
+        {/* Hero Content - Bottom-left aligned like Sintra */}
+        <div className="absolute bottom-[18%] md:bottom-[20%] left-6 md:left-12 lg:left-20 z-20 max-w-xl">
           <motion.div
             key={featuredAgent.id + '-content'}
             initial={{ opacity: 0, y: 40 }}
@@ -269,60 +269,39 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
       {/* Features Section */}
       <section className="bg-background py-20 md:py-32">
         <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-4xl md:text-5xl font-extrabold text-foreground mb-6">
-                A co-worker who's always on the clock.
-              </h2>
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">🌙</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-foreground mb-1">Available 24/7</h3>
-                    <p className="text-muted-foreground">AI tools are always on and available around the clock to support your business. The only helpers who love overtime.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">🌍</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-foreground mb-1">Speaks 100+ languages</h3>
-                    <p className="text-muted-foreground">Go global—communicate and complete your work in over 100 languages with native-level fluency.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">⚡</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-foreground mb-1">Lightning fast</h3>
-                    <p className="text-muted-foreground">Complete tasks in seconds that would take humans hours. Save your most valuable asset—your time.</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-6">
+              A co-worker who's<br />
+              <span className="text-muted-foreground">always on the clock.</span>
+            </h2>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="relative"
-            >
-              <div className="aspect-square rounded-3xl bg-gradient-to-br from-accent/20 via-accent/5 to-transparent border border-white/10 flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="text-8xl mb-4">🤖</div>
-                  <p className="text-2xl font-bold text-foreground">Never sleeps</p>
-                  <p className="text-muted-foreground">Always ready to help</p>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { icon: Clock, title: "Available 24/7", desc: "AI tools are always on and available around the clock to support your business. The only helpers who love overtime." },
+              { icon: Globe, title: "Speaks 100+ languages", desc: "Go global—communicate and complete your work in over 100 languages with native-level fluency." },
+              { icon: Zap, title: "Lightning fast", desc: "Complete tasks in seconds that would take humans hours. Save your most valuable asset—your time." }
+            ].map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center p-8"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6">
+                  <item.icon className="w-7 h-7 text-accent" />
                 </div>
-              </div>
-            </motion.div>
+                <h3 className="text-xl font-bold text-foreground mb-3">{item.title}</h3>
+                <p className="text-muted-foreground">{item.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -348,9 +327,9 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: "🧠", title: "Improves over time", desc: "Your AI team gets smarter with every interaction, learning your preferences and business needs." },
-              { icon: "📁", title: "Remembers everything", desc: "Files, websites, facts—they never forget the context that matters to your business." },
-              { icon: "💬", title: "Asks guided questions", desc: "Smart follow-ups ensure they understand exactly what you need before delivering results." }
+              { icon: Brain, title: "Improves over time", desc: "Your AI team gets smarter with every interaction, learning your preferences and business needs." },
+              { icon: FolderOpen, title: "Remembers everything", desc: "Files, websites, facts—they never forget the context that matters to your business." },
+              { icon: MessageCircle, title: "Asks guided questions", desc: "Smart follow-ups ensure they understand exactly what you need before delivering results." }
             ].map((item, index) => (
               <motion.div
                 key={item.title}
@@ -358,10 +337,10 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="text-center"
+                className="text-center p-8"
               >
-                <div className="w-20 h-20 rounded-3xl bg-accent/10 flex items-center justify-center mx-auto mb-6">
-                  <span className="text-4xl">{item.icon}</span>
+                <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6">
+                  <item.icon className="w-7 h-7 text-accent" />
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-3">{item.title}</h3>
                 <p className="text-muted-foreground">{item.desc}</p>
