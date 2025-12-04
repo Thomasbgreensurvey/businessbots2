@@ -15,6 +15,8 @@ export interface Agent {
   role: string;
   shortRole: string;
   tagline: string;
+  heroHeadline: string;
+  heroSubtext: string;
   description: string;
   extendedDescription: string;
   image: string;
@@ -34,6 +36,8 @@ export const agents: Agent[] = [
     role: "AI Email Marketer",
     shortRole: "Email Marketing",
     tagline: "Your Email Growth Partner on AI",
+    heroHeadline: "Turn Every Email Into Revenue",
+    heroSubtext: "AI-powered campaigns that convert subscribers into customers while you focus on growing your business.",
     description: "Sprout crafts high-converting email campaigns, segments audiences automatically, and nurtures leads while you sleep.",
     extendedDescription: "Meet Sprout. The AI-powered email marketer that transforms your inbox into a revenue machine. Trained on thousands of successful campaigns, Sprout optimizes your email strategy from subject lines to send times. Traditional marketers spend hours crafting emails, but Sprout delivers personalized campaigns in seconds.",
     image: sproutImg,
@@ -62,6 +66,8 @@ export const agents: Agent[] = [
     role: "AI HR Specialist",
     shortRole: "HR Manager",
     tagline: "Your People Partner on AI",
+    heroHeadline: "Your Team Deserves Better HR",
+    heroSubtext: "Instant answers, seamless onboarding, and happier employees. Let AI handle the admin while you build culture.",
     description: "Lilly handles onboarding, employee queries, and internal communications with empathy and precision.",
     extendedDescription: "Meet Lilly. The AI-powered HR specialist that transforms employee experience. Trained on best HR practices, Lilly manages everything from onboarding to policy questions with care. Traditional HR tasks take hours, but Lilly handles them instantly while maintaining the human touch.",
     image: lillyImg,
@@ -90,6 +96,8 @@ export const agents: Agent[] = [
     role: "Social Media Manager",
     shortRole: "Social Media",
     tagline: "Your Social Growth Partner on AI",
+    heroHeadline: "Go Viral Without The Grind",
+    heroSubtext: "Content that stops the scroll, grows your following, and turns engagement into sales. 24/7 social presence made easy.",
     description: "Banjo creates viral content, schedules posts across all platforms, and engages with your community 24/7.",
     extendedDescription: "Meet Banjo. The AI-powered social media manager that makes your brand unforgettable. Trained on viral content patterns, Banjo creates scroll-stopping posts and manages your community around the clock. Traditional social media management takes teams, but Banjo handles it all solo.",
     image: banjoImg,
@@ -118,6 +126,8 @@ export const agents: Agent[] = [
     role: "Customer Support AI",
     shortRole: "Support",
     tagline: "Your Customer Hero on AI",
+    heroHeadline: "Happy Customers, Zero Wait Time",
+    heroSubtext: "Instant support that resolves 80% of issues on the spot. Turn complaints into compliments automatically.",
     description: "Timi provides instant support, resolving 80% of tickets instantly and escalating complex issues when needed.",
     extendedDescription: "Meet Timi. The AI-powered support agent that turns frustrated customers into loyal fans. Trained on millions of support interactions, Timi resolves issues instantly with patience and accuracy. Traditional support means long wait times, but Timi responds in seconds.",
     image: timiImg,
@@ -146,6 +156,8 @@ export const agents: Agent[] = [
     role: "Lead Generation Expert",
     shortRole: "Lead Gen",
     tagline: "Your Pipeline Partner on AI",
+    heroHeadline: "Fill Your Pipeline Overnight",
+    heroSubtext: "Qualified leads delivered to your CRM daily. Stop chasing, start closing with AI-powered prospecting.",
     description: "Like scrapes the web for high-quality prospects and enriches data before it hits your CRM.",
     extendedDescription: "Meet Like. The AI-powered lead hunter that fills your pipeline with qualified prospects. Trained on successful sales patterns, Like finds and enriches leads that actually convert. Traditional prospecting takes days, but Like delivers qualified leads in minutes.",
     image: likeImg,
@@ -174,6 +186,8 @@ export const agents: Agent[] = [
     role: "Outbound Telesales",
     shortRole: "Outbound Sales",
     tagline: "Your Sales Partner on AI",
+    heroHeadline: "Book More Meetings, Close More Deals",
+    heroSubtext: "500 personalised calls a day with zero burnout. Your tireless sales machine that never stops closing.",
     description: "Tobby makes hundreds of calls daily with a hyper-realistic voice to set appointments and close deals.",
     extendedDescription: "Meet Tobby. The AI-powered sales rep that never stops dialing. Trained on winning sales scripts, Tobby makes personalized calls that book meetings. Traditional cold calling burns out reps, but Tobby stays energetic call after call.",
     image: tobbyImg,
@@ -202,6 +216,8 @@ export const agents: Agent[] = [
     role: "Inbound Telesales",
     shortRole: "Inbound Sales",
     tagline: "Your Revenue Partner on AI",
+    heroHeadline: "Never Miss Another Sales Call",
+    heroSubtext: "Instant answers, perfect routing, and orders processed 24/7. Every call becomes a conversion opportunity.",
     description: "Nano answers every incoming call instantly, routing customers or taking orders with zero hold time.",
     extendedDescription: "Meet Nano. The AI-powered inbound specialist that never misses a call. Trained on customer service excellence, Nano handles inquiries, takes orders, and routes calls perfectly. Traditional call centers mean hold times, but Nano answers instantly.",
     image: nanoImg,
@@ -230,6 +246,8 @@ export const agents: Agent[] = [
     role: "AI Recruiter",
     shortRole: "Recruitment",
     tagline: "Your Recruitment Partner on AI",
+    heroHeadline: "Hire Top Talent 10x Faster",
+    heroSubtext: "From sourcing to screening to scheduling. Your AI recruiter finds perfect matches while you focus on interviews that matter.",
     description: "Skoot sources top talent, screens resumes, and conducts initial interviews to find your perfect candidate.",
     extendedDescription: "Meet Skoot. The AI-powered recruiter that transforms hiring challenges into opportunities. Trained on thousands of best HR practices, Skoot optimizes your recruitment process from outreach to onboarding. Traditional recruiters spend hours on repetitive tasks, but Skoot handles them in minutes.",
     image: skootImg,

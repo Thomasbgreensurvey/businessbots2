@@ -144,10 +144,10 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6" style={{ letterSpacing: '-0.02em', lineHeight: 1.05 }}>
-              AI Bots: Your Helpers That Never Sleep
+              {featuredAgent.heroHeadline}
             </h1>
             <p className="text-white/60 text-base md:text-lg mb-8 max-w-md font-medium">
-              Build, grow, and scale your business with a team of AI employees.
+              {featuredAgent.heroSubtext}
             </p>
             <button 
               onClick={() => onSelectAgent(featuredAgent)}

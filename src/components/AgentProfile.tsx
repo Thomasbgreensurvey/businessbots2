@@ -108,17 +108,19 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
         </motion.div>
       </section>
 
-      {/* Description Section */}
-      <section className="bg-background py-12 md:py-20">
-        <div className="max-w-4xl mx-auto px-4 md:px-10">
-          <motion.p
+      {/* Description Section - White Background like Sintra */}
+      <section className="bg-white py-16 md:py-24">
+        <div className="max-w-4xl mx-auto px-6 md:px-10">
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-lg md:text-xl text-muted-foreground leading-relaxed"
           >
-            {agent.extendedDescription}
-          </motion.p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+              <span style={{ color: getAgentAccentColor(agent.glowColor) }}>Meet {agent.name}.</span>{' '}
+              {agent.extendedDescription.replace(`Meet ${agent.name}. `, '')}
+            </h2>
+          </motion.div>
         </div>
       </section>
 
@@ -338,4 +340,18 @@ function getAgentGradient(color: GlowColor): string {
     fuchsia: 'linear-gradient(145deg, hsl(295 60% 50%) 0%, hsl(305 55% 32%) 100%)',
   };
   return gradients[color] || gradients.indigo;
+}
+
+function getAgentAccentColor(color: GlowColor): string {
+  const colors: Record<string, string> = {
+    emerald: 'hsl(145 55% 35%)',
+    rose: 'hsl(340 65% 50%)',
+    indigo: 'hsl(250 55% 45%)',
+    cyan: 'hsl(190 65% 45%)',
+    amber: 'hsl(38 85% 50%)',
+    orange: 'hsl(25 90% 50%)',
+    teal: 'hsl(175 65% 40%)',
+    fuchsia: 'hsl(295 60% 50%)',
+  };
+  return colors[color] || colors.indigo;
 }
