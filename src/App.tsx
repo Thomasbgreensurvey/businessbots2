@@ -9,6 +9,7 @@ import Blog from "./pages/Blog";
 import CaseStudies from "./pages/CaseStudies";
 import FAQ from "./pages/FAQ";
 import HelpCentre from "./pages/HelpCentre";
+import ArticleDetail from "./pages/ArticleDetail";
 import WhatIsAIEmployee from "./pages/WhatIsAIEmployee";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/case-studies" element={<CaseStudies />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/help-centre" element={<HelpCentre />} />
+          <Route path="/help-centre/article/:slug" element={<ArticleDetail />} />
           <Route path="/what-is-ai-employee" element={<WhatIsAIEmployee />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
