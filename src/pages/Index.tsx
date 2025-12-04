@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { agents, Agent } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
@@ -536,6 +536,7 @@ interface AgentCarouselProps {
 
 const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
   const currentAgent = agents[currentIndex];
 
   const goToPrevious = () => {
@@ -546,8 +547,23 @@ const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
     setCurrentIndex((prev) => (prev + 1) % agents.length);
   };
 
+  // Auto-play with pause on hover
+  useEffect(() => {
+    if (isHovered) return;
+    
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % agents.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [isHovered, agents.length]);
+
   return (
-    <section className="bg-background py-8 md:py-16">
+    <section 
+      className="bg-background py-8 md:py-16"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className="max-w-7xl mx-auto px-4 md:px-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
