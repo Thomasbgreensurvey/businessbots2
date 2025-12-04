@@ -113,12 +113,9 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
           }
         }}
       >
-        {/* Atmospheric overlay - darker at bottom */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none" />
-        
-        {/* Vignette effect */}
+        {/* Subtle atmospheric overlay - seamless gradient */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%)'
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.15) 100%)'
         }} />
 
         {/* Watermark Name - More subtle */}
@@ -195,8 +192,6 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
 
       {/* Agent Roster Section */}
       <section className="bg-background py-16 md:py-24 relative">
-        {/* Top gradient blend */}
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black to-transparent -translate-y-full" />
         <div className="max-w-7xl mx-auto px-6 md:px-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
