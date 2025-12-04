@@ -18,42 +18,40 @@ const glowClasses: Record<GlowColor, string> = {
   fuchsia: "bg-glow-fuchsia",
 };
 
-const borderGlowClasses: Record<GlowColor, string> = {
-  emerald: "hover:border-glow-emerald/50",
-  rose: "hover:border-glow-rose/50",
-  indigo: "hover:border-glow-indigo/50",
-  cyan: "hover:border-glow-cyan/50",
-  amber: "hover:border-glow-amber/50",
-  orange: "hover:border-glow-orange/50",
-  teal: "hover:border-glow-teal/50",
-  fuchsia: "hover:border-glow-fuchsia/50",
-};
-
 export const AgentCard = ({ agent, onClick, index }: AgentCardProps) => {
   return (
     <motion.button
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ 
+        delay: index * 0.06, 
+        duration: 0.5, 
+        ease: [0.25, 0.46, 0.45, 0.94] 
+      }}
       onClick={onClick}
-      className={`
+      className="
         group relative flex flex-col items-center
-        w-[160px] min-w-[160px] md:w-full md:min-w-0
+        w-[200px] min-w-[200px] md:w-full md:min-w-0
         snap-center
-        press-effect
-      `}
+      "
     >
-      {/* Card Container */}
-      <div
-        className={`
+      {/* Glass Card Container */}
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        className="
           relative w-full aspect-[3/4] rounded-3xl overflow-hidden
-          bg-card border border-border/50
-          transition-all duration-300 ease-out
-          ${borderGlowClasses[agent.glowColor]}
-          group-hover:scale-[1.02] group-hover:border-opacity-100
-        `}
+          bg-white/[0.05] backdrop-blur-xl 
+          border border-white/10
+          group-hover:border-[hsl(270_70%_60%/0.5)]
+          transition-colors duration-300
+        "
+        style={{
+          boxShadow: "0 4px 30px rgba(0, 0, 0, 0.3)"
+        }}
       >
-        {/* Glow Background */}
+        {/* Glow Background on Hover */}
         <div 
           className={`
             absolute inset-0 opacity-0 group-hover:opacity-100
@@ -64,21 +62,35 @@ export const AgentCard = ({ agent, onClick, index }: AgentCardProps) => {
         
         {/* Agent Image */}
         <div className="absolute inset-0 flex items-end justify-center">
-          <img
+          <motion.img
             src={agent.image}
             alt={agent.name}
-            className="w-full h-auto object-cover object-top transform translate-y-4 group-hover:translate-y-2 transition-transform duration-500"
+            className="w-full h-auto object-cover object-top transform translate-y-4"
+            initial={{ y: 16 }}
+            whileHover={{ y: 8 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
           />
         </div>
         
         {/* Gradient Overlay */}
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-card via-card/80 to-transparent" />
-      </div>
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+
+        {/* Hover Glow Ring */}
+        <div 
+          className="
+            absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100
+            transition-opacity duration-300 pointer-events-none
+          "
+          style={{
+            boxShadow: "inset 0 0 30px hsla(270, 70%, 60%, 0.15)"
+          }}
+        />
+      </motion.div>
 
       {/* Agent Info */}
-      <div className="mt-4 text-center">
-        <h3 className="text-foreground font-semibold text-base">{agent.name}</h3>
-        <p className="text-muted-foreground text-sm mt-0.5">{agent.shortRole}</p>
+      <div className="mt-5 text-center">
+        <h3 className="text-foreground font-bold text-lg tracking-tight">{agent.name}</h3>
+        <p className="text-muted-foreground text-sm font-medium mt-1">{agent.shortRole}</p>
       </div>
     </motion.button>
   );
