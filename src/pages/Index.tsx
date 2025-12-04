@@ -92,10 +92,25 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
       </motion.header>
 
       {/* Hero Section */}
-      <section 
-        className="relative h-[85vh] md:h-screen overflow-hidden transition-colors duration-700"
+      <motion.section 
+        className="relative h-[85vh] md:h-screen overflow-hidden transition-colors duration-700 touch-pan-y"
         style={{
           background: getAgentGradient(featuredAgent.glowColor),
+        }}
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.1}
+        onDragEnd={(e, { offset, velocity }) => {
+          const swipe = offset.x;
+          const swipeThreshold = 50;
+          
+          if (swipe < -swipeThreshold || velocity.x < -500) {
+            // Swiped left - next agent
+            setFeaturedIndex((prev) => (prev + 1) % agents.length);
+          } else if (swipe > swipeThreshold || velocity.x > 500) {
+            // Swiped right - previous agent
+            setFeaturedIndex((prev) => (prev - 1 + agents.length) % agents.length);
+          }
         }}
       >
         {/* Atmospheric overlay - darker at bottom */}
@@ -121,7 +136,7 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
         </div>
 
         {/* Hero Content - Left aligned */}
-        <div className="absolute bottom-[28%] md:bottom-[30%] left-6 md:left-12 lg:left-20 z-20 max-w-xl">
+        <div className="absolute bottom-[28%] md:bottom-[30%] left-6 md:left-12 lg:left-20 z-20 max-w-xl pointer-events-none">
           <motion.div
             key={featuredAgent.id + '-content'}
             initial={{ opacity: 0, y: 40 }}
@@ -136,7 +151,7 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             </p>
             <button 
               onClick={() => onSelectAgent(featuredAgent)}
-              className="btn-primary text-base px-8 py-4 shadow-lg shadow-accent/25"
+              className="btn-primary text-base px-8 py-4 shadow-lg shadow-accent/25 pointer-events-auto"
             >
               Get Business Bots
             </button>
@@ -149,12 +164,12 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
           initial={{ opacity: 0, x: 50, scale: 0.95 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="absolute right-0 bottom-0 z-10 w-[60%] md:w-[50%] lg:w-[45%] h-full flex items-end justify-center"
+          className="absolute right-0 bottom-0 z-10 w-[60%] md:w-[50%] lg:w-[45%] h-full flex items-end justify-center pointer-events-none"
         >
           <img
             src={featuredAgent.image}
             alt={featuredAgent.name}
-            className="w-full h-auto object-contain max-h-[85vh] cursor-pointer drop-shadow-2xl"
+            className="w-full h-auto object-contain max-h-[85vh] cursor-pointer drop-shadow-2xl pointer-events-auto"
             onClick={() => onSelectAgent(featuredAgent)}
           />
         </motion.div>
@@ -165,7 +180,7 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             <button
               key={agent.id}
               onClick={() => setFeaturedIndex(index)}
-              className="p-2 -m-2 cursor-pointer"
+              className="p-2 -m-2 cursor-pointer pointer-events-auto"
               aria-label={`View ${agent.name}`}
             >
               <div className={`h-2 rounded-full transition-all duration-300 ${
@@ -176,7 +191,7 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             </button>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Agent Roster Section */}
       <section className="bg-background py-16 md:py-24 relative">
