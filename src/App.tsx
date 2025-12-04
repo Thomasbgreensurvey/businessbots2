@@ -4,11 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-import Blog from "./pages/Blog";
-import CaseStudies from "./pages/CaseStudies";
-import FAQ from "./pages/FAQ";
-import HelpCenter from "./pages/HelpCenter";
-import WhatIsAIHelper from "./pages/WhatIsAIHelper";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,11 +16,6 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/case-studies" element={<CaseStudies />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/help" element={<HelpCenter />} />
-          <Route path="/what-is-ai-helper" element={<WhatIsAIHelper />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
