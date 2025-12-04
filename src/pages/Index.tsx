@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { agents, Agent } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
 import { SideNav } from "@/components/SideNav";
-import { Zap, ArrowRight, Menu } from "lucide-react";
+import { ArrowRight, Menu } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Index = () => {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
@@ -77,7 +78,7 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             >
               <Menu className="w-5 h-5 text-white" />
             </button>
-            <span className="text-lg font-bold text-white">AI Workforce</span>
+            <span className="text-lg font-bold text-white">Business Bots UK</span>
           </div>
           <button className="btn-primary flex items-center gap-2">
             Get Started
@@ -117,11 +118,12 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
+            <img src={logo} alt="Business Bots UK" className="h-16 md:h-20 w-auto mb-6" />
             <p className="text-subtitle mb-3">
               {featuredAgent.role}
             </p>
             <h1 className="heading-hero mb-6">
-              AI Employees: Your Helpers That Never Sleep
+              AI Bots: Your Helpers That Never Sleep
             </h1>
             <p className="text-subtitle mb-8 max-w-md">
               Build, grow, and scale your business with a team of AI employees.
