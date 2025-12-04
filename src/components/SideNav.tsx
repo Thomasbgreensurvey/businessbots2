@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, FileText, Briefcase, HelpCircle, LifeBuoy, Bot } from "lucide-react";
 import { agents, Agent } from "@/data/agents";
+import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 
 interface SideNavProps {
@@ -10,7 +11,22 @@ interface SideNavProps {
   selectedAgentId?: string;
 }
 
+const resourceLinks = [
+  { icon: FileText, label: "Blog", path: "/blog" },
+  { icon: Briefcase, label: "Case Studies", path: "/case-studies" },
+  { icon: HelpCircle, label: "FAQ", path: "/faq" },
+  { icon: LifeBuoy, label: "Help Centre", path: "/help-centre" },
+  { icon: Bot, label: "What is an AI Employee?", path: "/what-is-ai-employee" },
+];
+
 export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: SideNavProps) => {
+  const navigate = useNavigate();
+
+  const handleResourceClick = (path: string) => {
+    navigate(path);
+    onClose();
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -52,7 +68,7 @@ export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: Sid
               <p className="text-white/50 text-sm font-medium mb-4 px-1">Products</p>
 
               {/* Full Team Card */}
-              <div className="bg-white/[0.06] rounded-2xl p-4 mb-2">
+              <div className="bg-white/[0.06] rounded-2xl p-4 mb-6">
                 {/* Card Header */}
                 <div className="text-center mb-5">
                   <h3 className="text-white font-semibold text-base">Full Team</h3>
@@ -73,6 +89,25 @@ export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: Sid
                     />
                   ))}
                 </div>
+              </div>
+
+              {/* Resources Section */}
+              <p className="text-white/50 text-sm font-medium mb-4 px-1">Resources</p>
+              <div className="space-y-1">
+                {resourceLinks.map((link) => (
+                  <motion.button
+                    key={link.path}
+                    whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleResourceClick(link.path)}
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-colors bg-transparent hover:bg-white/[0.06]"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-white/[0.08] flex items-center justify-center flex-shrink-0">
+                      <link.icon className="w-5 h-5 text-white/70" />
+                    </div>
+                    <span className="text-white/80 font-medium text-[15px]">{link.label}</span>
+                  </motion.button>
+                ))}
               </div>
             </div>
 
