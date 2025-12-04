@@ -67,6 +67,11 @@ const HelpCentre = () => {
     );
   }, [searchQuery]);
 
+  const handleArticleClick = (articleTitle: string) => {
+    const slug = articleTitle.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/help-centre/article/${slug}`);
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -158,6 +163,7 @@ const HelpCentre = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: index * 0.05 }}
+                  onClick={() => handleArticleClick(article)}
                   className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors text-left"
                 >
                   <span className="text-gray-900 font-medium">{article}</span>
