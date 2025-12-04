@@ -1,10 +1,10 @@
 import sproutImg from "@/assets/agents/sprout.png";
 import lillyImg from "@/assets/agents/lilly.png";
-import banjoImg from "@/assets/agents/banjo.jpeg";
+import banjoImg from "@/assets/agents/banjo.png";
 import timiImg from "@/assets/agents/timi.png";
 import likeImg from "@/assets/agents/like.png";
 import tobbyImg from "@/assets/agents/tobby.png";
-import nanoImg from "@/assets/agents/nano.jpeg";
+import nanoImg from "@/assets/agents/nano.png";
 import skootImg from "@/assets/agents/skoot.png";
 
 export type GlowColor = "emerald" | "rose" | "indigo" | "cyan" | "amber" | "orange" | "teal" | "fuchsia";
