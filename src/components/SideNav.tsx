@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Zap } from "lucide-react";
+import { X } from "lucide-react";
 import { agents, Agent } from "@/data/agents";
+import logo from "@/assets/logo.png";
 
 interface SideNavProps {
   isOpen: boolean;
@@ -41,10 +42,7 @@ export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: Sid
                 <X className="w-5 h-5 text-white" />
               </button>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-lg font-bold text-white tracking-tight">AI Workforce</span>
+                <img src={logo} alt="Business Bots UK" className="h-10 w-auto" />
               </div>
             </div>
 
@@ -58,7 +56,7 @@ export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: Sid
                 {/* Card Header */}
                 <div className="text-center mb-5">
                   <h3 className="text-white font-semibold text-base">Full Team</h3>
-                  <p className="text-white/50 text-sm">AI Workforce X</p>
+                  <p className="text-white/50 text-sm">Business Bots UK</p>
                 </div>
 
                 {/* Agent List */}
@@ -81,7 +79,7 @@ export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: Sid
             {/* Footer */}
             <div className="px-5 py-5 border-t border-white/10">
               <p className="text-white/40 text-xs text-center">
-                © 2024 AI Workforce
+                © 2024 Business Bots UK
               </p>
             </div>
           </motion.div>
