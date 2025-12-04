@@ -45,6 +45,10 @@
     --glow-orange: 15 90% 55%;
     --glow-teal: 175 85% 45%;
     --glow-fuchsia: 295 75% 60%;
+
+    /* Gradient colors for CTA */
+    --gradient-start: 239 84% 67%;
+    --gradient-end: 271 81% 56%;
   }
 
   .dark {
@@ -65,8 +69,29 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    background-color: hsl(0 0% 2%);
     overflow-x: hidden;
+  }
+
+  /* Deep radial gradient background with noise */
+  .bg-deep-space {
+    background: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, hsla(270 70% 50% / 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, hsla(270 70% 50% / 0.08) 0%, transparent 40%),
+      hsl(0 0% 2%);
+  }
+
+  /* Noise texture overlay */
+  .noise-overlay::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.03;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    z-index: 1;
   }
 
   /* Hide scrollbar but keep functionality */
@@ -81,6 +106,17 @@
 }
 
 @layer utilities {
+  /* Glass morphism card */
+  .glass-card {
+    @apply bg-white/[0.05] backdrop-blur-xl border border-white/10 rounded-3xl;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-card:hover {
+    @apply border-[hsl(270_70%_60%/0.5)] scale-105;
+    box-shadow: 0 0 30px hsla(270 70% 60% / 0.2);
+  }
+
   /* Agent card glow effects */
   .glow-emerald {
     box-shadow: 0 0 60px 10px hsla(var(--glow-emerald) / 0.3),
@@ -124,35 +160,55 @@
 
   /* Radial gradient backgrounds */
   .bg-glow-emerald {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-emerald) / 0.15) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, hsla(var(--glow-emerald) / 0.2) 0%, transparent 70%);
   }
   
   .bg-glow-rose {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-rose) / 0.15) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, hsla(var(--glow-rose) / 0.2) 0%, transparent 70%);
   }
   
   .bg-glow-indigo {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-indigo) / 0.15) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, hsla(var(--glow-indigo) / 0.2) 0%, transparent 70%);
   }
   
   .bg-glow-cyan {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-cyan) / 0.15) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, hsla(var(--glow-cyan) / 0.2) 0%, transparent 70%);
   }
   
   .bg-glow-amber {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-amber) / 0.15) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, hsla(var(--glow-amber) / 0.2) 0%, transparent 70%);
   }
   
   .bg-glow-orange {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-orange) / 0.15) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, hsla(var(--glow-orange) / 0.2) 0%, transparent 70%);
   }
   
   .bg-glow-teal {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-teal) / 0.15) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, hsla(var(--glow-teal) / 0.2) 0%, transparent 70%);
   }
   
   .bg-glow-fuchsia {
-    background: radial-gradient(ellipse at center, hsla(var(--glow-fuchsia) / 0.15) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, hsla(var(--glow-fuchsia) / 0.2) 0%, transparent 70%);
+  }
+
+  /* Premium gradient CTA button */
+  .btn-gradient {
+    background: linear-gradient(135deg, hsl(var(--gradient-start)) 0%, hsl(var(--gradient-end)) 100%);
+    box-shadow: 
+      inset 0 1px 0 0 hsla(0 0% 100% / 0.2),
+      0 4px 20px -4px hsla(270 70% 60% / 0.5);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-gradient:hover {
+    box-shadow: 
+      inset 0 1px 0 0 hsla(0 0% 100% / 0.25),
+      0 8px 30px -4px hsla(270 70% 60% / 0.6);
+    transform: translateY(-1px);
+  }
+
+  .btn-gradient:active {
+    transform: scale(0.98) translateY(0);
   }
 
   /* Snap scroll */
@@ -167,5 +223,25 @@
   /* Button press effect */
   .press-effect {
     @apply transition-transform duration-100 active:scale-95;
+  }
+
+  /* Typography */
+  .heading-xl {
+    @apply text-5xl md:text-7xl font-extrabold tracking-tight text-foreground;
+    letter-spacing: -0.02em;
+  }
+
+  .heading-lg {
+    @apply text-4xl md:text-6xl font-extrabold tracking-tight text-foreground;
+    letter-spacing: -0.02em;
+  }
+
+  .heading-md {
+    @apply text-2xl md:text-3xl font-bold tracking-tight text-foreground;
+    letter-spacing: -0.01em;
+  }
+
+  .text-subtle {
+    @apply text-muted-foreground font-medium;
   }
 }
