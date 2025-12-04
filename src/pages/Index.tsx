@@ -111,14 +111,25 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
           </motion.span>
         </div>
 
+        {/* Logo - Centered */}
+        <div className="absolute top-24 left-0 right-0 z-20 flex justify-center">
+          <motion.img
+            src={logo}
+            alt="Business Bots UK"
+            className="h-20 md:h-28 w-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          />
+        </div>
+
         {/* Hero Content */}
-        <div className="absolute top-1/4 left-6 md:left-10 lg:left-16 z-20 max-w-lg">
+        <div className="absolute top-1/3 left-6 md:left-10 lg:left-16 z-20 max-w-lg">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <img src={logo} alt="Business Bots UK" className="h-16 md:h-20 w-auto mb-6" />
             <p className="text-subtitle mb-3">
               {featuredAgent.role}
             </p>
