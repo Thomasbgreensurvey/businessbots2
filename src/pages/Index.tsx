@@ -160,17 +160,20 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
         </motion.div>
 
         {/* Agent indicator dots - bottom center */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex gap-3">
           {agents.map((agent, index) => (
             <button
               key={agent.id}
               onClick={() => setFeaturedIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              className="p-2 -m-2 cursor-pointer"
+              aria-label={`View ${agent.name}`}
+            >
+              <div className={`h-2 rounded-full transition-all duration-300 ${
                 featuredIndex === index 
-                  ? 'bg-white w-6' 
-                  : 'bg-white/30 hover:bg-white/50'
-              }`}
-            />
+                  ? 'bg-white w-8' 
+                  : 'bg-white/40 w-2 hover:bg-white/60'
+              }`} />
+            </button>
           ))}
         </div>
       </section>
