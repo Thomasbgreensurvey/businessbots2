@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { agents, Agent } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
 import { SideNav } from "@/components/SideNav";
-import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle } from "lucide-react";
+import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle, Mail, Calendar, MessageSquare, Camera, User, Briefcase, HardDrive } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const Index = () => {
@@ -209,44 +209,43 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
       </section>
 
       {/* Automation Section */}
-      <section className="bg-gradient-to-b from-background to-background/95 py-20 md:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-accent/5 via-transparent to-transparent" />
-        <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
+      <section className="bg-background py-16 md:py-32 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 md:px-10 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-12 md:mb-16"
           >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-4 md:mb-6">
               Automates work.<br />
               <span className="text-muted-foreground">Even while you sleep.</span>
             </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Automate tasks with intelligent AI tools—create social media posts, respond to customers, manage emails, and more—freeing your team from repetitive tasks.
+            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto px-4">
+              Automate tasks with intelligent AI tools—create social media posts, respond to customers, manage emails, and more.
             </p>
           </motion.div>
 
-          {/* Automation Cards */}
-          <div className="grid md:grid-cols-3 gap-6">
+          {/* Automation Cards - Large, mobile-first */}
+          <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-3 md:gap-6">
             {[
               {
                 agent: "Banjo",
                 task: "Schedule social media posts for me",
                 description: "Automate your social media game. Write, create, and post content effortlessly with AI-powered solutions.",
-                gradient: "from-indigo-500/20 to-purple-500/20"
+                gradient: "from-indigo-600 via-purple-600 to-indigo-800"
               },
               {
                 agent: "Timi",
                 task: "Check my customer messages",
                 description: "Engage your audience with intelligent responses. Use AI for customer support to analyze and craft personalized replies.",
-                gradient: "from-cyan-500/20 to-blue-500/20"
+                gradient: "from-cyan-600 via-blue-600 to-cyan-800"
               },
               {
                 agent: "Sprout",
                 task: "Create my email campaigns",
                 description: "Boost productivity with AI. Streamline email marketing with automated campaigns and personalized content.",
-                gradient: "from-emerald-500/20 to-green-500/20"
+                gradient: "from-emerald-600 via-green-600 to-emerald-800"
               }
             ].map((item, index) => (
               <motion.div
@@ -255,11 +254,17 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className={`rounded-3xl bg-gradient-to-br ${item.gradient} border border-white/10 p-8 backdrop-blur-sm hover:border-white/20 transition-colors`}
+                className={`relative rounded-3xl bg-gradient-to-br ${item.gradient} p-6 md:p-8 min-h-[200px] md:min-h-[280px] flex flex-col justify-end overflow-hidden`}
               >
-                <p className="text-accent font-semibold mb-2">{item.agent}</p>
-                <h3 className="text-xl font-bold text-foreground mb-4">"{item.task}"</h3>
-                <p className="text-muted-foreground">{item.description}</p>
+                {/* Gradient overlay for depth */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+                
+                {/* Content */}
+                <div className="relative z-10">
+                  <p className="text-white/80 font-semibold text-sm mb-2">{item.agent}</p>
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-3">"{item.task}"</h3>
+                  <p className="text-white/70 text-sm md:text-base">{item.description}</p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -267,25 +272,26 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
       </section>
 
       {/* Features Section */}
-      <section className="bg-background py-20 md:py-32">
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
+      <section className="bg-background py-16 md:py-32">
+        <div className="max-w-7xl mx-auto px-4 md:px-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-12 md:mb-16"
           >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-4 md:mb-6">
               A co-worker who's<br />
               <span className="text-muted-foreground">always on the clock.</span>
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          {/* Feature Cards - Large, mobile-first */}
+          <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-3 md:gap-6">
             {[
-              { icon: Clock, title: "Available 24/7", desc: "AI tools are always on and available around the clock to support your business. The only helpers who love overtime." },
-              { icon: Globe, title: "Speaks 100+ languages", desc: "Go global—communicate and complete your work in over 100 languages with native-level fluency." },
-              { icon: Zap, title: "Lightning fast", desc: "Complete tasks in seconds that would take humans hours. Save your most valuable asset—your time." }
+              { icon: Clock, title: "Available 24/7", desc: "AI tools are always on and available around the clock to support your business. The only helpers who love overtime.", gradient: "from-amber-600 via-orange-600 to-amber-800" },
+              { icon: Globe, title: "Speaks 100+ languages", desc: "Go global—communicate and complete your work in over 100 languages with native-level fluency.", gradient: "from-rose-600 via-pink-600 to-rose-800" },
+              { icon: Zap, title: "Lightning fast", desc: "Complete tasks in seconds that would take humans hours. Save your most valuable asset—your time.", gradient: "from-violet-600 via-purple-600 to-violet-800" }
             ].map((item, index) => (
               <motion.div
                 key={item.title}
@@ -293,13 +299,21 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="text-center p-8"
+                className={`relative rounded-3xl bg-gradient-to-br ${item.gradient} p-6 md:p-8 min-h-[200px] md:min-h-[280px] flex flex-col justify-end overflow-hidden`}
               >
-                <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6">
-                  <item.icon className="w-7 h-7 text-accent" />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+                
+                {/* Icon */}
+                <div className="absolute top-6 right-6">
+                  <item.icon className="w-10 h-10 md:w-12 md:h-12 text-white/30" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-3">{item.title}</h3>
-                <p className="text-muted-foreground">{item.desc}</p>
+                
+                {/* Content */}
+                <div className="relative z-10">
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-3">{item.title}</h3>
+                  <p className="text-white/70 text-sm md:text-base">{item.desc}</p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -307,29 +321,29 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
       </section>
 
       {/* Learning Section */}
-      <section className="bg-gradient-to-b from-background to-background/95 py-20 md:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-accent/5 via-transparent to-transparent" />
-        <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
+      <section className="bg-background py-16 md:py-32 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 md:px-10 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-12 md:mb-16"
           >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-4 md:mb-6">
               They learn your business.<br />
               <span className="text-muted-foreground">Just like real employees.</span>
             </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto px-4">
               Add files, instructions, and your website for more unique results. The more information they have, the better the outcome.
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          {/* Learning Cards - Large, mobile-first */}
+          <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-3 md:gap-6">
             {[
-              { icon: Brain, title: "Improves over time", desc: "Your AI team gets smarter with every interaction, learning your preferences and business needs." },
-              { icon: FolderOpen, title: "Remembers everything", desc: "Files, websites, facts—they never forget the context that matters to your business." },
-              { icon: MessageCircle, title: "Asks guided questions", desc: "Smart follow-ups ensure they understand exactly what you need before delivering results." }
+              { icon: Brain, title: "Improves over time", desc: "Your AI team gets smarter with every interaction, learning your preferences and business needs.", gradient: "from-teal-600 via-cyan-600 to-teal-800" },
+              { icon: FolderOpen, title: "Remembers everything", desc: "Files, websites, facts—they never forget the context that matters to your business.", gradient: "from-blue-600 via-indigo-600 to-blue-800" },
+              { icon: MessageCircle, title: "Asks guided questions", desc: "Smart follow-ups ensure they understand exactly what you need before delivering results.", gradient: "from-fuchsia-600 via-pink-600 to-fuchsia-800" }
             ].map((item, index) => (
               <motion.div
                 key={item.title}
@@ -337,16 +351,77 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="text-center p-8"
+                className={`relative rounded-3xl bg-gradient-to-br ${item.gradient} p-6 md:p-8 min-h-[200px] md:min-h-[280px] flex flex-col justify-end overflow-hidden`}
               >
-                <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6">
-                  <item.icon className="w-7 h-7 text-accent" />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+                
+                {/* Icon */}
+                <div className="absolute top-6 right-6">
+                  <item.icon className="w-10 h-10 md:w-12 md:h-12 text-white/30" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-3">{item.title}</h3>
-                <p className="text-muted-foreground">{item.desc}</p>
+                
+                {/* Content */}
+                <div className="relative z-10">
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-3">{item.title}</h3>
+                  <p className="text-white/70 text-sm md:text-base">{item.desc}</p>
+                </div>
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Integrations Section */}
+      <section className="bg-background py-16 md:py-32 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-4 md:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12 md:mb-16"
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-4 md:mb-6">
+              Integrates with your<br />
+              <span className="text-muted-foreground">favorite tools.</span>
+            </h2>
+            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto px-4">
+              Streamline business processes by bringing your favorite tools, systems, and AI employees together.
+            </p>
+          </motion.div>
+
+          {/* Integration logos */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-wrap justify-center items-center gap-6 md:gap-10"
+          >
+            {[
+              { name: "Gmail", Icon: Mail },
+              { name: "Calendar", Icon: Calendar },
+              { name: "Slack", Icon: MessageSquare },
+              { name: "Instagram", Icon: Camera },
+              { name: "Facebook", Icon: User },
+              { name: "LinkedIn", Icon: Briefcase },
+              { name: "Drive", Icon: HardDrive },
+              { name: "Messages", Icon: MessageCircle },
+            ].map((tool, index) => (
+              <motion.div
+                key={tool.name}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+                className="flex flex-col items-center gap-2"
+              >
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-white/20 transition-all">
+                  <tool.Icon className="w-7 h-7 md:w-9 md:h-9 text-white/60" />
+                </div>
+                <span className="text-xs text-muted-foreground">{tool.name}</span>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
