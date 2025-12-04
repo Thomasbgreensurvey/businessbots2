@@ -1,281 +1,230 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Sparkles, Check } from "lucide-react";
-import { Agent, GlowColor } from "@/data/agents";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { Agent, GlowColor, agents } from "@/data/agents";
 
 interface AgentProfileProps {
   agent: Agent;
   onBack: () => void;
 }
 
-const glowClasses: Record<GlowColor, string> = {
-  emerald: "bg-glow-emerald",
-  rose: "bg-glow-rose",
-  indigo: "bg-glow-indigo",
-  cyan: "bg-glow-cyan",
-  amber: "bg-glow-amber",
-  orange: "bg-glow-orange",
-  teal: "bg-glow-teal",
-  fuchsia: "bg-glow-fuchsia",
-};
-
-const accentTextClasses: Record<GlowColor, string> = {
-  emerald: "text-glow-emerald",
-  rose: "text-glow-rose",
-  indigo: "text-glow-indigo",
-  cyan: "text-glow-cyan",
-  amber: "text-glow-amber",
-  orange: "text-glow-orange",
-  teal: "text-glow-teal",
-  fuchsia: "text-glow-fuchsia",
-};
-
-const accentBgClasses: Record<GlowColor, string> = {
-  emerald: "bg-glow-emerald/20",
-  rose: "bg-glow-rose/20",
-  indigo: "bg-glow-indigo/20",
-  cyan: "bg-glow-cyan/20",
-  amber: "bg-glow-amber/20",
-  orange: "bg-glow-orange/20",
-  teal: "bg-glow-teal/20",
-  fuchsia: "bg-glow-fuchsia/20",
-};
-
 export const AgentProfile = ({ agent, onBack }: AgentProfileProps) => {
-  const isMobile = useIsMobile();
-
-  if (isMobile) {
-    return <MobileProfile agent={agent} onBack={onBack} />;
-  }
-
-  return <DesktopProfile agent={agent} onBack={onBack} />;
-};
-
-const DesktopProfile = ({ agent, onBack }: AgentProfileProps) => {
   return (
-    <div className="h-screen w-full flex overflow-hidden bg-deep-space noise-overlay">
-      {/* Left Side - Character Display */}
-      <div className="w-1/2 h-full relative flex items-center justify-center">
-        {/* Glow Background */}
-        <div 
-          className={`
-            absolute inset-0 
-            ${glowClasses[agent.glowColor]}
-            animate-pulse-glow
-          `}
-        />
-        
-        {/* Agent Image */}
-        <motion.img
-          initial={{ scale: 0.85, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          src={agent.image}
-          alt={agent.name}
-          className="relative z-10 h-[85%] w-auto object-contain animate-float"
-        />
-      </div>
-
-      {/* Right Side - Content */}
-      <div className="w-1/2 h-full overflow-y-auto scrollbar-hide relative z-10">
-        <div className="min-h-full p-12 lg:p-16 flex flex-col">
-          {/* Back Button */}
+    <div 
+      className="min-h-screen w-full overflow-y-auto"
+      style={{
+        background: getAgentGradient(agent.glowColor),
+      }}
+    >
+      {/* Fixed Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          {/* Back / Agent Info */}
           <motion.button
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
             onClick={onBack}
-            whileTap={{ scale: 0.95 }}
-            className="
-              flex items-center gap-2 text-muted-foreground hover:text-foreground
-              transition-colors duration-200 self-start mb-12
-            "
+            className="flex items-center gap-3 text-white hover:opacity-80 transition-opacity"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-medium">Back</span>
+            <div className="text-left">
+              <span className="font-bold">{agent.name}</span>
+              <span className="text-white/60 ml-2 text-sm">({agent.shortRole})</span>
+            </div>
           </motion.button>
 
-          {/* Agent Info */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="flex-1"
+          {/* CTA */}
+          <motion.button
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="btn-outline flex items-center gap-2"
           >
-            {/* Role Badge */}
-            <div className={`
-              inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6
-              bg-white/[0.05] backdrop-blur-sm border border-white/10
-            `}>
-              <Sparkles className={`w-4 h-4 ${accentTextClasses[agent.glowColor]}`} />
-              <span className={`text-sm font-semibold ${accentTextClasses[agent.glowColor]}`}>
-                {agent.role}
-              </span>
-            </div>
-
-            {/* Name */}
-            <h1 className="heading-lg mb-6">
-              {agent.name}
-            </h1>
-
-            {/* Description */}
-            <p className="text-xl text-muted-foreground leading-relaxed mb-12 max-w-lg font-medium">
-              {agent.description}
-            </p>
-
-            {/* Capabilities */}
-            <div className="space-y-4 mb-12">
-              <h3 className="heading-md text-lg mb-4">
-                Capabilities
-              </h3>
-              <ul className="space-y-3">
-                {agent.capabilities.map((capability, index) => (
-                  <motion.li
-                    key={capability}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 + index * 0.1 }}
-                    className="flex items-center gap-3 text-muted-foreground font-medium"
-                  >
-                    <div className={`
-                      w-6 h-6 rounded-full flex items-center justify-center
-                      ${accentBgClasses[agent.glowColor]}
-                    `}>
-                      <Check className={`w-3.5 h-3.5 ${accentTextClasses[agent.glowColor]}`} />
-                    </div>
-                    <span>{capability}</span>
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-
-            {/* CTA Button */}
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="
-                px-8 py-4 rounded-2xl font-bold text-lg text-white
-                btn-gradient
-              "
-            >
-              Hire {agent.name}
-            </motion.button>
-          </motion.div>
+            Hire now
+            <ArrowRight className="w-4 h-4" />
+          </motion.button>
         </div>
-      </div>
-    </div>
-  );
-};
+      </header>
 
-const MobileProfile = ({ agent, onBack }: AgentProfileProps) => {
-  return (
-    <div className="min-h-screen w-full bg-deep-space noise-overlay flex flex-col">
-      {/* Top - Character Display */}
-      <div className="relative h-[45vh] flex items-center justify-center overflow-hidden">
-        {/* Glow Background */}
-        <div 
-          className={`
-            absolute inset-0 
-            ${glowClasses[agent.glowColor]}
-            animate-pulse-glow
-          `}
-        />
-        
-        {/* Back Button */}
-        <motion.button
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          onClick={onBack}
-          whileTap={{ scale: 0.9 }}
-          className="
-            absolute top-6 left-6 z-20
-            w-10 h-10 rounded-full
-            bg-white/10 backdrop-blur-md border border-white/20
-            flex items-center justify-center
-            text-foreground/90 hover:text-foreground
-            transition-colors duration-200
-          "
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center pt-20 pb-12 px-6 overflow-hidden">
+        {/* Watermark Name */}
+        <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
+          <motion.span 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            className="text-watermark whitespace-nowrap"
+          >
+            {agent.name}
+          </motion.span>
+        </div>
+
+        {/* Title */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-center z-20 mb-8"
         >
-          <ArrowLeft className="w-5 h-5" />
-        </motion.button>
+          <h1 className="heading-hero max-w-3xl">
+            Your AI {agent.shortRole}: The Future of {getDomain(agent.shortRole)}
+          </h1>
+        </motion.div>
 
         {/* Agent Image */}
-        <motion.img
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          src={agent.image}
-          alt={agent.name}
-          className="relative z-10 h-full w-auto object-contain"
-        />
-      </div>
+        <motion.div
+          initial={{ opacity: 0, y: 50, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="relative z-10 flex-1 flex items-end justify-center w-full max-w-3xl"
+        >
+          <img
+            src={agent.image}
+            alt={agent.name}
+            className="w-full h-auto object-contain max-h-[55vh]"
+          />
+        </motion.div>
+      </section>
 
-      {/* Bottom Sheet - Content */}
-      <motion.div
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2, type: "spring", damping: 25, stiffness: 300 }}
-        className="
-          flex-1 rounded-t-[2rem] -mt-8 relative z-20 px-6 pt-6 pb-12
-          bg-white/[0.03] backdrop-blur-xl border-t border-white/10
-        "
-      >
-        {/* Drag Handle */}
-        <div className="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-6" />
+      {/* Details Section */}
+      <section className="bg-background py-16 md:py-24">
+        <div className="max-w-4xl mx-auto px-6 md:px-10">
+          {/* Description */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-16"
+          >
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
+              Meet {agent.name}
+            </h2>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              {agent.description}
+            </p>
+          </motion.div>
 
-        {/* Role Badge */}
-        <div className="
-          inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4
-          bg-white/[0.05] backdrop-blur-sm border border-white/10
-        ">
-          <Sparkles className={`w-3.5 h-3.5 ${accentTextClasses[agent.glowColor]}`} />
-          <span className={`text-xs font-semibold ${accentTextClasses[agent.glowColor]}`}>
-            {agent.role}
-          </span>
+          {/* Capabilities */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-16"
+          >
+            <h3 className="text-xl font-bold text-foreground mb-6">
+              What {agent.name} can do for you
+            </h3>
+            <ul className="grid gap-4">
+              {agent.capabilities.map((capability, index) => (
+                <motion.li
+                  key={capability}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex items-start gap-4"
+                >
+                  <div 
+                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ background: getAgentGradient(agent.glowColor) }}
+                  >
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-foreground pt-1">{capability}</span>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-col sm:flex-row gap-4"
+          >
+            <button 
+              className="px-8 py-4 rounded-full font-bold text-white text-lg"
+              style={{ background: getAgentGradient(agent.glowColor) }}
+            >
+              Hire {agent.name} Now
+            </button>
+            <button className="px-8 py-4 rounded-full font-semibold text-foreground border border-border hover:bg-secondary transition-colors">
+              Learn More
+            </button>
+          </motion.div>
         </div>
+      </section>
 
-        {/* Name */}
-        <h1 className="text-4xl font-extrabold text-foreground mb-4 tracking-tight">
-          {agent.name}
-        </h1>
-
-        {/* Description */}
-        <p className="text-base text-muted-foreground leading-relaxed mb-8 font-medium">
-          {agent.description}
-        </p>
-
-        {/* Capabilities */}
-        <div className="space-y-3 mb-8">
-          <h3 className="text-sm font-bold text-foreground mb-3 tracking-tight">
-            Capabilities
-          </h3>
-          <ul className="space-y-2.5">
-            {agent.capabilities.map((capability) => (
-              <li
-                key={capability}
-                className="flex items-center gap-2.5 text-sm text-muted-foreground font-medium"
-              >
-                <div className={`
-                  w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0
-                  ${accentBgClasses[agent.glowColor]}
-                `}>
-                  <Check className={`w-3 h-3 ${accentTextClasses[agent.glowColor]}`} />
-                </div>
-                <span>{capability}</span>
-              </li>
-            ))}
-          </ul>
+      {/* Other Agents */}
+      <section className="bg-secondary/30 py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
+          <motion.h3
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-2xl font-bold text-foreground mb-8"
+          >
+            Meet Other Team Members
+          </motion.h3>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {agents
+              .filter(a => a.id !== agent.id)
+              .slice(0, 4)
+              .map((otherAgent, index) => (
+                <motion.div
+                  key={otherAgent.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="rounded-xl overflow-hidden aspect-square relative cursor-pointer group"
+                  style={{ background: getAgentGradient(otherAgent.glowColor) }}
+                  onClick={() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                >
+                  <img
+                    src={otherAgent.image}
+                    alt={otherAgent.name}
+                    className="w-full h-full object-contain object-bottom group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
+                    <p className="text-white font-semibold text-sm">{otherAgent.name}</p>
+                  </div>
+                </motion.div>
+              ))}
+          </div>
         </div>
-
-        {/* CTA Button */}
-        <button className="
-          w-full px-6 py-4 rounded-2xl font-bold text-white
-          btn-gradient
-        ">
-          Hire {agent.name}
-        </button>
-      </motion.div>
+      </section>
     </div>
   );
 };
+
+function getAgentGradient(color: GlowColor): string {
+  const gradients: Record<string, string> = {
+    emerald: 'linear-gradient(145deg, hsl(145 55% 35%) 0%, hsl(155 50% 22%) 100%)',
+    rose: 'linear-gradient(145deg, hsl(340 65% 50%) 0%, hsl(350 60% 32%) 100%)',
+    indigo: 'linear-gradient(145deg, hsl(250 55% 45%) 0%, hsl(260 50% 28%) 100%)',
+    cyan: 'linear-gradient(145deg, hsl(190 65% 45%) 0%, hsl(200 60% 28%) 100%)',
+    amber: 'linear-gradient(145deg, hsl(38 85% 50%) 0%, hsl(30 80% 35%) 100%)',
+    orange: 'linear-gradient(145deg, hsl(25 90% 50%) 0%, hsl(15 85% 35%) 100%)',
+    teal: 'linear-gradient(145deg, hsl(175 65% 40%) 0%, hsl(185 60% 25%) 100%)',
+    fuchsia: 'linear-gradient(145deg, hsl(295 60% 50%) 0%, hsl(305 55% 32%) 100%)',
+  };
+  return gradients[color] || gradients.indigo;
+}
+
+function getDomain(role: string): string {
+  const domains: Record<string, string> = {
+    'Email Marketing': 'Email Marketing',
+    'HR': 'Human Resources',
+    'Social Media': 'Social Media',
+    'Support': 'Customer Support',
+    'Lead Gen': 'Lead Generation',
+    'Outbound Sales': 'Sales',
+    'Inbound Sales': 'Sales',
+    'Recruitment': 'Recruitment',
+  };
+  return domains[role] || 'Business';
+}
