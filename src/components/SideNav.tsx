@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { agents, Agent } from "@/data/agents";
 import logo from "@/assets/logo.png";
 
@@ -10,7 +11,22 @@ interface SideNavProps {
   selectedAgentId?: string;
 }
 
+const resourceLinks = [
+  { label: "Blog", path: "/blog" },
+  { label: "Case studies", path: "/case-studies" },
+  { label: "FAQ", path: "/faq" },
+  { label: "Help center", path: "/help" },
+  { label: "What is an AI Helper", path: "/what-is-ai-helper" },
+];
+
 export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: SideNavProps) => {
+  const navigate = useNavigate();
+
+  const handleResourceClick = (path: string) => {
+    navigate(path);
+    onClose();
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -48,11 +64,8 @@ export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: Sid
 
             {/* Content */}
             <div className="flex-1 overflow-y-auto py-6 px-5">
-              {/* Section Label */}
-              <p className="text-white/50 text-sm font-medium mb-4 px-1">Products</p>
-
               {/* Full Team Card */}
-              <div className="bg-white/[0.06] rounded-2xl p-4 mb-2">
+              <div className="bg-white/[0.06] rounded-2xl p-4 mb-8">
                 {/* Card Header */}
                 <div className="text-center mb-5">
                   <h3 className="text-white font-semibold text-base">Full Team</h3>
@@ -71,6 +84,24 @@ export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: Sid
                         onClose();
                       }}
                     />
+                  ))}
+                </div>
+              </div>
+
+              {/* Resources Section */}
+              <div>
+                <p className="text-white/50 text-sm font-medium mb-4 px-1">Resources</p>
+                <div className="space-y-1">
+                  {resourceLinks.map((link) => (
+                    <motion.button
+                      key={link.path}
+                      whileHover={{ x: 4 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleResourceClick(link.path)}
+                      className="w-full text-left py-3 px-1 text-white text-2xl font-bold hover:text-primary transition-colors"
+                    >
+                      {link.label}
+                    </motion.button>
                   ))}
                 </div>
               </div>
