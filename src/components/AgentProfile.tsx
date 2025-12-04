@@ -1,13 +1,14 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Menu } from "lucide-react";
 import { Agent, GlowColor, agents } from "@/data/agents";
 
 interface AgentProfileProps {
   agent: Agent;
   onBack: () => void;
+  onOpenNav?: () => void;
 }
 
-export const AgentProfile = ({ agent, onBack }: AgentProfileProps) => {
+export const AgentProfile = ({ agent, onBack, onOpenNav }: AgentProfileProps) => {
   return (
     <div 
       className="min-h-screen w-full overflow-y-auto"
@@ -18,19 +19,31 @@ export const AgentProfile = ({ agent, onBack }: AgentProfileProps) => {
       {/* Fixed Header */}
       <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
-          {/* Back / Agent Info */}
-          <motion.button
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            onClick={onBack}
-            className="flex items-center gap-3 text-white hover:opacity-80 transition-opacity"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <div className="text-left">
-              <span className="font-bold">{agent.name}</span>
-              <span className="text-white/60 ml-2 text-sm">({agent.shortRole})</span>
-            </div>
-          </motion.button>
+          {/* Menu Button + Back / Agent Info */}
+          <div className="flex items-center gap-3">
+            {onOpenNav && (
+              <motion.button
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                onClick={onOpenNav}
+                className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-colors"
+              >
+                <Menu className="w-5 h-5 text-white" />
+              </motion.button>
+            )}
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              onClick={onBack}
+              className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <div className="text-left">
+                <span className="font-bold">{agent.name}</span>
+                <span className="text-white/60 ml-2 text-sm hidden sm:inline">({agent.shortRole})</span>
+              </div>
+            </motion.button>
+          </div>
 
           {/* CTA */}
           <motion.button

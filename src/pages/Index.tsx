@@ -2,13 +2,23 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { agents, Agent } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
-import { Zap, ArrowRight } from "lucide-react";
+import { SideNav } from "@/components/SideNav";
+import { Zap, ArrowRight, Menu } from "lucide-react";
 
 const Index = () => {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background overflow-hidden">
+      {/* Side Navigation */}
+      <SideNav
+        isOpen={isNavOpen}
+        onClose={() => setIsNavOpen(false)}
+        onSelectAgent={setSelectedAgent}
+        selectedAgentId={selectedAgent?.id}
+      />
+
       <AnimatePresence mode="wait">
         {selectedAgent ? (
           <motion.div
@@ -17,11 +27,12 @@ const Index = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50"
+            className="fixed inset-0 z-40"
           >
             <AgentProfile
               agent={selectedAgent}
               onBack={() => setSelectedAgent(null)}
+              onOpenNav={() => setIsNavOpen(true)}
             />
           </motion.div>
         ) : (
@@ -32,7 +43,7 @@ const Index = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <HomePage onSelectAgent={setSelectedAgent} />
+            <HomePage onSelectAgent={setSelectedAgent} onOpenNav={() => setIsNavOpen(true)} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -42,9 +53,10 @@ const Index = () => {
 
 interface HomePageProps {
   onSelectAgent: (agent: Agent) => void;
+  onOpenNav: () => void;
 }
 
-const HomePage = ({ onSelectAgent }: HomePageProps) => {
+const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const featuredAgent = agents[featuredIndex];
 
@@ -58,9 +70,12 @@ const HomePage = ({ onSelectAgent }: HomePageProps) => {
       >
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white" />
-            </div>
+            <button
+              onClick={onOpenNav}
+              className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-colors"
+            >
+              <Menu className="w-5 h-5 text-white" />
+            </button>
             <span className="text-lg font-bold text-white">AI Workforce</span>
           </div>
           <button className="btn-primary flex items-center gap-2">
