@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Search, Book, MessageCircle, Video, FileText, ChevronRight, Mail, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { SEOHead } from "@/components/SEOHead";
 
 const categories = [
   {
@@ -74,15 +73,8 @@ const HelpCentre = () => {
   };
 
   return (
-    <>
-      <SEOHead
-        title="Help Centre - AI Employee Support & Guides"
-        description="Get help with Business Bots UK AI employees. Find tutorials, integration guides, and support for setting up your AI automation."
-        keywords="AI help centre, chatbot support UK, AI employee tutorials, business automation help"
-        canonicalUrl="https://businessbotsuk.com/help-centre"
-      />
-      <div className="min-h-screen bg-white">
-        {/* Header */}
+    <div className="min-h-screen bg-white">
+      {/* Header */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
@@ -204,8 +196,7 @@ const HelpCentre = () => {
           </div>
         </div>
       </section>
-      </div>
-    </>
+    </div>
   );
 };
 
