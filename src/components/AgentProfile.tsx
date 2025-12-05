@@ -96,18 +96,17 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
           </h1>
         </motion.div>
 
-        {/* Agent Name Badge */}
+        {/* Agent Name - Large, Centered, Handwriting Style */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="z-20 mb-2"
+          className="z-20 mb-0 text-center"
         >
           <h2 
-            className="text-5xl md:text-7xl"
+            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-normal text-white/90"
             style={{ 
-              fontFamily: "'Brush Script MT', 'Segoe Script', cursive",
-              color: getAgentAccentColor(agent.glowColor),
+              fontFamily: "'Dancing Script', 'Pacifico', cursive",
             }}
           >
             {agent.name}
