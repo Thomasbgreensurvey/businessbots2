@@ -11,6 +11,7 @@ import FAQ from "./pages/FAQ";
 import HelpCentre from "./pages/HelpCentre";
 import ArticleDetail from "./pages/ArticleDetail";
 import WhatIsAIEmployee from "./pages/WhatIsAIEmployee";
+import Pricing from "./pages/Pricing";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/help-centre" element={<HelpCentre />} />
           <Route path="/help-centre/article/:slug" element={<ArticleDetail />} />
           <Route path="/what-is-ai-employee" element={<WhatIsAIEmployee />} />
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

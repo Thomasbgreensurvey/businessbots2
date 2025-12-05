@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, FileText, Briefcase, HelpCircle, LifeBuoy, Bot } from "lucide-react";
+import { X, FileText, Briefcase, HelpCircle, LifeBuoy, Bot, CreditCard } from "lucide-react";
 import { agents, Agent } from "@/data/agents";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
@@ -14,6 +14,7 @@ interface SideNavProps {
 const resourceLinks = [
   { icon: FileText, label: "Blog", path: "/blog" },
   { icon: Briefcase, label: "Case Studies", path: "/case-studies" },
+  { icon: CreditCard, label: "Pricing", path: "/pricing" },
   { icon: HelpCircle, label: "FAQ", path: "/faq" },
   { icon: LifeBuoy, label: "Help Centre", path: "/help-centre" },
   { icon: Bot, label: "What is an AI Employee?", path: "/what-is-ai-employee" },
