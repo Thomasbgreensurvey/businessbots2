@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Check, X, Users, Zap, Globe, Clock, Brain, MessageCircle, Shield, Sparkles, Building2, Star, Quote } from "lucide-react";
+import { toast } from "sonner";
 import { agents, GlowColor } from "@/data/agents";
 import logo from "@/assets/logo.png";
 
@@ -149,14 +150,17 @@ const Pricing = () => {
             🔥 <span className="text-amber-400 font-bold">Limited Time</span> — 14-day free trial
           </p>
           <UrgencyTimer />
-          <button className="bg-amber-500 hover:bg-amber-400 text-black font-bold text-sm px-4 py-2 rounded-full transition-colors">
+          <button 
+            onClick={() => document.getElementById('pricing-cards')?.scrollIntoView({ behavior: 'smooth' })}
+            className="bg-amber-500 hover:bg-amber-400 text-black font-bold text-sm px-4 py-2 rounded-full transition-colors"
+          >
             Claim 60% OFF
           </button>
         </div>
       </div>
 
       {/* Hero Section */}
-      <section className="pt-48 pb-8 px-6 md:px-10 relative overflow-hidden">
+      <section className="pt-64 sm:pt-48 pb-8 px-6 md:px-10 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-background to-background pointer-events-none" />
         
         <div className="max-w-6xl mx-auto relative z-10">
@@ -186,7 +190,7 @@ const Pricing = () => {
           </motion.div>
 
           {/* Pricing Cards */}
-          <div className="grid md:grid-cols-4 gap-5 mb-12">
+          <div id="pricing-cards" className="grid md:grid-cols-4 gap-5 mb-12">
             {pricingPlans.map((plan, index) => (
               <motion.div
                 key={plan.id}
@@ -236,7 +240,14 @@ const Pricing = () => {
                     ))}
                   </ul>
 
-                  <button className="w-full py-3 rounded-xl font-semibold text-sm bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm transition-all border border-white/20">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedPlan(plan.id);
+                      toast.success(`${plan.name} plan selected!`, { description: "Checkout coming soon. Start your 14-day free trial." });
+                    }}
+                    className="w-full py-3 rounded-xl font-semibold text-sm bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm transition-all border border-white/20"
+                  >
                     {selectedPlan === plan.id ? "Get Started" : "Select Plan"}
                   </button>
                 </div>
@@ -280,7 +291,10 @@ const Pricing = () => {
                   ))}
                 </ul>
 
-                <button className="w-full py-3 rounded-xl font-semibold text-sm bg-black hover:bg-black/80 text-white transition-all">
+                <button 
+                  onClick={() => window.location.href = 'mailto:sales@businessbotsuk.com?subject=Enterprise%20Plan%20Inquiry'}
+                  className="w-full py-3 rounded-xl font-semibold text-sm bg-black hover:bg-black/80 text-white transition-all"
+                >
                   Contact Sales
                 </button>
               </div>

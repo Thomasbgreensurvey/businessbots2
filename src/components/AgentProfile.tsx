@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Check, Menu, Sparkles, Lightbulb } from "lucide-react";
 import { Agent, GlowColor, agents } from "@/data/agents";
+import { toast } from "sonner";
 
 interface AgentProfileProps {
   agent: Agent;
@@ -10,6 +12,13 @@ interface AgentProfileProps {
 }
 
 export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentProfileProps) => {
+  const navigate = useNavigate();
+
+  const handleHireClick = () => {
+    navigate('/pricing');
+    toast.success(`Let's get ${agent.name} working for you!`, { description: "Choose a plan to get started." });
+  };
+
   return (
     <div 
       className="min-h-screen w-full"
@@ -48,6 +57,7 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
           <motion.button
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
+            onClick={handleHireClick}
             className="px-4 md:px-6 py-2 md:py-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium hover:bg-white/20 transition-colors flex items-center gap-2"
           >
             Buy now
@@ -227,7 +237,7 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
       </section>
 
       {/* Capabilities Section */}
-      <section className="bg-secondary/20 py-12 md:py-20">
+      <section id="capabilities-section" className="bg-secondary/20 py-12 md:py-20">
         <div className="max-w-4xl mx-auto px-4 md:px-10">
           <motion.h3
             initial={{ opacity: 0, y: 20 }}
@@ -266,12 +276,16 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
             className="flex flex-col sm:flex-row gap-4 mt-10"
           >
             <button 
+              onClick={handleHireClick}
               className="px-8 py-4 rounded-full font-bold text-white text-lg"
               style={{ background: getAgentGradient(agent.glowColor) }}
             >
               Hire {agent.name} Now
             </button>
-            <button className="px-8 py-4 rounded-full font-semibold text-foreground border border-border hover:bg-secondary transition-colors">
+            <button 
+              onClick={() => document.getElementById('capabilities-section')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-8 py-4 rounded-full font-semibold text-foreground border border-border hover:bg-secondary transition-colors"
+            >
               Learn More
             </button>
           </motion.div>
