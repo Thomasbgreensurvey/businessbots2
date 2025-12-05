@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { agents, Agent } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
 import { SideNav } from "@/components/SideNav";
-import { AgentImage } from "@/components/AgentImage";
 import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import logo from "@/assets/logo.png";
@@ -192,11 +191,10 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="absolute right-0 bottom-0 z-10 w-[60%] md:w-[50%] lg:w-[45%] h-full flex items-end justify-center pointer-events-none"
         >
-          <AgentImage
+          <img
             src={featuredAgent.image}
             alt={featuredAgent.name}
             className="w-full h-auto object-contain max-h-[85vh] cursor-pointer drop-shadow-2xl pointer-events-auto"
-            priority={true}
             onClick={() => onSelectAgent(featuredAgent)}
           />
         </motion.div>
@@ -599,7 +597,7 @@ const AgentThumbnail = ({ agent, index, isActive, onHover, onClick }: AgentThumb
     >
       {/* Agent Image */}
       <div className="absolute inset-0 flex items-end justify-center">
-        <AgentImage
+        <img
           src={agent.image}
           alt={agent.name}
           className="w-full h-auto object-contain transform group-hover:scale-105 transition-transform duration-500"
@@ -700,7 +698,7 @@ const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
               className="relative aspect-[3/4] md:aspect-[4/3] cursor-pointer"
               onClick={() => onSelectAgent(currentAgent)}
             >
-              <AgentImage
+              <img
                 src={currentAgent.image}
                 alt={currentAgent.name}
                 className="w-full h-full object-contain object-bottom"

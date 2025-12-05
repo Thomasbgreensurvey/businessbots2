@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { Agent, GlowColor } from "@/data/agents";
-import { AgentImage } from "@/components/AgentImage";
 
 interface AgentCardProps {
   agent: Agent;
@@ -37,7 +36,7 @@ export const AgentCard = ({ agent, onClick, index }: AgentCardProps) => {
       >
         {/* Agent Image */}
         <div className="absolute inset-0 flex items-end justify-center">
-          <AgentImage
+          <img
             src={agent.image}
             alt={agent.name}
             className="w-full h-auto object-contain transform group-hover:scale-105 transition-transform duration-500"
