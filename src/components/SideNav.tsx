@@ -110,6 +110,17 @@ export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: Sid
                   </motion.button>
                 ))}
               </div>
+
+              {/* Support Email */}
+              <a
+                href="mailto:support@businessbotsuk.com"
+                className="mt-6 flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-colors bg-transparent hover:bg-white/[0.06]"
+              >
+                <div className="w-10 h-10 rounded-full bg-white/[0.08] flex items-center justify-center flex-shrink-0">
+                  <span className="text-white/70 text-lg">✉</span>
+                </div>
+                <span className="text-white/80 font-medium text-[15px]">support@businessbotsuk.com</span>
+              </a>
             </div>
 
             {/* Footer */}

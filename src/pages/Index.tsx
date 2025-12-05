@@ -9,6 +9,9 @@ import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 import integrationsImg from "@/assets/integrations.jpeg";
 import robotFigurine from "@/assets/robot-figurine.png";
+import robotHighfive from "@/assets/robot-highfive.jpeg";
+import phoneApp from "@/assets/phone-app.jpeg";
+import phoneIntegrations from "@/assets/phone-integrations.jpeg";
 
 const Index = () => {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
@@ -418,8 +421,71 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
         </div>
       </section>
 
-      {/* Integrations Section */}
+      {/* Visual Gallery Section - App Screenshots */}
       <section className="bg-background py-16 md:py-32 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-4 md:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12 md:mb-16"
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-4 md:mb-6">
+              Meet your new<br />
+              <span className="text-muted-foreground">AI co-workers.</span>
+            </h2>
+            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto px-4">
+              Friendly, capable, and always ready to help grow your business.
+            </p>
+          </motion.div>
+
+          {/* Image Gallery */}
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0 }}
+              className="rounded-3xl overflow-hidden"
+            >
+              <img 
+                src={robotHighfive} 
+                alt="AI Bot giving a high five" 
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="rounded-3xl overflow-hidden"
+            >
+              <img 
+                src={phoneApp} 
+                alt="Business Bots UK mobile app" 
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="rounded-3xl overflow-hidden"
+            >
+              <img 
+                src={phoneIntegrations} 
+                alt="Business Bots UK integrations" 
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Integrations Section */}
+      <section className="bg-background py-16 md:py-32">
         <div className="max-w-7xl mx-auto px-4 md:px-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -499,6 +565,12 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
         <div className="max-w-7xl mx-auto px-6 md:px-10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <img src={logo} alt="Business Bots UK" className="h-8 w-auto" />
+            <a 
+              href="mailto:support@businessbotsuk.com" 
+              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+            >
+              support@businessbotsuk.com
+            </a>
             <p className="text-muted-foreground text-sm">
               © {new Date().getFullYear()} Business Bots UK. All rights reserved.
             </p>
