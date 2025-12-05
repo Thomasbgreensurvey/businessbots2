@@ -189,12 +189,12 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
           initial={{ opacity: 0, x: 50, scale: 0.95 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="absolute right-0 bottom-0 z-10 w-[60%] md:w-[50%] lg:w-[45%] h-full flex items-end justify-center pointer-events-none"
+          className="absolute right-[-5%] sm:right-0 bottom-[10%] sm:bottom-0 z-10 w-[75%] sm:w-[60%] md:w-[50%] lg:w-[45%] pointer-events-none"
         >
           <img
             src={featuredAgent.image}
             alt={featuredAgent.name}
-            className="w-full h-auto object-contain max-h-[85vh] cursor-pointer drop-shadow-2xl pointer-events-auto"
+            className="w-full h-auto object-contain max-h-[60vh] sm:max-h-[75vh] md:max-h-[85vh] cursor-pointer drop-shadow-2xl pointer-events-auto"
             onClick={() => onSelectAgent(featuredAgent)}
             loading="eager"
             fetchPriority="high"
