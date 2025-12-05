@@ -222,7 +222,7 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
       </motion.section>
 
       {/* Agent Roster Section */}
-      <section className="bg-background py-16 md:py-24 relative">
+      <section className="bg-black py-16 md:py-24 relative">
         <div className="max-w-7xl mx-auto px-6 md:px-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -230,10 +230,10 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             viewport={{ once: true }}
             className="mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               Meet Your AI Team
             </h2>
-            <p className="text-muted-foreground text-lg max-w-xl">
+            <p className="text-white/60 text-lg max-w-xl">
               8 specialized AI agents ready to automate your business operations 24/7.
             </p>
           </motion.div>
@@ -258,7 +258,7 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
       <AgentCarousel agents={agents} onSelectAgent={onSelectAgent} />
 
       {/* Automation Section */}
-      <section className="bg-background py-16 md:py-32 relative overflow-hidden">
+      <section className="bg-black py-16 md:py-32 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 md:px-10 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -266,11 +266,11 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             viewport={{ once: true }}
             className="text-center mb-12 md:mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-4 md:mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 md:mb-6">
               Automates work.<br />
-              <span className="text-muted-foreground">Even while you sleep.</span>
+              <span className="text-white/60">Even while you sleep.</span>
             </h2>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto px-4">
+            <p className="text-white/60 text-base md:text-lg max-w-2xl mx-auto px-4">
               Automate tasks with intelligent AI tools—create social media posts, respond to customers, manage emails, and more.
             </p>
           </motion.div>
@@ -320,8 +320,26 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
         </div>
       </section>
 
+      {/* Image Break 1 - Robot Highfive */}
+      <section className="bg-black py-16 md:py-24">
+        <div className="max-w-4xl mx-auto px-4 md:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-3xl overflow-hidden"
+          >
+            <img 
+              src={robotHighfive} 
+              alt="AI Bot giving a high five" 
+              className="w-full h-auto object-cover"
+            />
+          </motion.div>
+        </div>
+      </section>
+
       {/* Features Section */}
-      <section className="bg-background py-16 md:py-32">
+      <section className="bg-black py-16 md:py-32">
         <div className="max-w-7xl mx-auto px-4 md:px-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -329,9 +347,9 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             viewport={{ once: true }}
             className="text-center mb-12 md:mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-4 md:mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 md:mb-6">
               A co-worker who's<br />
-              <span className="text-muted-foreground">always on the clock.</span>
+              <span className="text-white/60">always on the clock.</span>
             </h2>
           </motion.div>
 
@@ -369,8 +387,26 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
         </div>
       </section>
 
+      {/* Image Break 2 - Phone App */}
+      <section className="bg-black py-16 md:py-24">
+        <div className="max-w-4xl mx-auto px-4 md:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-3xl overflow-hidden"
+          >
+            <img 
+              src={phoneApp} 
+              alt="Business Bots UK mobile app" 
+              className="w-full h-auto object-cover"
+            />
+          </motion.div>
+        </div>
+      </section>
+
       {/* Learning Section */}
-      <section className="bg-background py-16 md:py-32 relative overflow-hidden">
+      <section className="bg-black py-16 md:py-32 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 md:px-10 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -378,11 +414,11 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             viewport={{ once: true }}
             className="text-center mb-12 md:mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-4 md:mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 md:mb-6">
               They learn your business.<br />
-              <span className="text-muted-foreground">Just like real employees.</span>
+              <span className="text-white/60">Just like real employees.</span>
             </h2>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto px-4">
+            <p className="text-white/60 text-base md:text-lg max-w-2xl mx-auto px-4">
               Add files, instructions, and your website for more unique results. The more information they have, the better the outcome.
             </p>
           </motion.div>
@@ -421,71 +457,26 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
         </div>
       </section>
 
-      {/* Visual Gallery Section - App Screenshots */}
-      <section className="bg-background py-16 md:py-32 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4 md:px-10">
+      {/* Image Break 3 - Phone Integrations */}
+      <section className="bg-black py-16 md:py-24">
+        <div className="max-w-4xl mx-auto px-4 md:px-10">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12 md:mb-16"
+            className="rounded-3xl overflow-hidden"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-4 md:mb-6">
-              Meet your new<br />
-              <span className="text-muted-foreground">AI co-workers.</span>
-            </h2>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto px-4">
-              Friendly, capable, and always ready to help grow your business.
-            </p>
+            <img 
+              src={phoneIntegrations} 
+              alt="Business Bots UK integrations" 
+              className="w-full h-auto object-cover"
+            />
           </motion.div>
-
-          {/* Image Gallery */}
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0 }}
-              className="rounded-3xl overflow-hidden"
-            >
-              <img 
-                src={robotHighfive} 
-                alt="AI Bot giving a high five" 
-                className="w-full h-full object-cover"
-              />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="rounded-3xl overflow-hidden"
-            >
-              <img 
-                src={phoneApp} 
-                alt="Business Bots UK mobile app" 
-                className="w-full h-full object-cover"
-              />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="rounded-3xl overflow-hidden"
-            >
-              <img 
-                src={phoneIntegrations} 
-                alt="Business Bots UK integrations" 
-                className="w-full h-full object-cover"
-              />
-            </motion.div>
-          </div>
         </div>
       </section>
 
       {/* Integrations Section */}
-      <section className="bg-background py-16 md:py-32">
+      <section className="bg-black py-16 md:py-32">
         <div className="max-w-7xl mx-auto px-4 md:px-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -493,11 +484,11 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             viewport={{ once: true }}
             className="text-center mb-12 md:mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-4 md:mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 md:mb-6">
               Integrates with your<br />
-              <span className="text-muted-foreground">favorite tools.</span>
+              <span className="text-white/60">favorite tools.</span>
             </h2>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto px-4">
+            <p className="text-white/60 text-base md:text-lg max-w-2xl mx-auto px-4">
               Streamline business processes by bringing your favorite tools, systems, and AI employees together.
             </p>
           </motion.div>
@@ -519,7 +510,7 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
       </section>
 
       {/* CTA Section with Robot Figurine */}
-      <section className="bg-background py-20 md:py-32 relative overflow-hidden">
+      <section className="bg-black py-20 md:py-32 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 md:px-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Text Content */}
@@ -529,10 +520,10 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
               viewport={{ once: true }}
               className="text-center md:text-left"
             >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-6">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6">
                 Ready to meet your new team?
               </h2>
-              <p className="text-muted-foreground text-lg mb-10 max-w-xl">
+              <p className="text-white/60 text-lg mb-10 max-w-xl">
                 Join thousands of businesses already scaling with AI employees. Start your journey today.
               </p>
               <button 
@@ -561,17 +552,17 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-background border-t border-white/10 py-12">
+      <footer className="bg-black border-t border-white/10 py-12">
         <div className="max-w-7xl mx-auto px-6 md:px-10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <img src={logo} alt="Business Bots UK" className="h-8 w-auto" />
             <a 
               href="mailto:support@businessbotsuk.com" 
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+              className="text-white/60 hover:text-white transition-colors text-sm"
             >
               support@businessbotsuk.com
             </a>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-white/60 text-sm">
               © {new Date().getFullYear()} Business Bots UK. All rights reserved.
             </p>
           </div>
@@ -601,7 +592,7 @@ const AgentThumbnail = ({ agent, index, isActive, onHover, onClick }: AgentThumb
       className={`
         group relative rounded-2xl overflow-hidden aspect-[3/4]
         transition-all duration-300
-        ${isActive ? 'ring-2 ring-accent ring-offset-2 ring-offset-background scale-[1.02]' : ''}
+        ${isActive ? 'ring-2 ring-accent ring-offset-2 ring-offset-black scale-[1.02]' : ''}
       `}
       style={{
         background: getAgentGradient(agent.glowColor),
@@ -659,7 +650,7 @@ const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
 
   return (
     <section 
-      className="bg-background py-8 md:py-16"
+      className="bg-black py-8 md:py-16"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -670,7 +661,7 @@ const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
           viewport={{ once: true }}
           className="text-center mb-8"
         >
-          <h2 className="text-2xl md:text-4xl font-bold text-foreground">
+          <h2 className="text-2xl md:text-4xl font-bold text-white">
             Your AI Workforce
           </h2>
         </motion.div>
@@ -729,10 +720,10 @@ const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
             transition={{ duration: 0.3, delay: 0.1 }}
             className="mt-6 px-2"
           >
-            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+            <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
               {currentAgent.name}
             </h3>
-            <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
+            <p className="text-white/60 text-base md:text-lg leading-relaxed">
               {currentAgent.shortRole}. {currentAgent.description}
             </p>
           </motion.div>
@@ -745,8 +736,8 @@ const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
                 onClick={() => setCurrentIndex(index)}
                 className={`h-2 rounded-full transition-all duration-300 ${
                   currentIndex === index
-                    ? 'bg-accent w-6'
-                    : 'bg-muted-foreground/30 w-2 hover:bg-muted-foreground/50'
+                    ? 'bg-white w-6'
+                    : 'bg-white/30 w-2 hover:bg-white/50'
                 }`}
               />
             ))}
