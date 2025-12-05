@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { agents, Agent } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
 import { SideNav } from "@/components/SideNav";
-import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle, Mail, Calendar, MessageSquare, Camera, User, Briefcase, HardDrive, ChevronLeft, ChevronRight } from "lucide-react";
+import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import logo from "@/assets/logo.png";
+import integrationsImg from "@/assets/integrations.jpeg";
+import robotFigurine from "@/assets/robot-figurine.png";
 
 const Index = () => {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
@@ -411,62 +413,61 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             </p>
           </motion.div>
 
-          {/* Integration logos */}
+          {/* Integration logos - Using actual brand icons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex flex-wrap justify-center items-center gap-6 md:gap-10"
+            className="flex justify-center"
           >
-            {[
-              { name: "Gmail", Icon: Mail },
-              { name: "Calendar", Icon: Calendar },
-              { name: "Slack", Icon: MessageSquare },
-              { name: "Instagram", Icon: Camera },
-              { name: "Facebook", Icon: User },
-              { name: "LinkedIn", Icon: Briefcase },
-              { name: "Drive", Icon: HardDrive },
-              { name: "Messages", Icon: MessageCircle },
-            ].map((tool, index) => (
-              <motion.div
-                key={tool.name}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                className="flex flex-col items-center gap-2"
-              >
-                <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-white/20 transition-all">
-                  <tool.Icon className="w-7 h-7 md:w-9 md:h-9 text-white/60" />
-                </div>
-                <span className="text-xs text-muted-foreground">{tool.name}</span>
-              </motion.div>
-            ))}
+            <img 
+              src={integrationsImg} 
+              alt="Integrations with Facebook, Instagram, Gmail, Google Calendar, Outlook, Google Drive, Strava, and Notion" 
+              className="w-full max-w-3xl rounded-2xl"
+            />
           </motion.div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-background py-20 md:py-32">
-        <div className="max-w-4xl mx-auto px-6 md:px-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-6">
-              Ready to meet your new team?
-            </h2>
-            <p className="text-muted-foreground text-lg mb-10 max-w-xl mx-auto">
-              Join thousands of businesses already scaling with AI employees. Start your journey today.
-            </p>
-            <button 
-              onClick={() => onSelectAgent(agents[0])}
-              className="btn-primary text-lg px-10 py-5 shadow-lg shadow-accent/25"
+      {/* CTA Section with Robot Figurine */}
+      <section className="bg-background py-20 md:py-32 relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-6 md:px-10">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Text Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="text-center md:text-left"
             >
-              Get Started with Business Bots
-            </button>
-          </motion.div>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-6">
+                Ready to meet your new team?
+              </h2>
+              <p className="text-muted-foreground text-lg mb-10 max-w-xl">
+                Join thousands of businesses already scaling with AI employees. Start your journey today.
+              </p>
+              <button 
+                onClick={() => onSelectAgent(agents[0])}
+                className="btn-primary text-lg px-10 py-5 shadow-lg shadow-accent/25"
+              >
+                Get Started with Business Bots
+              </button>
+            </motion.div>
+
+            {/* Robot Figurine Image */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="flex justify-center"
+            >
+              <img 
+                src={robotFigurine} 
+                alt="AI Bot figurine - Your new team member" 
+                className="w-full max-w-md drop-shadow-2xl"
+              />
+            </motion.div>
+          </div>
         </div>
       </section>
 
