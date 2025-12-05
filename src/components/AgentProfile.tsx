@@ -101,9 +101,17 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="z-20 mb-4"
+          className="z-20 mb-2"
         >
-          <h2 className="text-xl md:text-2xl font-semibold text-white/90">{agent.name}</h2>
+          <h2 
+            className="text-5xl md:text-7xl"
+            style={{ 
+              fontFamily: "'Brush Script MT', 'Segoe Script', cursive",
+              color: getAgentAccentColor(agent.glowColor),
+            }}
+          >
+            {agent.name}
+          </h2>
         </motion.div>
 
         {/* Agent Image */}
