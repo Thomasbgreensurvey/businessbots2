@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { agents, Agent } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
 import { SideNav } from "@/components/SideNav";
 import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 import integrationsImg from "@/assets/integrations.jpeg";
 import robotFigurine from "@/assets/robot-figurine.png";
@@ -63,6 +65,7 @@ interface HomePageProps {
 const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const featuredAgent = agents[featuredIndex];
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -83,7 +86,13 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             <img src={logo} alt="Business Bots UK" className="h-10 w-auto" />
           </div>
           <div className="flex items-center gap-4">
-            <button className="hidden md:block text-white/80 hover:text-white transition-colors text-sm font-medium px-4 py-2">
+            <button 
+              onClick={() => {
+                navigate('/pricing');
+                toast.info("Login coming soon!", { description: "Check out our pricing plans." });
+              }}
+              className="hidden md:block text-white/80 hover:text-white transition-colors text-sm font-medium px-4 py-2"
+            >
               Log in
             </button>
             <span className="font-robotic text-white font-bold text-sm md:text-base tracking-wide">
