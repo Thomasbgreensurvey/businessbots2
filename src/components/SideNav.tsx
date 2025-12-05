@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, FileText, Briefcase, HelpCircle, LifeBuoy, Bot, CreditCard } from "lucide-react";
 import { agents, Agent } from "@/data/agents";
 import { useNavigate } from "react-router-dom";
+import { AgentAvatar } from "@/components/AgentImage";
 import logo from "@/assets/logo.png";
 
 interface SideNavProps {
@@ -170,10 +171,10 @@ const AgentNavItem = ({ agent, isActive, onClick }: AgentNavItemProps) => {
         className="w-12 h-12 rounded-full flex-shrink-0 overflow-hidden"
         style={{ background: gradientMap[agent.glowColor] || gradientMap.indigo }}
       >
-        <img
+        <AgentAvatar
           src={agent.image}
           alt={agent.name}
-          className="w-full h-full object-cover object-top scale-150 translate-y-2"
+          size="md"
         />
       </div>
 
