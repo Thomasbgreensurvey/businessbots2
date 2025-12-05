@@ -64,8 +64,20 @@ interface HomePageProps {
 
 const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
   const [featuredIndex, setFeaturedIndex] = useState(0);
+  const [isHeroHovered, setIsHeroHovered] = useState(false);
   const featuredAgent = agents[featuredIndex];
   const navigate = useNavigate();
+
+  // Hero auto-play - faster interval
+  useEffect(() => {
+    if (isHeroHovered) return;
+    
+    const interval = setInterval(() => {
+      setFeaturedIndex((prev) => (prev + 1) % agents.length);
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [isHeroHovered]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -108,6 +120,8 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
         style={{
           background: getAgentGradient(featuredAgent.glowColor),
         }}
+        onMouseEnter={() => setIsHeroHovered(true)}
+        onMouseLeave={() => setIsHeroHovered(false)}
         drag="x"
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.1}
@@ -560,13 +574,13 @@ const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
     setCurrentIndex((prev) => (prev + 1) % agents.length);
   };
 
-  // Auto-play with pause on hover
+  // Auto-play with pause on hover - faster interval
   useEffect(() => {
     if (isHovered) return;
     
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % agents.length);
-    }, 4000);
+    }, 2500);
 
     return () => clearInterval(interval);
   }, [isHovered, agents.length]);
