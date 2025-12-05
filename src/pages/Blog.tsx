@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, Clock, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { SEOHead } from "@/components/SEOHead";
 
 const blogPosts = [
   {
@@ -42,15 +41,8 @@ const Blog = () => {
   const navigate = useNavigate();
 
   return (
-    <>
-      <SEOHead
-        title="Blog - AI Business Automation Insights"
-        description="Expert insights on AI employees, business automation, customer support AI, and marketing automation. Learn how to scale your UK business with AI."
-        keywords="AI blog, business automation tips, AI employees guide, AI marketing, chatbot insights UK"
-        canonicalUrl="https://businessbotsuk.com/blog"
-      />
-      <div className="min-h-screen bg-white">
-        {/* Header */}
+    <div className="min-h-screen bg-white">
+      {/* Header */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
@@ -123,8 +115,7 @@ const Blog = () => {
           </div>
         </div>
       </section>
-      </div>
-    </>
+    </div>
   );
 };
 
