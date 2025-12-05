@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Plus, Minus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { SEOHead } from "@/components/SEOHead";
 
 const faqs = [
   {
@@ -43,8 +44,15 @@ const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
+    <>
+      <SEOHead
+        title="FAQ - Frequently Asked Questions About AI Employees"
+        description="Get answers about AI employees, pricing, integrations, data security, and how Business Bots UK can automate your business operations."
+        keywords="AI employee FAQ, AI automation questions, chatbot pricing UK, AI business solutions FAQ"
+        canonicalUrl="https://businessbotsuk.com/faq"
+      />
+      <div className="min-h-screen bg-white">
+        {/* Header */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
@@ -118,7 +126,8 @@ const FAQ = () => {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 };
 

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Bot, Zap, Clock, TrendingUp, Shield, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SEOHead } from "@/components/SEOHead";
 
 const benefits = [
   {
@@ -39,8 +40,15 @@ const WhatIsAIEmployee = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
+    <>
+      <SEOHead
+        title="What is an AI Employee? - Guide to AI Business Automation"
+        description="Learn what AI employees are and how they can transform your business. Discover the benefits of 24/7 AI agents for customer support, sales, marketing and more."
+        keywords="what is AI employee, AI agent definition, AI automation explained, virtual employee UK, AI workforce"
+        canonicalUrl="https://businessbotsuk.com/what-is-ai-employee"
+      />
+      <div className="min-h-screen bg-white">
+        {/* Header */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
@@ -148,7 +156,8 @@ const WhatIsAIEmployee = () => {
           </button>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 };
 
