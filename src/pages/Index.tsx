@@ -628,13 +628,30 @@ const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const currentAgent = agents[currentIndex];
 
+  // Calculate prev/next indices
+  const prevIndex = (currentIndex - 1 + agents.length) % agents.length;
+  const nextIndex = (currentIndex + 1) % agents.length;
+
   const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev - 1 + agents.length) % agents.length);
+    setCurrentIndex(prevIndex);
   };
 
   const goToNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % agents.length);
+    setCurrentIndex(nextIndex);
   };
+
+  // Preload adjacent agent images for smoother transitions
+  useEffect(() => {
+    const preloadImages = [
+      agents[prevIndex]?.image,
+      agents[nextIndex]?.image,
+    ].filter(Boolean);
+
+    preloadImages.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, [currentIndex, prevIndex, nextIndex, agents]);
 
   // Auto-play with pause on hover - faster interval
   useEffect(() => {
