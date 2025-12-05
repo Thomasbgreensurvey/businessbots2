@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
@@ -23,7 +23,16 @@ export const AgentImage = ({
   onLoad,
   onClick,
 }: AgentImageProps) => {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(priority); // Priority images start visible
+  const [hasError, setHasError] = useState(false);
+
+  // Reset state when src changes
+  useEffect(() => {
+    if (!priority) {
+      setIsLoaded(false);
+      setHasError(false);
+    }
+  }, [src, priority]);
 
   const handleLoad = () => {
     setIsLoaded(true);
@@ -38,8 +47,8 @@ export const AgentImage = ({
 
   return (
     <div className={cn("relative", aspectClasses[aspectRatio], containerClassName)}>
-      {/* Skeleton placeholder */}
-      {!isLoaded && (
+      {/* Skeleton placeholder - only for non-priority lazy images */}
+      {!isLoaded && !priority && !hasError && (
         <Skeleton 
           className="absolute inset-0 bg-white/10 animate-pulse" 
         />
@@ -50,15 +59,17 @@ export const AgentImage = ({
         src={src}
         alt={alt}
         className={cn(
-          "transition-opacity duration-500",
-          isLoaded ? "opacity-100" : "opacity-0",
+          priority 
+            ? "" // No transition for priority images - show immediately
+            : "transition-opacity duration-200", // Faster transition for lazy images
+          isLoaded || priority ? "opacity-100" : "opacity-0",
           className
         )}
         onLoad={handleLoad}
+        onError={() => setHasError(true)}
         onClick={onClick}
         loading={priority ? "eager" : "lazy"}
-        fetchPriority={priority ? "high" : "auto"}
-        decoding="async"
+        decoding={priority ? "sync" : "async"}
       />
     </div>
   );
@@ -95,7 +106,7 @@ export const AgentAvatar = ({
         src={src}
         alt={alt}
         className={cn(
-          "w-full h-full object-cover object-top scale-150 translate-y-2 transition-opacity duration-300",
+          "w-full h-full object-cover object-top scale-150 translate-y-2 transition-opacity duration-150",
           isLoaded ? "opacity-100" : "opacity-0"
         )}
         onLoad={() => setIsLoaded(true)}
