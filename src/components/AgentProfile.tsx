@@ -69,16 +69,15 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
       {/* Hero Section */}
       <section className="relative min-h-screen flex flex-col items-center justify-center pt-20 pb-8 px-4 overflow-hidden">
         {/* Cursive Watermark */}
-        <div className="absolute inset-x-0 top-16 md:top-0 md:inset-0 flex items-start md:items-center justify-center overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
           <motion.span 
             initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 0.25, scale: 1 }}
+            animate={{ opacity: 0.15, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="text-[22vw] md:text-[18vw] font-script whitespace-nowrap select-none mt-24 md:mt-0"
+            className="text-[28vw] md:text-[18vw] font-script whitespace-nowrap select-none -translate-y-[15vh] md:-translate-y-[5vh]"
             style={{ 
               fontFamily: "'Brush Script MT', 'Segoe Script', cursive",
               color: getAgentAccentColor(agent.glowColor),
-              textShadow: '0 0 60px rgba(255,255,255,0.3)'
             }}
           >
             {agent.name}
