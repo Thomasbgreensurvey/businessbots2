@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, TrendingUp, Users, Clock, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SEOHead } from "@/components/SEOHead";
 
 const caseStudies = [
   {
@@ -45,8 +46,15 @@ const CaseStudies = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
+    <>
+      <SEOHead
+        title="Case Studies - AI Automation Success Stories UK"
+        description="Real results from UK businesses using AI employees. See how companies increased leads, reduced costs, and scaled operations with Business Bots UK."
+        keywords="AI case studies, business automation results, AI success stories UK, chatbot ROI"
+        canonicalUrl="https://businessbotsuk.com/case-studies"
+      />
+      <div className="min-h-screen bg-white">
+        {/* Header */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
@@ -124,7 +132,8 @@ const CaseStudies = () => {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 };
 
