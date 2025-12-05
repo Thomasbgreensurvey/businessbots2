@@ -196,6 +196,9 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             alt={featuredAgent.name}
             className="w-full h-auto object-contain max-h-[85vh] cursor-pointer drop-shadow-2xl pointer-events-auto"
             onClick={() => onSelectAgent(featuredAgent)}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
         </motion.div>
 
@@ -626,30 +629,13 @@ const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const currentAgent = agents[currentIndex];
 
-  // Calculate prev/next indices
-  const prevIndex = (currentIndex - 1 + agents.length) % agents.length;
-  const nextIndex = (currentIndex + 1) % agents.length;
-
   const goToPrevious = () => {
-    setCurrentIndex(prevIndex);
+    setCurrentIndex((prev) => (prev - 1 + agents.length) % agents.length);
   };
 
   const goToNext = () => {
-    setCurrentIndex(nextIndex);
+    setCurrentIndex((prev) => (prev + 1) % agents.length);
   };
-
-  // Preload adjacent agent images for smoother transitions
-  useEffect(() => {
-    const preloadImages = [
-      agents[prevIndex]?.image,
-      agents[nextIndex]?.image,
-    ].filter(Boolean);
-
-    preloadImages.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, [currentIndex, prevIndex, nextIndex, agents]);
 
   // Auto-play with pause on hover - faster interval
   useEffect(() => {
