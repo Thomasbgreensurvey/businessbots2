@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Check, Menu, Sparkles, Lightbulb } from "lucide-react";
 import { Agent, GlowColor, agents } from "@/data/agents";
+import { AgentImage } from "@/components/AgentImage";
 import { toast } from "sonner";
 
 interface AgentProfileProps {
@@ -110,10 +111,11 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
           transition={{ duration: 0.7, delay: 0.3 }}
           className="relative z-10 w-full max-w-lg md:max-w-2xl flex-1 flex items-end justify-center"
         >
-          <img
+          <AgentImage
             src={agent.image}
             alt={agent.name}
             className="w-full h-auto object-contain max-h-[50vh] md:max-h-[55vh]"
+            priority={true}
           />
         </motion.div>
       </section>
@@ -324,7 +326,7 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                   className="rounded-xl overflow-hidden aspect-square relative cursor-pointer group"
                   style={{ background: getAgentGradient(otherAgent.glowColor) }}
                 >
-                  <img
+                  <AgentImage
                     src={otherAgent.image}
                     alt={otherAgent.name}
                     className="w-full h-full object-contain object-bottom group-hover:scale-105 transition-transform duration-300"
