@@ -1,23 +1,26 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, Clock, ChevronRight, Users, Rocket, ExternalLink, Sparkles, BookOpen, TrendingUp } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import skoolBadge from "@/assets/skool-badge.png";
 
-const SKOOL_LINK = "https://www.skool.com/sales-ai-business-marketing-7663/about?ref=002573a2eb4443249a5fce3b6607713d";
 const SKOOL_BLUE = "#4B5FD1";
 
 const staggerContainer = {
   initial: {},
   animate: {
     transition: {
-      staggerChildren: 0.1
+      staggerChildren: 0.08,
+      delayChildren: 0.1
     }
   }
 };
 
 const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 }
+  initial: { opacity: 0, y: 20 },
+  animate: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" }
+  }
 };
 
 const blogPosts = [
@@ -66,10 +69,6 @@ const Blog = () => {
     navigate(`/blog/${slug}`);
   };
 
-  const handleJoinCommunity = () => {
-    window.open(SKOOL_LINK, "_blank", "noopener,noreferrer");
-  };
-
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Header */}
@@ -94,182 +93,86 @@ const Blog = () => {
       </motion.header>
 
       {/* Hero */}
-      <section className="py-16 md:py-20 px-4" style={{ background: `linear-gradient(135deg, ${SKOOL_BLUE}10 0%, white 50%, ${SKOOL_BLUE}05 100%)` }}>
+      <section className="py-16 md:py-24 px-4 bg-white">
         <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-6"
-            style={{ backgroundColor: `${SKOOL_BLUE}15`, color: SKOOL_BLUE }}
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-block px-4 py-2 rounded-full text-sm font-medium mb-6 bg-gray-100 text-gray-700"
           >
-            <BookOpen className="w-4 h-4" />
             Latest Insights
-          </motion.div>
+          </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6"
           >
-            Business Bots Blog
+            Business Bots{" "}
+            <span className="font-dancing-script italic" style={{ color: SKOOL_BLUE }}>
+              Blog
+            </span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-lg md:text-xl text-gray-600"
+            transition={{ delay: 0.2 }}
+            className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto"
           >
             Insights, tips, and stories about AI employees and business automation
           </motion.p>
         </div>
       </section>
 
-      {/* Featured Community Card */}
-      <section className="py-8 px-4">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -5, scale: 1.01 }}
-            className="relative rounded-3xl p-6 md:p-8 overflow-hidden cursor-pointer"
-            style={{ 
-              background: `linear-gradient(135deg, ${SKOOL_BLUE}15 0%, ${SKOOL_BLUE}05 100%)`,
-              border: `1px solid ${SKOOL_BLUE}30`
-            }}
-            onClick={handleJoinCommunity}
-          >
-            <div className="absolute top-4 right-4 md:top-6 md:right-6">
-              <motion.img 
-                whileHover={{ rotate: 10, scale: 1.1 }}
-                src={skoolBadge} 
-                alt="Skool" 
-                className="w-16 h-16 md:w-20 md:h-20 rounded-full" 
-              />
-            </div>
-            
-            <span 
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium mb-4"
-              style={{ backgroundColor: `${SKOOL_BLUE}20`, color: SKOOL_BLUE }}
-            >
-              <Sparkles className="w-4 h-4" />
-              Featured
-            </span>
-            
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 pr-20">
-              Become an AI Solutions Expert
-            </h2>
-            <p className="text-gray-600 text-lg mb-6 max-w-2xl">
-              Join our free Skool community and develop cutting-edge AI skills for sales, marketing, and business automation.
-            </p>
-            
-            <div className="flex flex-wrap gap-4">
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate("/community");
-                }}
-                className="px-6 py-3 rounded-full text-white font-bold flex items-center gap-2"
-                style={{ backgroundColor: SKOOL_BLUE }}
-              >
-                <Users className="w-5 h-5" />
-                Learn More
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleJoinCommunity();
-                }}
-                className="px-6 py-3 border rounded-full font-semibold flex items-center gap-2 hover:bg-gray-50 transition-colors"
-                style={{ borderColor: `${SKOOL_BLUE}40`, color: SKOOL_BLUE }}
-              >
-                Join Community
-                <ExternalLink className="w-4 h-4" />
-              </motion.button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      {/* Divider */}
+      <div className="max-w-5xl mx-auto px-4">
+        <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+      </div>
 
       {/* Blog Posts */}
-      <section className="py-12 px-4">
+      <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Latest Articles</h2>
           <motion.div 
             variants={staggerContainer}
             initial="initial"
             animate="animate"
-            className="space-y-6"
+            className="space-y-8"
           >
             {blogPosts.map((post) => (
               <motion.article
                 key={post.id}
                 variants={fadeInUp}
-                whileHover={{ y: -5, scale: 1.01 }}
+                whileHover={{ y: -4 }}
+                whileTap={{ scale: 0.99 }}
                 onClick={() => handlePostClick(post.slug)}
-                className="group bg-gray-50 rounded-2xl p-6 md:p-8 hover:bg-white hover:shadow-lg transition-all duration-300 cursor-pointer border border-transparent hover:border-gray-100"
+                className="group p-6 md:p-8 rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-300 cursor-pointer bg-white"
               >
                 <div className="flex flex-wrap items-center gap-3 mb-4">
                   <span 
                     className="px-3 py-1 text-sm font-medium rounded-full"
-                    style={{ backgroundColor: `${SKOOL_BLUE}15`, color: SKOOL_BLUE }}
+                    style={{ backgroundColor: `${SKOOL_BLUE}10`, color: SKOOL_BLUE }}
                   >
                     {post.category}
                   </span>
-                  <div className="flex items-center gap-2 text-gray-500 text-sm">
-                    <Calendar className="w-4 h-4" />
-                    {post.date}
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-500 text-sm">
-                    <Clock className="w-4 h-4" />
-                    {post.readTime}
-                  </div>
+                  <span className="text-gray-400 text-sm">{post.date}</span>
+                  <span className="text-gray-400 text-sm">·</span>
+                  <span className="text-gray-400 text-sm">{post.readTime}</span>
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-[#4B5FD1] transition-colors">
                   {post.title}
                 </h3>
-                <p className="text-gray-600 mb-4">{post.excerpt}</p>
-                <div className="flex items-center gap-2 font-medium" style={{ color: SKOOL_BLUE }}>
-                  Read more <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </div>
+                <p className="text-gray-600 mb-4 leading-relaxed">{post.excerpt}</p>
+                <span className="font-medium transition-colors" style={{ color: SKOOL_BLUE }}>
+                  Read article →
+                </span>
               </motion.article>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Footer CTA */}
-      <section className="py-16 px-4 border-t border-gray-100">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <TrendingUp className="w-12 h-12 mx-auto mb-4" style={{ color: SKOOL_BLUE }} />
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-              Want to Learn AI for Business?
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Join our free community and start your journey to becoming an AI Solutions Expert
-            </p>
-            <motion.button
-              whileHover={{ scale: 1.03, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => navigate("/community")}
-              className="px-8 py-4 rounded-full text-white font-bold shadow-lg"
-              style={{ backgroundColor: SKOOL_BLUE, boxShadow: `0 10px 40px ${SKOOL_BLUE}40` }}
-            >
-              Join Our Community
-            </motion.button>
-          </motion.div>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="py-8 px-4 bg-gray-50">
+      <footer className="py-12 px-4 border-t border-gray-100">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-500 text-sm">
             © 2024 Business Bots UK. All rights reserved.

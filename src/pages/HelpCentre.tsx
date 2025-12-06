@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Search, Book, MessageCircle, Video, FileText, ChevronRight, Mail, Phone, Zap, Users, Settings, CreditCard, Shield, Sparkles } from "lucide-react";
+import { ArrowLeft, Search, ChevronRight, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -10,22 +10,25 @@ const staggerContainer = {
   initial: {},
   animate: {
     transition: {
-      staggerChildren: 0.1
+      staggerChildren: 0.06,
+      delayChildren: 0.1
     }
   }
 };
 
 const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 }
+  initial: { opacity: 0, y: 20 },
+  animate: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" }
+  }
 };
 
 const categories = [
   {
-    icon: Book,
     title: "Getting Started",
     description: "Learn the basics of setting up your AI Employees",
-    articleCount: 4,
     articles: [
       { title: "How to set up your first AI Employee", slug: "setup-first-ai-employee" },
       { title: "Quick start guide", slug: "quick-start-guide" },
@@ -34,10 +37,8 @@ const categories = [
     ]
   },
   {
-    icon: MessageCircle,
     title: "Using AI Employees",
     description: "Tips and tricks for getting the most out of your team",
-    articleCount: 4,
     articles: [
       { title: "Customizing AI responses", slug: "customizing-responses" },
       { title: "Training your AI Employee", slug: "training-ai-employee" },
@@ -46,22 +47,8 @@ const categories = [
     ]
   },
   {
-    icon: Video,
-    title: "Video Tutorials",
-    description: "Step-by-step video guides for common tasks",
-    articleCount: 4,
-    articles: [
-      { title: "Getting started video walkthrough", slug: "getting-started-video" },
-      { title: "Advanced features tutorial", slug: "advanced-features-video" },
-      { title: "Integration setup guide", slug: "integration-setup-video" },
-      { title: "Troubleshooting common issues", slug: "troubleshooting-video" }
-    ]
-  },
-  {
-    icon: Zap,
     title: "Integrations",
     description: "Connect with your favourite tools and platforms",
-    articleCount: 4,
     articles: [
       { title: "Connecting to your CRM", slug: "connecting-crm" },
       { title: "Email integration setup", slug: "email-integration" },
@@ -70,10 +57,8 @@ const categories = [
     ]
   },
   {
-    icon: CreditCard,
     title: "Billing & Plans",
     description: "Manage your subscription and payments",
-    articleCount: 4,
     articles: [
       { title: "Understanding usage and billing", slug: "usage-billing" },
       { title: "Upgrading your plan", slug: "upgrading-plan" },
@@ -82,15 +67,23 @@ const categories = [
     ]
   },
   {
-    icon: Shield,
     title: "Security & Privacy",
     description: "Keep your data safe and secure",
-    articleCount: 4,
     articles: [
       { title: "Data protection practices", slug: "data-protection" },
       { title: "Two-factor authentication", slug: "two-factor-auth" },
       { title: "Privacy settings", slug: "privacy-settings" },
       { title: "Compliance and certifications", slug: "compliance" }
+    ]
+  },
+  {
+    title: "Troubleshooting",
+    description: "Solutions for common issues",
+    articles: [
+      { title: "AI Employee not responding", slug: "not-responding" },
+      { title: "Integration connection failed", slug: "connection-failed" },
+      { title: "Unexpected responses", slug: "unexpected-responses" },
+      { title: "Performance issues", slug: "performance-issues" }
     ]
   }
 ];
@@ -99,8 +92,7 @@ const popularArticles = [
   { title: "How to set up your first AI Employee", category: "Getting Started", slug: "setup-first-ai-employee" },
   { title: "Connecting to your CRM", category: "Integrations", slug: "connecting-crm" },
   { title: "Customizing AI responses", category: "Using AI Employees", slug: "customizing-responses" },
-  { title: "Understanding usage and billing", category: "Billing & Plans", slug: "usage-billing" },
-  { title: "Best practices for prompts", category: "Using AI Employees", slug: "best-practices-prompts" }
+  { title: "Understanding usage and billing", category: "Billing & Plans", slug: "usage-billing" }
 ];
 
 const HelpCentre = () => {
@@ -139,10 +131,6 @@ const HelpCentre = () => {
     window.location.href = "mailto:support@businessbotsuk.com";
   };
 
-  const handleCallUs = () => {
-    toast.info("Phone support coming soon! Please use email for now.");
-  };
-
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Header */}
@@ -167,28 +155,30 @@ const HelpCentre = () => {
       </motion.header>
 
       {/* Hero */}
-      <section className="py-16 md:py-20 px-4" style={{ background: `linear-gradient(135deg, ${SKOOL_BLUE}10 0%, white 50%, ${SKOOL_BLUE}05 100%)` }}>
+      <section className="py-16 md:py-24 px-4 bg-white">
         <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-6"
-            style={{ backgroundColor: `${SKOOL_BLUE}15`, color: SKOOL_BLUE }}
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-block px-4 py-2 rounded-full text-sm font-medium mb-6 bg-gray-100 text-gray-700"
           >
-            <Sparkles className="w-4 h-4" />
             We're here to help
-          </motion.div>
+          </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6"
           >
-            How can we help?
+            How can we{" "}
+            <span className="font-dancing-script italic" style={{ color: SKOOL_BLUE }}>
+              help?
+            </span>
           </motion.h1>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
+            transition={{ delay: 0.2 }}
             className="relative max-w-xl mx-auto"
           >
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -197,74 +187,77 @@ const HelpCentre = () => {
               placeholder="Search for articles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 rounded-2xl text-lg border border-gray-200 focus:border-[#4B5FD1] focus:ring-2 focus:ring-[#4B5FD1]/20 outline-none transition-all bg-white shadow-sm"
+              className="w-full pl-12 pr-4 py-4 rounded-2xl text-lg border border-gray-200 focus:border-[#4B5FD1] focus:ring-2 focus:ring-[#4B5FD1]/20 outline-none transition-all bg-white"
             />
           </motion.div>
         </div>
       </section>
 
+      {/* Divider */}
+      <div className="max-w-5xl mx-auto px-4">
+        <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+      </div>
+
       {/* Categories */}
-      <section className="py-12 px-4">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Browse by category</h2>
+      <section className="py-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Browse by Category</h2>
           <motion.div 
             variants={staggerContainer}
             initial="initial"
             animate="animate"
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="space-y-4"
           >
             {filteredCategories.map((category) => (
               <motion.div
                 key={category.title}
                 variants={fadeInUp}
-                whileHover={{ y: -5, scale: 1.02 }}
-                onClick={() => setExpandedCategory(expandedCategory === category.title ? null : category.title)}
-                className="group bg-gray-50 rounded-2xl p-6 hover:bg-white hover:shadow-lg transition-all duration-300 cursor-pointer border border-transparent hover:border-gray-100"
+                className="border border-gray-100 rounded-2xl overflow-hidden hover:border-gray-200 transition-colors"
               >
-                <div className="flex items-start gap-4">
-                  <div 
-                    className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
-                    style={{ backgroundColor: `${SKOOL_BLUE}15` }}
-                  >
-                    <category.icon className="w-6 h-6" style={{ color: SKOOL_BLUE }} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-[#4B5FD1] transition-colors">
+                <motion.button
+                  whileTap={{ scale: 0.99 }}
+                  onClick={() => setExpandedCategory(expandedCategory === category.title ? null : category.title)}
+                  className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50/50 transition-colors"
+                >
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
                       {category.title}
                     </h3>
-                    <p className="text-gray-600 text-sm mb-2">{category.description}</p>
-                    <span className="text-sm font-medium" style={{ color: SKOOL_BLUE }}>
-                      {category.articleCount} articles
-                    </span>
+                    <p className="text-gray-500 text-sm">{category.description}</p>
                   </div>
-                  <ChevronRight 
-                    className={`w-5 h-5 text-gray-400 group-hover:text-[#4B5FD1] transition-all ${
-                      expandedCategory === category.title ? 'rotate-90' : ''
-                    }`} 
-                  />
-                </div>
+                  <motion.div
+                    animate={{ rotate: expandedCategory === category.title ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ChevronDown 
+                      className={`w-5 h-5 transition-colors ${
+                        expandedCategory === category.title ? 'text-[#4B5FD1]' : 'text-gray-400'
+                      }`}
+                    />
+                  </motion.div>
+                </motion.button>
 
-                {/* Expandable article list */}
+                {/* Articles */}
                 <motion.div
                   initial={false}
                   animate={{ 
                     height: expandedCategory === category.title ? 'auto' : 0,
                     opacity: expandedCategory === category.title ? 1 : 0
                   }}
+                  transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                   className="overflow-hidden"
                 >
-                  <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">
+                  <div className="px-6 pb-6 space-y-2">
                     {category.articles.map((article) => (
                       <motion.button
                         key={article.slug}
-                        whileHover={{ x: 5 }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleArticleClick(article.slug);
-                        }}
-                        className="w-full text-left text-gray-600 hover:text-[#4B5FD1] text-sm py-1 transition-colors"
+                        whileHover={{ x: 4 }}
+                        whileTap={{ scale: 0.99 }}
+                        onClick={() => handleArticleClick(article.slug)}
+                        className="w-full flex items-center justify-between p-4 text-left rounded-xl hover:bg-gray-50 transition-colors"
                       >
-                        {article.title}
+                        <span className="text-gray-700">{article.title}</span>
+                        <ChevronRight className="w-4 h-4 text-gray-400" />
                       </motion.button>
                     ))}
                   </div>
@@ -276,23 +269,18 @@ const HelpCentre = () => {
       </section>
 
       {/* Popular Articles */}
-      <section className="py-12 px-4 bg-gray-50">
-        <div className="max-w-5xl mx-auto">
+      <section className="py-12 px-4 bg-gray-50/50">
+        <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 mb-8">
-            {searchQuery ? `Search results (${filteredArticles.length})` : "Popular articles"}
+            {searchQuery ? `Search Results (${filteredArticles.length})` : "Popular Articles"}
           </h2>
-          <motion.div 
-            variants={staggerContainer}
-            initial="initial"
-            animate="animate"
-            className="bg-white rounded-2xl divide-y divide-gray-100 shadow-sm overflow-hidden"
-          >
+          <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-100 overflow-hidden">
             {filteredArticles.length > 0 ? (
               filteredArticles.map((article) => (
                 <motion.button
                   key={article.slug}
-                  variants={fadeInUp}
-                  whileHover={{ backgroundColor: 'rgba(75, 95, 209, 0.05)' }}
+                  whileHover={{ backgroundColor: 'rgba(75, 95, 209, 0.03)' }}
+                  whileTap={{ scale: 0.99 }}
                   onClick={() => handleArticleClick(article.slug)}
                   className="w-full flex items-center justify-between p-5 text-left transition-colors"
                 >
@@ -308,7 +296,7 @@ const HelpCentre = () => {
                 No articles found matching "{searchQuery}"
               </div>
             )}
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -320,36 +308,28 @@ const HelpCentre = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Users className="w-12 h-12 mx-auto mb-4" style={{ color: SKOOL_BLUE }} />
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Still need help?</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+              Still Need{" "}
+              <span className="font-dancing-script italic" style={{ color: SKOOL_BLUE }}>
+                Help?
+              </span>
+            </h2>
             <p className="text-gray-600 mb-8">Our support team is here to assist you</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button 
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleEmailSupport}
-                className="inline-flex items-center justify-center gap-2 px-6 py-4 text-white rounded-xl font-medium shadow-lg"
-                style={{ backgroundColor: SKOOL_BLUE, boxShadow: `0 10px 40px ${SKOOL_BLUE}40` }}
-              >
-                <Mail className="w-5 h-5" />
-                Email Support
-              </motion.button>
-              <motion.button 
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleCallUs}
-                className="inline-flex items-center justify-center gap-2 px-6 py-4 bg-gray-900 text-white rounded-xl font-medium hover:bg-gray-800 transition-colors"
-              >
-                <Phone className="w-5 h-5" />
-                Call Us
-              </motion.button>
-            </div>
+            <motion.button 
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleEmailSupport}
+              className="px-8 py-4 text-white rounded-full font-bold"
+              style={{ backgroundColor: SKOOL_BLUE }}
+            >
+              Contact Support
+            </motion.button>
           </motion.div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 bg-gray-50 border-t border-gray-100">
+      <footer className="py-12 px-4 border-t border-gray-100">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-500 text-sm">
             © 2024 Business Bots UK. All rights reserved.
