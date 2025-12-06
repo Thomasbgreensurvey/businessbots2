@@ -11,6 +11,9 @@ interface SideNavProps {
   selectedAgentId?: string;
 }
 
+// Skool brand blue
+const SKOOL_BLUE = "#4B5FD1";
+
 const resourceLinks = [
   { icon: FileText, label: "Blog", path: "/blog" },
   { icon: Briefcase, label: "Case Studies", path: "/case-studies" },
@@ -18,7 +21,6 @@ const resourceLinks = [
   { icon: HelpCircle, label: "FAQ", path: "/faq" },
   { icon: LifeBuoy, label: "Help Centre", path: "/help-centre" },
   { icon: Bot, label: "What is an AI Employee?", path: "/what-is-ai-employee" },
-  { icon: Users, label: "Join Our Community", path: "/community", highlight: true },
 ];
 
 export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: SideNavProps) => {
@@ -26,6 +28,11 @@ export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: Sid
 
   const handleResourceClick = (path: string) => {
     navigate(path);
+    onClose();
+  };
+
+  const handleCommunityClick = () => {
+    navigate("/community");
     onClose();
   };
 
@@ -102,23 +109,36 @@ export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: Sid
                     whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleResourceClick(link.path)}
-                    className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-colors ${
-                      (link as any).highlight 
-                        ? 'bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30' 
-                        : 'bg-transparent hover:bg-white/[0.06]'
-                    }`}
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-colors bg-transparent hover:bg-white/[0.06]"
                   >
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      (link as any).highlight 
-                        ? 'bg-gradient-to-r from-amber-500 to-orange-500' 
-                        : 'bg-white/[0.08]'
-                    }`}>
-                      <link.icon className={`w-5 h-5 ${(link as any).highlight ? 'text-black' : 'text-white/70'}`} />
+                    <div className="w-10 h-10 rounded-full bg-white/[0.08] flex items-center justify-center flex-shrink-0">
+                      <link.icon className="w-5 h-5 text-white/70" />
                     </div>
-                    <span className={`font-medium text-[15px] ${(link as any).highlight ? 'text-amber-400' : 'text-white/80'}`}>{link.label}</span>
+                    <span className="text-white/80 font-medium text-[15px]">{link.label}</span>
                   </motion.button>
                 ))}
               </div>
+
+              {/* Community Section - Separate with blue styling */}
+              <p className="text-white/50 text-sm font-medium mb-4 px-1 mt-6">Community</p>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleCommunityClick}
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all"
+                style={{ 
+                  background: `linear-gradient(135deg, ${SKOOL_BLUE}30 0%, ${SKOOL_BLUE}10 100%)`,
+                  border: `1px solid ${SKOOL_BLUE}40`
+                }}
+              >
+                <div 
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: SKOOL_BLUE }}
+                >
+                  <Users className="w-5 h-5 text-white" />
+                </div>
+                <span className="font-medium text-[15px]" style={{ color: '#7B8FE1' }}>Join Our Community</span>
+              </motion.button>
 
               {/* Support Email */}
               <a
