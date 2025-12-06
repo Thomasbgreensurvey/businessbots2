@@ -151,15 +151,15 @@ export const agents: Agent[] = [
     hobbies: ["📱 Scrolling trends", "✍️ Writing captions", "🎨 Planning feeds", "💬 Engaging followers"]
   },
   {
-    id: "ike",
-    name: "Ike",
+    id: "zen",
+    name: "Zen",
     role: "Lead Generation Expert",
     shortRole: "Lead Gen",
     tagline: "Your Pipeline Partner on AI",
     heroHeadline: "Fill Your Pipeline Overnight",
     heroSubtext: "Qualified leads delivered to your CRM daily. Stop chasing, start closing with AI-powered prospecting.",
-    description: "Ike scrapes the web for high-quality prospects and enriches data before it hits your CRM.",
-    extendedDescription: "Meet Ike. The AI-powered lead hunter that fills your pipeline with qualified prospects. Trained on successful sales patterns, Ike finds and enriches leads that actually convert. Traditional prospecting takes days, but Ike delivers qualified leads in minutes.",
+    description: "Zen scrapes the web for high-quality prospects and enriches data before it hits your CRM.",
+    extendedDescription: "Meet Zen. The AI-powered lead hunter that fills your pipeline with qualified prospects. Trained on successful sales patterns, Zen finds and enriches leads that actually convert. Traditional prospecting takes days, but Zen delivers qualified leads in minutes.",
     image: likeImg,
     glowColor: "amber",
     capabilities: [
@@ -170,10 +170,10 @@ export const agents: Agent[] = [
       "Contact verification"
     ],
     useCases: [
-      "Ike, find 50 decision-makers at SaaS companies.",
-      "Ike, enrich these contacts with LinkedIn data.",
-      "Ike, score these leads by buying intent.",
-      "Ike, verify these email addresses."
+      "Zen, find 50 decision-makers at SaaS companies.",
+      "Zen, enrich these contacts with LinkedIn data.",
+      "Zen, score these leads by buying intent.",
+      "Zen, verify these email addresses."
     ],
     expertise: ["Prospecting", "Data Enrichment", "Lead Scoring", "Research", "CRM Integration"],
     surprisingFact: "Can find and verify 500 qualified leads in under an hour.",
