@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         sans: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
         robotic: ["Orbitron", "monospace"],
+        'dancing-script': ["Dancing Script", "cursive"],
       },
       colors: {
         border: "hsl(var(--border))",
