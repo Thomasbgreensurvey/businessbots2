@@ -293,10 +293,108 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
               Hire {agent.name} Now
             </button>
             <button 
-              onClick={() => document.getElementById('capabilities-section')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => document.getElementById('how-it-works-section')?.scrollIntoView({ behavior: 'smooth' })}
               className="px-8 py-4 rounded-full font-semibold text-foreground border border-border hover:bg-secondary transition-colors"
             >
               Learn More
+            </button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section id="how-it-works-section" className="bg-white py-16 md:py-24">
+        <div className="max-w-5xl mx-auto px-4 md:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h3 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4">
+              How {agent.name} Works
+            </h3>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Get started in minutes with a simple 3-step process
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                step: "1",
+                title: "Tell Us Your Goals",
+                description: `Share your ${agent.shortRole.toLowerCase()} needs and objectives. ${agent.name} learns your brand voice, preferences, and business context.`
+              },
+              {
+                step: "2", 
+                title: "AI Gets to Work",
+                description: `${agent.name} uses advanced AI to handle tasks 24/7 - from ${agent.capabilities[0]?.toLowerCase() || 'automation'} to ${agent.capabilities[1]?.toLowerCase() || 'optimization'}.`
+              },
+              {
+                step: "3",
+                title: "Review & Approve",
+                description: `Stay in control with approval workflows. Review ${agent.name}'s work, provide feedback, and watch results improve over time.`
+              }
+            ].map((item, index) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div 
+                  className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-2xl font-bold"
+                  style={{ background: getAgentGradient(agent.glowColor) }}
+                >
+                  {item.step}
+                </div>
+                <h4 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h4>
+                <p className="text-gray-600">{item.description}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Stats/Benefits */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
+          >
+            {[
+              { stat: "24/7", label: "Always Available" },
+              { stat: "100+", label: "Languages Supported" },
+              { stat: "10x", label: "Faster Than Manual" },
+              { stat: "99%", label: "Accuracy Rate" }
+            ].map((item, index) => (
+              <div key={item.label} className="text-center p-4">
+                <p 
+                  className="text-3xl md:text-4xl font-bold mb-2"
+                  style={{ color: getAgentAccentColor(agent.glowColor) }}
+                >
+                  {item.stat}
+                </p>
+                <p className="text-gray-600 text-sm">{item.label}</p>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Final CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-12 text-center"
+          >
+            <button 
+              onClick={handleHireClick}
+              className="px-10 py-5 rounded-full font-bold text-white text-lg"
+              style={{ background: getAgentGradient(agent.glowColor) }}
+            >
+              Get Started with {agent.name}
             </button>
           </motion.div>
         </div>
