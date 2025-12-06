@@ -8,6 +8,7 @@ import tobbyHand from "@/assets/agents/tobby-hand.jpeg";
 import zenPhone from "@/assets/agents/zen-phone.jpeg";
 import nanoHeadset from "@/assets/agents/nano-headset.png";
 import lillyHeadset from "@/assets/agents/lilly-headset.jpeg";
+import banjoSweater from "@/assets/agents/banjo-sweater.jpeg";
 import { toast } from "sonner";
 
 interface AgentProfileProps {
@@ -450,6 +451,52 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                 <img
                   src={lillyHeadset}
                   alt="Lilly with headset for HR support"
+                  className="w-full h-auto object-contain"
+                />
+              </motion.div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Banjo Special Section - Sweater Image */}
+      {agent.id === 'banjo' && (
+        <section className="relative bg-black py-16 md:py-24 overflow-hidden">
+          {/* Gradient Overlay */}
+          <div 
+            className="absolute inset-0 opacity-40"
+            style={{
+              background: 'radial-gradient(ellipse at center, rgba(99, 102, 241, 0.4) 0%, rgba(129, 140, 248, 0.2) 40%, transparent 70%)',
+            }}
+          />
+          
+          <div className="max-w-5xl mx-auto px-4 md:px-10 relative z-10">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
+              {/* Stylish Name */}
+              <motion.h2
+                initial={{ opacity: 0, x: -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl"
+                style={{ 
+                  fontFamily: "'Dancing Script', 'Pacifico', cursive",
+                  color: '#6366F1',
+                }}
+              >
+                Banjo
+              </motion.h2>
+              
+              {/* Sweater Image */}
+              <motion.div
+                initial={{ opacity: 0, x: 40, scale: 0.9 }}
+                whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7 }}
+                className="w-full max-w-sm md:max-w-md"
+              >
+                <img
+                  src={banjoSweater}
+                  alt="Banjo for customer support"
                   className="w-full h-auto object-contain"
                 />
               </motion.div>
