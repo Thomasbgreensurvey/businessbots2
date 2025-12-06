@@ -144,50 +144,6 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
         </div>
       </section>
 
-      {/* Enhanced Agent Image Section - Black Background for Floating Effect */}
-      <section className="bg-black py-12 md:py-20 overflow-hidden">
-        <div className="max-w-5xl mx-auto px-4 md:px-10">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
-            {/* Alt Agent Image */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, x: -50 }}
-              whileInView={{ opacity: 1, scale: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="relative w-full max-w-sm md:max-w-md"
-            >
-              <img
-                src={agent.altImage}
-                alt={`${agent.name} - ${agent.shortRole}`}
-                className="w-full h-auto object-contain"
-              />
-            </motion.div>
-
-            {/* Agent Name in Stylish Handwriting */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-center md:text-left"
-            >
-              <h3 
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-normal"
-                style={{ 
-                  fontFamily: "'Dancing Script', 'Pacifico', cursive",
-                  color: getAgentNameColor(agent.glowColor),
-                }}
-              >
-                {agent.name}
-              </h3>
-              <p className="text-white/60 text-lg md:text-xl mt-4 font-light">
-                {agent.role}
-              </p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
       {/* Use Cases Section */}
       <section className="bg-secondary/20 py-12 md:py-20">
         <div className="max-w-5xl mx-auto px-4 md:px-10">
@@ -518,21 +474,6 @@ function getAgentAccentColor(color: GlowColor): string {
     orange: 'hsl(25 90% 50%)',
     teal: 'hsl(175 65% 40%)',
     fuchsia: 'hsl(295 60% 50%)',
-  };
-  return colors[color] || colors.indigo;
-}
-
-// Vibrant name colors for the enhanced alt image section
-function getAgentNameColor(color: GlowColor): string {
-  const colors: Record<string, string> = {
-    emerald: 'hsl(145 70% 55%)',   // Bright emerald green
-    rose: 'hsl(340 80% 65%)',       // Vibrant rose pink
-    indigo: 'hsl(250 70% 65%)',     // Bright indigo blue
-    cyan: 'hsl(190 80% 55%)',       // Vibrant cyan blue
-    amber: 'hsl(38 95% 60%)',       // Bright amber/gold
-    orange: 'hsl(25 95% 60%)',      // Vibrant orange
-    teal: 'hsl(175 75% 50%)',       // Bright teal
-    fuchsia: 'hsl(295 75% 65%)',    // Vibrant fuchsia/violet
   };
   return colors[color] || colors.indigo;
 }
