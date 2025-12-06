@@ -12,13 +12,13 @@ interface SideNavProps {
 }
 
 const resourceLinks = [
-  { icon: Users, label: "Join Our Community", path: "/community", highlight: true },
   { icon: FileText, label: "Blog", path: "/blog" },
   { icon: Briefcase, label: "Case Studies", path: "/case-studies" },
   { icon: CreditCard, label: "Pricing", path: "/pricing" },
   { icon: HelpCircle, label: "FAQ", path: "/faq" },
   { icon: LifeBuoy, label: "Help Centre", path: "/help-centre" },
   { icon: Bot, label: "What is an AI Employee?", path: "/what-is-ai-employee" },
+  { icon: Users, label: "Join Our Community", path: "/community", highlight: true },
 ];
 
 export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: SideNavProps) => {
