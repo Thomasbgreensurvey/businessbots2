@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Menu, Sparkles, Lightbulb, Play, Image } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Menu, Sparkles, Lightbulb } from "lucide-react";
 import { Agent, GlowColor, agents } from "@/data/agents";
 import { toast } from "sonner";
-import { useState } from "react";
 
 interface AgentProfileProps {
   agent: Agent;
@@ -303,11 +302,6 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
         </div>
       </section>
 
-      {/* Gallery Section */}
-      {(agent.galleryImages?.length || agent.promoVideo) && (
-        <GallerySection agent={agent} />
-      )}
-
       {/* How It Works Section */}
       <section id="how-it-works-section" className="bg-white py-16 md:py-24">
         <div className="max-w-5xl mx-auto px-4 md:px-10">
@@ -453,115 +447,6 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
         </div>
       </section>
     </div>
-  );
-};
-
-// Gallery Section Component
-const GallerySection = ({ agent }: { agent: Agent }) => {
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
-  return (
-    <section className="bg-black py-12 md:py-20">
-      <div className="max-w-6xl mx-auto px-4 md:px-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex items-center gap-3 mb-8"
-        >
-          <div 
-            className="w-10 h-10 rounded-full flex items-center justify-center"
-            style={{ background: getAgentGradient(agent.glowColor) }}
-          >
-            <Image className="w-5 h-5 text-white" />
-          </div>
-          <h3 className="text-xl md:text-2xl font-bold text-white">Behind the Scenes</h3>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          {/* Video */}
-          {agent.promoVideo && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="relative rounded-2xl overflow-hidden aspect-video bg-gray-900 group cursor-pointer"
-              onClick={() => setIsVideoPlaying(!isVideoPlaying)}
-            >
-              {!isVideoPlaying ? (
-                <>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-                  <div className="absolute inset-0 flex items-center justify-center z-20">
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center"
-                      style={{ background: getAgentGradient(agent.glowColor) }}
-                    >
-                      <Play className="w-8 h-8 text-white ml-1" fill="white" />
-                    </motion.div>
-                  </div>
-                  <video
-                    src={agent.promoVideo}
-                    className="w-full h-full object-cover"
-                    muted
-                    playsInline
-                  />
-                </>
-              ) : (
-                <video
-                  src={agent.promoVideo}
-                  className="w-full h-full object-cover"
-                  controls
-                  autoPlay
-                  playsInline
-                />
-              )}
-            </motion.div>
-          )}
-
-          {/* Gallery Images */}
-          {agent.galleryImages?.map((image, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="relative rounded-2xl overflow-hidden aspect-video cursor-pointer group"
-              onClick={() => setSelectedImage(image)}
-            >
-              <motion.img
-                src={image}
-                alt={`${agent.name} gallery ${index + 1}`}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Lightbox */}
-        {selectedImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
-            onClick={() => setSelectedImage(null)}
-          >
-            <motion.img
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              src={selectedImage}
-              alt="Gallery preview"
-              className="max-w-full max-h-[90vh] object-contain rounded-lg"
-            />
-          </motion.div>
-        )}
-      </div>
-    </section>
   );
 };
 

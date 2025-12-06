@@ -7,12 +7,6 @@ import tobbyImg from "@/assets/agents/tobby.png";
 import nanoImg from "@/assets/agents/nano.png";
 import skootImg from "@/assets/agents/skoot.png";
 
-// Gallery images
-import galleryLikeSproutPodcast from "@/assets/agents/gallery-like-sprout-podcast.jpeg";
-import gallerySkootOffice from "@/assets/agents/gallery-skoot-office.jpeg";
-import gallerySproutLikeStudio from "@/assets/agents/gallery-sprout-like-studio.jpeg";
-import galleryTeamDesk from "@/assets/agents/gallery-team-desk.jpeg";
-
 export type GlowColor = "emerald" | "rose" | "indigo" | "cyan" | "amber" | "orange" | "teal" | "fuchsia";
 
 export interface Agent {
@@ -33,8 +27,6 @@ export interface Agent {
   surprisingFact: string;
   hiddenTalent: string;
   hobbies: string[];
-  galleryImages?: string[];
-  promoVideo?: string;
 }
 
 export const agents: Agent[] = [
@@ -66,9 +58,7 @@ export const agents: Agent[] = [
     expertise: ["Email Automation", "Copywriting", "A/B Testing", "Segmentation", "Analytics"],
     surprisingFact: "Can write 50 unique subject lines in under 30 seconds.",
     hiddenTalent: "Predicting the perfect send time for maximum open rates using behavioral analysis.",
-    hobbies: ["📧 Crafting perfect subject lines", "📊 Analyzing open rates", "🎯 Segmenting audiences", "💡 Testing new ideas"],
-    galleryImages: [gallerySproutLikeStudio, galleryTeamDesk],
-    promoVideo: "/videos/agents-promo.mp4"
+    hobbies: ["📧 Crafting perfect subject lines", "📊 Analyzing open rates", "🎯 Segmenting audiences", "💡 Testing new ideas"]
   },
   {
     id: "lilly",
@@ -158,9 +148,7 @@ export const agents: Agent[] = [
     expertise: ["Content Strategy", "Community Management", "Trend Analysis", "Copywriting", "Visual Planning"],
     surprisingFact: "Has analyzed over 1 million viral posts to understand what makes content spread.",
     hiddenTalent: "Predicting which content will go viral before it's posted.",
-    hobbies: ["📱 Scrolling trends", "✍️ Writing captions", "🎨 Planning feeds", "💬 Engaging followers"],
-    galleryImages: [galleryLikeSproutPodcast, galleryTeamDesk],
-    promoVideo: "/videos/agents-promo.mp4"
+    hobbies: ["📱 Scrolling trends", "✍️ Writing captions", "🎨 Planning feeds", "💬 Engaging followers"]
   },
   {
     id: "zen",
@@ -280,8 +268,7 @@ export const agents: Agent[] = [
     expertise: ["Talent Acquisition", "Resume Screening", "Job Descriptions", "Interview Coordination", "Onboarding"],
     surprisingFact: "Can review 100 resumes in under 10 minutes.",
     hiddenTalent: "Finding the perfect match in a haystack of candidates using pattern recognition.",
-    hobbies: ["🌐 Networking with talent", "📝 Crafting job posts", "📅 Organizing interviews", "🎉 Welcoming new hires"],
-    galleryImages: [gallerySkootOffice, galleryTeamDesk]
+    hobbies: ["🌐 Networking with talent", "📝 Crafting job posts", "📅 Organizing interviews", "🎉 Welcoming new hires"]
   }
 ];
 
