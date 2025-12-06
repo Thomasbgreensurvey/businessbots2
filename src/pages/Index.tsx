@@ -168,12 +168,9 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6" style={{ letterSpacing: '-0.02em', lineHeight: 1.05 }}>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-8" style={{ letterSpacing: '-0.02em', lineHeight: 1.05 }}>
               {featuredAgent.heroHeadline}
             </h1>
-            <p className="text-white/60 text-base md:text-lg mb-8 max-w-md font-medium">
-              {featuredAgent.heroSubtext}
-            </p>
             <button 
               onClick={() => onSelectAgent(featuredAgent)}
               className="btn-primary text-base px-8 py-4 shadow-lg shadow-accent/25 pointer-events-auto"
