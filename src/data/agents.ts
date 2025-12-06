@@ -93,45 +93,15 @@ export const agents: Agent[] = [
   {
     id: "banjo",
     name: "Banjo",
-    role: "Social Media Manager",
-    shortRole: "Social Media",
-    tagline: "Your Social Growth Partner on AI",
-    heroHeadline: "Go Viral Without The Grind",
-    heroSubtext: "Content that stops the scroll, grows your following, and turns engagement into sales. 24/7 social presence made easy.",
-    description: "Banjo creates viral content, schedules posts across all platforms, and engages with your community 24/7.",
-    extendedDescription: "Meet Banjo. The AI-powered social media manager that makes your brand unforgettable. Trained on viral content patterns, Banjo creates scroll-stopping posts and manages your community around the clock. Traditional social media management takes teams, but Banjo handles it all solo.",
-    image: banjoImg,
-    glowColor: "indigo",
-    capabilities: [
-      "Content creation",
-      "Multi-platform scheduling",
-      "Community engagement",
-      "Trend monitoring",
-      "Analytics dashboard"
-    ],
-    useCases: [
-      "Banjo, create a week's worth of Instagram posts.",
-      "Banjo, write engaging captions for our product photos.",
-      "Banjo, respond to comments on our latest post.",
-      "Banjo, find trending hashtags in our niche."
-    ],
-    expertise: ["Content Strategy", "Community Management", "Trend Analysis", "Copywriting", "Visual Planning"],
-    surprisingFact: "Has analyzed over 1 million viral posts to understand what makes content spread.",
-    hiddenTalent: "Predicting which content will go viral before it's posted.",
-    hobbies: ["📱 Scrolling trends", "✍️ Writing captions", "🎨 Planning feeds", "💬 Engaging followers"]
-  },
-  {
-    id: "timi",
-    name: "Timi",
     role: "Customer Support AI",
     shortRole: "Support",
     tagline: "Your Customer Hero on AI",
     heroHeadline: "Happy Customers, Zero Wait Time",
     heroSubtext: "Instant support that resolves 80% of issues on the spot. Turn complaints into compliments automatically.",
-    description: "Timi provides instant support, resolving 80% of tickets instantly and escalating complex issues when needed.",
-    extendedDescription: "Meet Timi. The AI-powered support agent that turns frustrated customers into loyal fans. Trained on millions of support interactions, Timi resolves issues instantly with patience and accuracy. Traditional support means long wait times, but Timi responds in seconds.",
-    image: timiImg,
-    glowColor: "cyan",
+    description: "Banjo provides instant support, resolving 80% of tickets instantly and escalating complex issues when needed.",
+    extendedDescription: "Meet Banjo. The AI-powered support agent that turns frustrated customers into loyal fans. Trained on millions of support interactions, Banjo resolves issues instantly with patience and accuracy. Traditional support means long wait times, but Banjo responds in seconds.",
+    image: banjoImg,
+    glowColor: "indigo",
     capabilities: [
       "24/7 instant responses",
       "Multi-language support",
@@ -140,10 +110,10 @@ export const agents: Agent[] = [
       "Customer satisfaction tracking"
     ],
     useCases: [
-      "Timi, help this customer track their order.",
-      "Timi, explain our refund policy clearly.",
-      "Timi, escalate this complex issue to the team.",
-      "Timi, update our FAQ with common questions."
+      "Banjo, help this customer track their order.",
+      "Banjo, explain our refund policy clearly.",
+      "Banjo, escalate this complex issue to the team.",
+      "Banjo, update our FAQ with common questions."
     ],
     expertise: ["Customer Care", "Problem Solving", "Multi-language", "Ticket Management", "Knowledge Base"],
     surprisingFact: "Can handle 1,000 conversations simultaneously without breaking a sweat.",
@@ -153,13 +123,43 @@ export const agents: Agent[] = [
   {
     id: "like",
     name: "Like",
+    role: "Social Media Manager",
+    shortRole: "Social Media",
+    tagline: "Your Social Growth Partner on AI",
+    heroHeadline: "Go Viral Without The Grind",
+    heroSubtext: "Content that stops the scroll, grows your following, and turns engagement into sales. 24/7 social presence made easy.",
+    description: "Like creates viral content, schedules posts across all platforms, and engages with your community 24/7.",
+    extendedDescription: "Meet Like. The AI-powered social media manager that makes your brand unforgettable. Trained on viral content patterns, Like creates scroll-stopping posts and manages your community around the clock. Traditional social media management takes teams, but Like handles it all solo.",
+    image: timiImg,
+    glowColor: "cyan",
+    capabilities: [
+      "Content creation",
+      "Multi-platform scheduling",
+      "Community engagement",
+      "Trend monitoring",
+      "Analytics dashboard"
+    ],
+    useCases: [
+      "Like, create a week's worth of Instagram posts.",
+      "Like, write engaging captions for our product photos.",
+      "Like, respond to comments on our latest post.",
+      "Like, find trending hashtags in our niche."
+    ],
+    expertise: ["Content Strategy", "Community Management", "Trend Analysis", "Copywriting", "Visual Planning"],
+    surprisingFact: "Has analyzed over 1 million viral posts to understand what makes content spread.",
+    hiddenTalent: "Predicting which content will go viral before it's posted.",
+    hobbies: ["📱 Scrolling trends", "✍️ Writing captions", "🎨 Planning feeds", "💬 Engaging followers"]
+  },
+  {
+    id: "ike",
+    name: "Ike",
     role: "Lead Generation Expert",
     shortRole: "Lead Gen",
     tagline: "Your Pipeline Partner on AI",
     heroHeadline: "Fill Your Pipeline Overnight",
     heroSubtext: "Qualified leads delivered to your CRM daily. Stop chasing, start closing with AI-powered prospecting.",
-    description: "Like scrapes the web for high-quality prospects and enriches data before it hits your CRM.",
-    extendedDescription: "Meet Like. The AI-powered lead hunter that fills your pipeline with qualified prospects. Trained on successful sales patterns, Like finds and enriches leads that actually convert. Traditional prospecting takes days, but Like delivers qualified leads in minutes.",
+    description: "Ike scrapes the web for high-quality prospects and enriches data before it hits your CRM.",
+    extendedDescription: "Meet Ike. The AI-powered lead hunter that fills your pipeline with qualified prospects. Trained on successful sales patterns, Ike finds and enriches leads that actually convert. Traditional prospecting takes days, but Ike delivers qualified leads in minutes.",
     image: likeImg,
     glowColor: "amber",
     capabilities: [
@@ -170,10 +170,10 @@ export const agents: Agent[] = [
       "Contact verification"
     ],
     useCases: [
-      "Like, find 50 decision-makers at SaaS companies.",
-      "Like, enrich these contacts with LinkedIn data.",
-      "Like, score these leads by buying intent.",
-      "Like, verify these email addresses."
+      "Ike, find 50 decision-makers at SaaS companies.",
+      "Ike, enrich these contacts with LinkedIn data.",
+      "Ike, score these leads by buying intent.",
+      "Ike, verify these email addresses."
     ],
     expertise: ["Prospecting", "Data Enrichment", "Lead Scoring", "Research", "CRM Integration"],
     surprisingFact: "Can find and verify 500 qualified leads in under an hour.",
