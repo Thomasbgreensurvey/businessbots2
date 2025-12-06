@@ -125,7 +125,7 @@ const Pricing = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}

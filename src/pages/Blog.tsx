@@ -66,7 +66,7 @@ const Blog = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black overflow-x-hidden">
+    <div className="min-h-screen bg-black">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-black/95 backdrop-blur-sm border-b border-white/10">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">

@@ -73,7 +73,7 @@ const HelpCentre = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">

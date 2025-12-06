@@ -21,7 +21,7 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
 
   return (
     <div 
-      className="min-h-screen w-full overflow-x-hidden"
+      className="min-h-screen w-full"
       style={{
         background: getAgentGradient(agent.glowColor),
       }}
