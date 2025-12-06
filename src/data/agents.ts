@@ -7,6 +7,16 @@ import tobbyImg from "@/assets/agents/tobby.png";
 import nanoImg from "@/assets/agents/nano.png";
 import skootImg from "@/assets/agents/skoot.png";
 
+// Alt images for enhanced profile sections
+import sproutAltImg from "@/assets/agents/sprout-alt.png";
+import lillyAltImg from "@/assets/agents/lilly-alt.png";
+import banjoAltImg from "@/assets/agents/banjo-alt.png";
+import likeAltImg from "@/assets/agents/like-alt.png";
+import zenAltImg from "@/assets/agents/zen-alt.png";
+import tobbyAltImg from "@/assets/agents/tobby-alt.png";
+import nanoAltImg from "@/assets/agents/nano-alt.png";
+import skootAltImg from "@/assets/agents/skoot-alt.png";
+
 export type GlowColor = "emerald" | "rose" | "indigo" | "cyan" | "amber" | "orange" | "teal" | "fuchsia";
 
 export interface Agent {
@@ -20,6 +30,7 @@ export interface Agent {
   description: string;
   extendedDescription: string;
   image: string;
+  altImage: string;
   glowColor: GlowColor;
   capabilities: string[];
   useCases: string[];
@@ -41,6 +52,7 @@ export const agents: Agent[] = [
     description: "Sprout crafts high-converting email campaigns, segments audiences automatically, and nurtures leads while you sleep.",
     extendedDescription: "Meet Sprout. The AI-powered email marketer that transforms your inbox into a revenue machine. Trained on thousands of successful campaigns, Sprout optimizes your email strategy from subject lines to send times. Traditional marketers spend hours crafting emails, but Sprout delivers personalized campaigns in seconds.",
     image: sproutImg,
+    altImage: sproutAltImg,
     glowColor: "emerald",
     capabilities: [
       "Automated email sequences",
@@ -71,6 +83,7 @@ export const agents: Agent[] = [
     description: "Lilly handles onboarding, employee queries, and internal communications with empathy and precision.",
     extendedDescription: "Meet Lilly. The AI-powered HR specialist that transforms employee experience. Trained on best HR practices, Lilly manages everything from onboarding to policy questions with care. Traditional HR tasks take hours, but Lilly handles them instantly while maintaining the human touch.",
     image: lillyImg,
+    altImage: lillyAltImg,
     glowColor: "rose",
     capabilities: [
       "Employee onboarding",
@@ -101,6 +114,7 @@ export const agents: Agent[] = [
     description: "Banjo provides instant support, resolving 80% of tickets instantly and escalating complex issues when needed.",
     extendedDescription: "Meet Banjo. The AI-powered support agent that turns frustrated customers into loyal fans. Trained on millions of support interactions, Banjo resolves issues instantly with patience and accuracy. Traditional support means long wait times, but Banjo responds in seconds.",
     image: banjoImg,
+    altImage: banjoAltImg,
     glowColor: "indigo",
     capabilities: [
       "24/7 instant responses",
@@ -131,6 +145,7 @@ export const agents: Agent[] = [
     description: "Like creates viral content, schedules posts across all platforms, and engages with your community 24/7.",
     extendedDescription: "Meet Like. The AI-powered social media manager that makes your brand unforgettable. Trained on viral content patterns, Like creates scroll-stopping posts and manages your community around the clock. Traditional social media management takes teams, but Like handles it all solo.",
     image: timiImg,
+    altImage: likeAltImg,
     glowColor: "cyan",
     capabilities: [
       "Content creation",
@@ -161,6 +176,7 @@ export const agents: Agent[] = [
     description: "Zen scrapes the web for high-quality prospects and enriches data before it hits your CRM.",
     extendedDescription: "Meet Zen. The AI-powered lead hunter that fills your pipeline with qualified prospects. Trained on successful sales patterns, Zen finds and enriches leads that actually convert. Traditional prospecting takes days, but Zen delivers qualified leads in minutes.",
     image: likeImg,
+    altImage: zenAltImg,
     glowColor: "amber",
     capabilities: [
       "Prospect discovery",
@@ -191,6 +207,7 @@ export const agents: Agent[] = [
     description: "Tobby makes hundreds of calls daily with a hyper-realistic voice to set appointments and close deals.",
     extendedDescription: "Meet Tobby. The AI-powered sales rep that never stops dialing. Trained on winning sales scripts, Tobby makes personalized calls that book meetings. Traditional cold calling burns out reps, but Tobby stays energetic call after call.",
     image: tobbyImg,
+    altImage: tobbyAltImg,
     glowColor: "orange",
     capabilities: [
       "Automated cold calling",
@@ -221,6 +238,7 @@ export const agents: Agent[] = [
     description: "Nano answers every incoming call instantly, routing customers or taking orders with zero hold time.",
     extendedDescription: "Meet Nano. The AI-powered inbound specialist that never misses a call. Trained on customer service excellence, Nano handles inquiries, takes orders, and routes calls perfectly. Traditional call centers mean hold times, but Nano answers instantly.",
     image: nanoImg,
+    altImage: nanoAltImg,
     glowColor: "teal",
     capabilities: [
       "Instant call answering",
@@ -251,6 +269,7 @@ export const agents: Agent[] = [
     description: "Skoot sources top talent, screens resumes, and conducts initial interviews to find your perfect candidate.",
     extendedDescription: "Meet Skoot. The AI-powered recruiter that transforms hiring challenges into opportunities. Trained on thousands of best HR practices, Skoot optimizes your recruitment process from outreach to onboarding. Traditional recruiters spend hours on repetitive tasks, but Skoot handles them in minutes.",
     image: skootImg,
+    altImage: skootAltImg,
     glowColor: "fuchsia",
     capabilities: [
       "Candidate sourcing",
