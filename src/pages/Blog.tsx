@@ -3,7 +3,7 @@ import { ArrowLeft, Calendar, Clock, ChevronRight, Users, Rocket, ExternalLink }
 import { useNavigate } from "react-router-dom";
 import skoolBadge from "@/assets/skool-badge.png";
 
-const SKOOL_LINK = "https://www.skool.com/ai-business-marketing";
+const SKOOL_LINK = "https://www.skool.com/ukskoolers/about?ref=002573a2eb4443249a5fce3b6607713d";
 
 const blogPosts = [
   {
