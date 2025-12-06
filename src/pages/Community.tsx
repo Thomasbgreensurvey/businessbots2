@@ -5,7 +5,7 @@ import skoolBadge from "@/assets/skool-badge.png";
 import skoolBanner from "@/assets/skool-banner.jpeg";
 import skoolLogo from "@/assets/skool-logo.jpeg";
 
-const SKOOL_LINK = "https://www.skool.com/ukskoolers/about?ref=002573a2eb4443249a5fce3b6607713d";
+const SKOOL_LINK = "https://www.skool.com/sales-ai-business-marketing-7663/about?ref=002573a2eb4443249a5fce3b6607713d";
 
 const Community = () => {
   const navigate = useNavigate();
