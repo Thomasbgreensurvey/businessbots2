@@ -161,7 +161,7 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
         </div>
 
         {/* Hero Content - Left aligned */}
-        <div className="absolute bottom-[28%] md:bottom-[30%] left-6 md:left-12 lg:left-20 z-20 max-w-xl pointer-events-none">
+        <div className="absolute top-[15%] sm:top-[18%] md:top-[20%] left-6 md:left-12 lg:left-20 z-20 max-w-xl pointer-events-none">
           <motion.div
             key={featuredAgent.id + '-content'}
             initial={{ opacity: 0, y: 40 }}
