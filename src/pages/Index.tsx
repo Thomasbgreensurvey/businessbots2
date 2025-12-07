@@ -12,7 +12,7 @@ import robotFigurine from "@/assets/robot-figurine.png";
 import robotHighfive from "@/assets/robot-highfive.jpeg";
 import phoneApp from "@/assets/phone-app.jpeg";
 import phoneIntegrations from "@/assets/phone-integrations.jpeg";
-
+import botsPair from "@/assets/bots-pair.jpeg";
 const Index = () => {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -501,6 +501,24 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
               src={integrationsImg} 
               alt="Integrations with Facebook, Instagram, Gmail, Google Calendar, Outlook, Google Drive, Strava, and Notion" 
               className="w-full max-w-3xl rounded-2xl"
+            />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Image Break 4 - Bots Pair */}
+      <section className="bg-black py-16 md:py-24">
+        <div className="max-w-4xl mx-auto px-4 md:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-3xl overflow-hidden"
+          >
+            <img 
+              src={botsPair} 
+              alt="Business Bots UK AI assistants" 
+              className="w-full h-auto object-cover"
             />
           </motion.div>
         </div>
