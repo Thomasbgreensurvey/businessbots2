@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import caseStudiesBot from "@/assets/case-studies-bot.png";
 
 const SKOOL_BLUE = "#4B5FD1";
 
@@ -132,6 +133,22 @@ const CaseStudies = () => {
             Real results from businesses using our AI employees
           </motion.p>
         </div>
+      </section>
+
+      {/* Featured Image */}
+      <section className="pb-16 px-4 bg-white">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="max-w-md mx-auto"
+        >
+          <img 
+            src={caseStudiesBot}
+            alt="Business Bots UK AI assistant"
+            className="w-full h-auto object-contain"
+          />
+        </motion.div>
       </section>
 
       {/* Divider */}
