@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
+import blogStudio from "@/assets/blog-studio.jpeg";
 const SKOOL_BLUE = "#4B5FD1";
 
 const staggerContainer = {
@@ -118,6 +118,24 @@ const Blog = () => {
             Insights, tips, and stories about AI employees and business automation
           </motion.p>
         </div>
+      </section>
+
+      {/* Featured Image */}
+      <section className="pb-16 px-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="max-w-4xl mx-auto"
+        >
+          <div className="rounded-2xl overflow-hidden shadow-xl">
+            <img 
+              src={blogStudio}
+              alt="Business Bots UK studio with AI assistants"
+              className="w-full h-auto object-cover"
+            />
+          </div>
+        </motion.div>
       </section>
 
       {/* Divider */}
