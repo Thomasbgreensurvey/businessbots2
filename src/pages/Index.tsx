@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { agents, Agent } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
 import { SideNav } from "@/components/SideNav";
-import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle, ChevronLeft, ChevronRight, Phone } from "lucide-react";
 import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 import integrationsImg from "@/assets/integrations.jpeg";
@@ -88,19 +88,27 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="fixed top-0 left-0 right-0 z-40 px-6 md:px-10 py-4"
+        className="fixed top-0 left-0 right-0 z-40 px-4 md:px-10 py-4"
       >
         <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
             <button
               onClick={onOpenNav}
               className="w-10 h-10 rounded-full bg-white/5 backdrop-blur-md flex items-center justify-center hover:bg-white/10 transition-colors border border-white/10"
             >
               <Menu className="w-5 h-5 text-white" />
             </button>
-            <img src={logo} alt="Business Bots UK" className="h-10 w-auto" />
+            <img src={logo} alt="Business Bots UK" className="h-8 md:h-10 w-auto" />
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
+            {/* Phone Number */}
+            <a 
+              href="tel:01916733290"
+              className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors text-xs md:text-sm font-medium"
+            >
+              <Phone className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              <span className="hidden sm:inline">0191 673 3290</span>
+            </a>
             <button 
               onClick={() => {
                 navigate('/pricing');
@@ -110,7 +118,7 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             >
               Log in
             </button>
-            <span className="font-robotic text-white font-bold text-sm md:text-base tracking-wide">
+            <span className="hidden md:inline font-robotic text-white font-bold text-sm md:text-base tracking-wide">
               Business Bots UK
             </span>
           </div>
