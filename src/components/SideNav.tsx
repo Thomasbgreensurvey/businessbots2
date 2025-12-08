@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, FileText, Briefcase, HelpCircle, LifeBuoy, Bot, CreditCard, Users } from "lucide-react";
+import { X, FileText, Briefcase, HelpCircle, LifeBuoy, Bot, CreditCard, Users, MessageCircle } from "lucide-react";
 import { agents, Agent } from "@/data/agents";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
@@ -21,6 +21,7 @@ const resourceLinks = [
   { icon: HelpCircle, label: "FAQ", path: "/faq" },
   { icon: LifeBuoy, label: "Help Centre", path: "/help-centre" },
   { icon: Bot, label: "What is an AI Employee?", path: "/what-is-ai-employee" },
+  { icon: MessageCircle, label: "Contact Us", path: "/contact" },
 ];
 
 export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: SideNavProps) => {
@@ -140,16 +141,6 @@ export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: Sid
                 <span className="font-medium text-[15px]" style={{ color: '#7B8FE1' }}>Join Our Community</span>
               </motion.button>
 
-              {/* Support Email */}
-              <a
-                href="mailto:support@businessbotsuk.com"
-                className="mt-6 flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-colors bg-transparent hover:bg-white/[0.06]"
-              >
-                <div className="w-10 h-10 rounded-full bg-white/[0.08] flex items-center justify-center flex-shrink-0">
-                  <span className="text-white/70 text-lg">✉</span>
-                </div>
-                <span className="text-white/80 font-medium text-[15px]">support@businessbotsuk.com</span>
-              </a>
             </div>
 
             {/* Footer */}
