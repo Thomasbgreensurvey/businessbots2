@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Check, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, Check, Loader2, Sparkles, User, Mail, Phone, Building } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import logo from "@/assets/logo.png";
 
 const GetStarted = () => {
   const navigate = useNavigate();
@@ -70,22 +69,30 @@ const GetStarted = () => {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6">
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full text-center"
+          className="text-center max-w-md"
         >
-          <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-6">
-            <Check className="w-10 h-10 text-emerald-400" />
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Check className="w-10 h-10 text-green-600" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground mb-4">You're All Set!</h1>
-          <p className="text-muted-foreground mb-8">
-            Thanks for reaching out. Our team will contact you within 24 hours to get you started with Business Bots UK.
+          <h1
+            className="text-3xl font-bold text-gray-900 mb-4"
+            style={{ fontFamily: "'Dancing Script', cursive" }}
+          >
+            You're All Set!
+          </h1>
+          <p className="text-gray-600 mb-6">
+            Thanks for reaching out, <strong>{formData.name}</strong>! Our team will contact you within 24 hours.
+          </p>
+          <p className="text-sm text-gray-500 mb-8">
+            A confirmation has been sent to <strong>{formData.email}</strong>
           </p>
           <button
             onClick={() => navigate("/")}
-            className="px-8 py-3 rounded-full font-semibold text-primary-foreground bg-primary hover:opacity-90 transition-opacity"
+            className="px-8 py-3 rounded-full font-semibold text-white bg-[#4B5FD1] hover:bg-[#3a4db8] transition-colors"
           >
             Back to Home
           </button>
@@ -95,142 +102,147 @@ const GetStarted = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <motion.header
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-background/80 backdrop-blur-md border-b border-border"
-      >
-        <div className="flex items-center justify-between max-w-4xl mx-auto">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate("/pricing")}
-              className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5 text-foreground" />
-            </button>
-            <img src={logo} alt="Business Bots UK" className="h-8 w-auto" />
-          </div>
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span className="hidden sm:inline">Back</span>
+          </button>
+          <h1 className="text-xl font-semibold text-gray-900">Get Started</h1>
+          <div className="w-16" />
         </div>
-      </motion.header>
+      </header>
 
-      {/* Main Content */}
-      <section className="pt-28 pb-16 px-6">
-        <div className="max-w-lg mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-10"
+      <main className="max-w-2xl mx-auto px-4 py-8 md:py-12">
+        {/* Hero Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-10"
+        >
+          <h2
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#4B5FD1] mb-4"
+            style={{ fontFamily: "'Dancing Script', cursive" }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
-              <Sparkles className="w-4 h-4" />
-              <span>Get Started</span>
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
-              Let's Get You Set Up
-            </h1>
-            <p className="text-muted-foreground">
-              Fill in your details and our team will reach out within 24 hours.
-            </p>
-          </motion.div>
+            Let's Get You Set Up
+          </h2>
+          <p className="text-gray-600 text-lg max-w-xl mx-auto">
+            Share your details and our team will reach out within 24 hours.
+          </p>
+        </motion.div>
 
-          <motion.form
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            onSubmit={handleSubmit}
-            className="space-y-5"
-          >
+        {/* Form Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-gray-50 rounded-2xl p-6 md:p-8"
+        >
+          <div className="flex items-center gap-2 mb-6">
+            <Sparkles className="w-5 h-5 text-[#4B5FD1]" />
+            <h3 className="text-lg font-semibold text-gray-900">Your Details</h3>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name */}
             <div>
-              <label className="block text-foreground text-sm font-medium mb-2">
-                Full Name <span className="text-destructive">*</span>
+              <label className="text-gray-700 flex items-center gap-2 mb-2 text-sm font-medium">
+                <User className="w-4 h-4" />
+                Full Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#4B5FD1] focus:ring-2 focus:ring-[#4B5FD1]/20 transition-all"
                 placeholder="John Smith"
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-foreground text-sm font-medium mb-2">
-                Email Address <span className="text-destructive">*</span>
+              <label className="text-gray-700 flex items-center gap-2 mb-2 text-sm font-medium">
+                <Mail className="w-4 h-4" />
+                Email Address <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#4B5FD1] focus:ring-2 focus:ring-[#4B5FD1]/20 transition-all"
                 placeholder="john@company.com"
               />
             </div>
 
-            {/* Phone & Company row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-foreground text-sm font-medium mb-2">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-                  placeholder="07123 456789"
-                />
-              </div>
-              <div>
-                <label className="block text-foreground text-sm font-medium mb-2">
-                  Company Name
-                </label>
-                <input
-                  type="text"
-                  value={formData.company}
-                  onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-                  placeholder="Your Company Ltd"
-                />
-              </div>
+            {/* Phone */}
+            <div>
+              <label className="text-gray-700 flex items-center gap-2 mb-2 text-sm font-medium">
+                <Phone className="w-4 h-4" />
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#4B5FD1] focus:ring-2 focus:ring-[#4B5FD1]/20 transition-all"
+                placeholder="+44 191 673 3290"
+              />
+            </div>
+
+            {/* Company */}
+            <div>
+              <label className="text-gray-700 flex items-center gap-2 mb-2 text-sm font-medium">
+                <Building className="w-4 h-4" />
+                Company Name
+              </label>
+              <input
+                type="text"
+                value={formData.company}
+                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#4B5FD1] focus:ring-2 focus:ring-[#4B5FD1]/20 transition-all"
+                placeholder="Acme Inc."
+              />
             </div>
 
             {/* Plan Interest */}
             <div>
-              <label className="block text-foreground text-sm font-medium mb-2">
-                Plan Interest <span className="text-destructive">*</span>
+              <label className="text-gray-700 flex items-center gap-2 mb-2 text-sm font-medium">
+                <Sparkles className="w-4 h-4" />
+                Plan Interest <span className="text-red-500">*</span>
               </label>
               <select
                 required
                 value={formData.plan_interest}
                 onChange={(e) => setFormData({ ...formData, plan_interest: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 text-gray-900 focus:outline-none focus:border-[#4B5FD1] focus:ring-2 focus:ring-[#4B5FD1]/20 transition-all"
               >
                 <option value="">Select a plan...</option>
-                <option value="Starter - £49/month">Starter - £49/month</option>
-                <option value="Business - £149/month">Business - £149/month</option>
-                <option value="Business Plus - £249/month">Business Plus - £249/month</option>
-                <option value="Pro - £499/month">Pro - £499/month</option>
-                <option value="Custom Premium - From £999/month">Custom Premium - From £999/month</option>
-                <option value="Not sure yet">Not sure yet - Need advice</option>
+                <option value="Starter - £49/month">Starter — £49/month</option>
+                <option value="Business - £149/month">Business — £149/month</option>
+                <option value="Business Plus - £249/month">Business Plus — £249/month</option>
+                <option value="Pro - £499/month">Pro — £499/month</option>
+                <option value="Custom Premium - From £999/month">Custom Premium — From £999/month</option>
+                <option value="Not sure yet">Not sure yet — Need advice</option>
               </select>
             </div>
 
             {/* Message */}
             <div>
-              <label className="block text-foreground text-sm font-medium mb-2">
+              <label className="text-gray-700 mb-2 block text-sm font-medium">
                 Additional Information
               </label>
               <textarea
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 rows={3}
-                className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none"
+                className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#4B5FD1] focus:ring-2 focus:ring-[#4B5FD1]/20 transition-all resize-none"
                 placeholder="Tell us about your business needs..."
               />
             </div>
@@ -239,7 +251,7 @@ const GetStarted = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 rounded-xl font-semibold text-primary-foreground bg-primary hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-lg font-semibold text-white bg-[#4B5FD1] hover:bg-[#3a4db8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg mt-2"
             >
               {isSubmitting ? (
                 <>
@@ -250,13 +262,13 @@ const GetStarted = () => {
                 "Submit Request"
               )}
             </button>
+          </form>
 
-            <p className="text-center text-muted-foreground text-xs">
-              By submitting, you agree to be contacted about Business Bots UK services.
-            </p>
-          </motion.form>
-        </div>
-      </section>
+          <p className="text-center text-sm text-gray-500 mt-6">
+            We'll get back to you within 24 hours
+          </p>
+        </motion.div>
+      </main>
     </div>
   );
 };
