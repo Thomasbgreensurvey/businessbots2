@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Phone, Mail, Send, CheckCircle } from "lucide-react";
+import { ArrowLeft, Phone, Mail, Send, CheckCircle, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,10 +8,18 @@ import { z } from "zod";
 
 const SKOOL_BLUE = "#4B5FD1";
 
+const contactTimeOptions = [
+  "Morning (9am - 12pm)",
+  "Afternoon (12pm - 5pm)",
+  "Evening (5pm - 8pm)",
+  "Anytime",
+];
+
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
   email: z.string().trim().email("Please enter a valid email").max(255, "Email must be less than 255 characters"),
   phone: z.string().trim().max(30, "Phone number is too long").optional().or(z.literal("")),
+  bestTimeToContact: z.string().min(1, "Please select a preferred contact time"),
   message: z.string().trim().min(1, "Message is required").max(2000, "Message must be less than 2000 characters"),
 });
 
@@ -23,11 +31,12 @@ const Contact = () => {
     name: "",
     email: "",
     phone: "",
+    bestTimeToContact: "",
     message: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     // Clear error when user starts typing
@@ -65,6 +74,25 @@ const Contact = () => {
 
       if (error) {
         throw error;
+      }
+
+      // Send confirmation email via edge function
+      try {
+        const { error: emailError } = await supabase.functions.invoke('send-contact-confirmation', {
+          body: {
+            customerName: formData.name.trim(),
+            customerEmail: formData.email.trim(),
+            phone: formData.phone.trim() || undefined,
+            bestTimeToContact: formData.bestTimeToContact,
+            message: formData.message.trim(),
+          }
+        });
+
+        if (emailError) {
+          console.error("Email sending failed:", emailError);
+        }
+      } catch (emailErr) {
+        console.error("Error calling email function:", emailErr);
       }
 
       setIsSubmitted(true);
@@ -202,7 +230,7 @@ const Contact = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-xl border ${errors.name ? 'border-red-400' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-opacity-50 bg-white transition-all`}
+                  className={`w-full px-4 py-3 rounded-xl border ${errors.name ? 'border-red-400' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-opacity-50 bg-white text-gray-900 transition-all`}
                   style={{ '--tw-ring-color': SKOOL_BLUE } as React.CSSProperties}
                   placeholder="Your name"
                 />
@@ -219,7 +247,7 @@ const Contact = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-xl border ${errors.email ? 'border-red-400' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-opacity-50 bg-white transition-all`}
+                  className={`w-full px-4 py-3 rounded-xl border ${errors.email ? 'border-red-400' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-opacity-50 bg-white text-gray-900 transition-all`}
                   style={{ '--tw-ring-color': SKOOL_BLUE } as React.CSSProperties}
                   placeholder="your@email.com"
                 />
@@ -236,11 +264,36 @@ const Contact = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-xl border ${errors.phone ? 'border-red-400' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-opacity-50 bg-white transition-all`}
+                  className={`w-full px-4 py-3 rounded-xl border ${errors.phone ? 'border-red-400' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-opacity-50 bg-white text-gray-900 transition-all`}
                   style={{ '--tw-ring-color': SKOOL_BLUE } as React.CSSProperties}
                   placeholder="Your phone number"
                 />
                 {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+              </div>
+
+              <div>
+                <label htmlFor="bestTimeToContact" className="block text-sm font-medium text-gray-700 mb-2">
+                  <span className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" style={{ color: SKOOL_BLUE }} />
+                    Best time to contact you *
+                  </span>
+                </label>
+                <select
+                  id="bestTimeToContact"
+                  name="bestTimeToContact"
+                  value={formData.bestTimeToContact}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 rounded-xl border ${errors.bestTimeToContact ? 'border-red-400' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-opacity-50 bg-white text-gray-900 transition-all appearance-none cursor-pointer`}
+                  style={{ '--tw-ring-color': SKOOL_BLUE } as React.CSSProperties}
+                >
+                  <option value="" className="text-gray-400">Select a time</option>
+                  {contactTimeOptions.map((option) => (
+                    <option key={option} value={option} className="text-gray-900">
+                      {option}
+                    </option>
+                  ))}
+                </select>
+                {errors.bestTimeToContact && <p className="text-red-500 text-sm mt-1">{errors.bestTimeToContact}</p>}
               </div>
 
               <div>
@@ -253,7 +306,7 @@ const Contact = () => {
                   value={formData.message}
                   onChange={handleChange}
                   rows={5}
-                  className={`w-full px-4 py-3 rounded-xl border ${errors.message ? 'border-red-400' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-opacity-50 bg-white transition-all resize-none`}
+                  className={`w-full px-4 py-3 rounded-xl border ${errors.message ? 'border-red-400' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-opacity-50 bg-white text-gray-900 transition-all resize-none`}
                   style={{ '--tw-ring-color': SKOOL_BLUE } as React.CSSProperties}
                   placeholder="How can we help you?"
                 />
@@ -289,7 +342,7 @@ const Contact = () => {
       <footer className="bg-gray-50 py-8 px-4 border-t border-gray-100">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-gray-500 text-sm">
-            © 2024 Business Bots UK. All rights reserved.
+            © {new Date().getFullYear()} Business Bots UK. All rights reserved.
           </p>
         </div>
       </footer>
