@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { agents, Agent } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
 import { SideNav } from "@/components/SideNav";
-import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle, ChevronLeft, ChevronRight, Phone } from "lucide-react";
+import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle, ChevronLeft, ChevronRight, Phone, Calendar, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 import integrationsImg from "@/assets/integrations.jpeg";
@@ -256,6 +256,24 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
               />
             ))}
           </div>
+
+          {/* CTA after roster */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-12 flex justify-center"
+          >
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/book-demo')}
+              className="flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-white bg-gradient-to-r from-emerald-500 to-cyan-500 shadow-lg shadow-emerald-500/25"
+            >
+              <Calendar className="w-5 h-5" />
+              Book a Free Demo
+            </motion.button>
+          </motion.div>
         </div>
       </section>
 
@@ -340,6 +358,33 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
               className="w-full h-auto object-cover"
             />
           </motion.div>
+          
+          {/* CTA after image */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/pricing')}
+              className="flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-white bg-gradient-to-r from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-500/25"
+            >
+              <CreditCard className="w-5 h-5" />
+              View Pricing Plans
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/contact')}
+              className="flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-white/90 border border-white/20 hover:bg-white/10 transition-colors"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Contact Sales
+            </motion.button>
+          </motion.div>
         </div>
       </section>
 
@@ -406,6 +451,24 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
               alt="Business Bots UK mobile app" 
               className="w-full h-auto object-cover"
             />
+          </motion.div>
+          
+          {/* CTA after image */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-10 flex justify-center"
+          >
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/book-demo')}
+              className="flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-white bg-gradient-to-r from-rose-500 to-orange-500 shadow-lg shadow-rose-500/25"
+            >
+              <Calendar className="w-5 h-5" />
+              Schedule Your Demo
+            </motion.button>
           </motion.div>
         </div>
       </section>
@@ -528,6 +591,33 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
               alt="Business Bots UK AI assistants" 
               className="w-full h-auto object-cover"
             />
+          </motion.div>
+          
+          {/* CTA after image */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/contact')}
+              className="flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-500 shadow-lg shadow-blue-500/25"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Contact Our Team
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/pricing')}
+              className="flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-white/90 border border-white/20 hover:bg-white/10 transition-colors"
+            >
+              <CreditCard className="w-5 h-5" />
+              See Plans
+            </motion.button>
           </motion.div>
         </div>
       </section>
