@@ -224,7 +224,28 @@ const BookDemo = () => {
                   today.setHours(0, 0, 0, 0);
                   return day === 0 || day === 6 || date < today;
                 }}
-                className="rounded-lg border-0 pointer-events-auto"
+                className="rounded-lg border-0 pointer-events-auto bg-white"
+                classNames={{
+                  months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+                  month: "space-y-4",
+                  caption: "flex justify-center pt-1 relative items-center",
+                  caption_label: "text-sm font-medium text-gray-900",
+                  nav: "space-x-1 flex items-center",
+                  nav_button: "h-7 w-7 bg-transparent p-0 hover:bg-gray-100 rounded-md inline-flex items-center justify-center text-gray-600 hover:text-gray-900",
+                  nav_button_previous: "absolute left-1",
+                  nav_button_next: "absolute right-1",
+                  table: "w-full border-collapse space-y-1",
+                  head_row: "flex",
+                  head_cell: "text-gray-500 rounded-md w-9 font-normal text-[0.8rem]",
+                  row: "flex w-full mt-2",
+                  cell: "h-9 w-9 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
+                  day: "h-9 w-9 p-0 font-normal text-gray-900 hover:bg-gray-100 rounded-md inline-flex items-center justify-center",
+                  day_selected: "bg-[#4B5FD1] text-white hover:bg-[#3a4db8] hover:text-white focus:bg-[#4B5FD1] focus:text-white rounded-md",
+                  day_today: "bg-gray-100 text-gray-900",
+                  day_outside: "text-gray-300 opacity-50",
+                  day_disabled: "text-gray-300 opacity-50",
+                  day_hidden: "invisible",
+                }}
               />
             </div>
 
@@ -286,7 +307,7 @@ const BookDemo = () => {
                     onChange={handleInputChange}
                     required
                     placeholder="John Smith"
-                    className="bg-white border-gray-200 focus:border-[#4B5FD1] focus:ring-[#4B5FD1]"
+                    className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-[#4B5FD1] focus:ring-[#4B5FD1]"
                   />
                 </div>
 
@@ -303,7 +324,7 @@ const BookDemo = () => {
                     onChange={handleInputChange}
                     required
                     placeholder="john@company.com"
-                    className="bg-white border-gray-200 focus:border-[#4B5FD1] focus:ring-[#4B5FD1]"
+                    className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-[#4B5FD1] focus:ring-[#4B5FD1]"
                   />
                 </div>
 
@@ -318,7 +339,7 @@ const BookDemo = () => {
                     value={formData.company}
                     onChange={handleInputChange}
                     placeholder="Acme Inc."
-                    className="bg-white border-gray-200 focus:border-[#4B5FD1] focus:ring-[#4B5FD1]"
+                    className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-[#4B5FD1] focus:ring-[#4B5FD1]"
                   />
                 </div>
 
@@ -334,7 +355,7 @@ const BookDemo = () => {
                     value={formData.phone}
                     onChange={handleInputChange}
                     placeholder="+44 191 673 3290"
-                    className="bg-white border-gray-200 focus:border-[#4B5FD1] focus:ring-[#4B5FD1]"
+                    className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-[#4B5FD1] focus:ring-[#4B5FD1]"
                   />
                 </div>
 
@@ -349,7 +370,7 @@ const BookDemo = () => {
                     onChange={handleInputChange}
                     placeholder="Tell us about your business needs..."
                     rows={3}
-                    className="bg-white border-gray-200 focus:border-[#4B5FD1] focus:ring-[#4B5FD1]"
+                    className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-[#4B5FD1] focus:ring-[#4B5FD1]"
                   />
                 </div>
 
