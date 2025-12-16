@@ -681,6 +681,8 @@ const AgentThumbnail = ({ agent, index, isActive, onHover, onClick }: AgentThumb
           src={agent.image}
           alt={agent.name}
           className="w-full h-auto object-contain transform group-hover:scale-105 transition-transform duration-500"
+          loading="eager"
+          decoding="async"
         />
       </div>
 
@@ -765,6 +767,8 @@ const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
                 src={currentAgent.image}
                 alt={currentAgent.name}
                 className="w-full h-full object-contain object-bottom"
+                loading="eager"
+                decoding="async"
               />
               
               {/* Navigation Arrows */}
