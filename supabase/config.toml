@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.send-contact-confirmation]
 verify_jwt = false
+
+[functions.send-getstarted-confirmation]
+verify_jwt = false

@@ -42,9 +42,9 @@ const UrgencyTimer = () => {
   const formatTime = (num: number) => num.toString().padStart(2, '0');
 
   return (
-    <div className="flex items-center gap-2 bg-black/30 border border-amber-500/30 rounded-full px-4 py-2">
-      <Clock className="w-4 h-4 text-amber-400" />
-      <span className="text-amber-400 font-mono font-bold text-sm">
+    <div className="flex items-center gap-1.5 bg-black/30 border border-amber-500/30 rounded-full px-2.5 py-1 sm:px-3 sm:py-1.5">
+      <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-amber-400" />
+      <span className="text-amber-400 font-mono font-bold text-xs sm:text-sm">
         {formatTime(timeLeft.hours)}:{formatTime(timeLeft.minutes)}:{formatTime(timeLeft.seconds)}
       </span>
     </div>
@@ -74,7 +74,7 @@ const Pricing = () => {
       price: 149,
       subtitle: "Professional online presence",
       gradient: "from-rose-600 via-pink-500 to-rose-400",
-      features: ["Everything in Starter, plus:", "Setup of up to 15 social and business profiles", "Advanced SEO setup", "5 foundational backlinks", "Platform consistency and optimisation", "Email & chat support"],
+      features: ["Everything in Starter, plus:", "Setup of up to 15 social and business profiles", "Advanced SEO setup", "2 foundational backlinks", "Platform consistency and optimisation", "Email & chat support"],
     },
     {
       id: "business-plus",
@@ -111,7 +111,7 @@ const Pricing = () => {
     { name: "Email Marketing", starter: false, business: false, businessPlus: false, pro: true, enterprise: true },
     { name: "Advertising Content Support", starter: false, business: false, businessPlus: false, pro: true, enterprise: true },
     { name: "SEO Setup", starter: "Basic", business: "Advanced", businessPlus: "Advanced", pro: "Advanced+", enterprise: "Custom" },
-    { name: "Backlinks", starter: false, business: "5", businessPlus: "7", pro: "10", enterprise: "Custom" },
+    { name: "Backlinks", starter: false, business: "2", businessPlus: "7", pro: "10", enterprise: "Custom" },
     { name: "Website / Web App", starter: "Add-on", business: "Add-on", businessPlus: "Add-on", pro: "Add-on", enterprise: "Included / Add-on" },
     { name: "Hosting & Domain", starter: "Add-on", business: "Add-on", businessPlus: "Add-on", pro: "Add-on", enterprise: "Included / Add-on" },
     { name: "AI Inbound Receptionist", starter: "Add-on", business: "Add-on", businessPlus: "Add-on", pro: "Add-on", enterprise: "Included / Add-on" },
@@ -160,15 +160,15 @@ const Pricing = () => {
       </motion.header>
 
       {/* Urgency Banner */}
-      <div className="fixed top-[72px] left-0 right-0 z-40 bg-gradient-to-r from-purple-900 via-purple-800 to-purple-900 py-3 px-4 border-b border-purple-500/30">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
-          <p className="text-white text-sm font-medium text-center">
-            🔥 <span className="text-amber-400 font-bold">Limited Time</span> — Free consultation
+      <div className="fixed top-[72px] left-0 right-0 z-40 bg-gradient-to-r from-purple-900 via-purple-800 to-purple-900 py-2 px-3 sm:py-3 sm:px-4 border-b border-purple-500/30">
+        <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 sm:gap-4">
+          <p className="text-white text-xs sm:text-sm font-medium">
+            🔥 <span className="text-amber-400 font-bold">Limited</span> — Free consultation
           </p>
           <UrgencyTimer />
           <button 
             onClick={() => navigate('/book-demo')}
-            className="bg-amber-500 hover:bg-amber-400 text-black font-bold text-sm px-4 py-2 rounded-full transition-colors"
+            className="bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs sm:text-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full transition-colors whitespace-nowrap"
           >
             Book Demo
           </button>
