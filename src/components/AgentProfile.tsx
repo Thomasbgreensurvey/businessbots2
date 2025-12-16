@@ -29,7 +29,7 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
 
   return (
     <div 
-      className="min-h-screen w-full"
+      className="min-h-screen w-full overflow-x-hidden"
       style={{
         background: getAgentGradient(agent.glowColor),
       }}
@@ -75,9 +75,9 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
       </header>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center pt-20 pb-8 px-4 overflow-hidden">
+      <section className="relative min-h-screen flex flex-col items-center justify-center pt-20 pb-8 px-4 overflow-hidden max-w-full">
         {/* Cursive Watermark */}
-        <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none max-w-full">
           <motion.span 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 0.2, scale: 1 }}

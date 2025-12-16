@@ -98,7 +98,7 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             >
               <Menu className="w-5 h-5 text-white" />
             </button>
-            <img src={logo} alt="Business Bots UK" className="h-8 md:h-10 w-auto" />
+            <img src={logo} alt="Business Bots UK" className="h-16 md:h-20 w-auto" />
           </div>
           <div className="flex items-center gap-2 md:gap-4">
             {/* Phone Number */}
