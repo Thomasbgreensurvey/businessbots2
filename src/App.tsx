@@ -16,6 +16,7 @@ import Pricing from "./pages/Pricing";
 import Community from "./pages/Community";
 import Contact from "./pages/Contact";
 import BookDemo from "./pages/BookDemo";
+import GetStarted from "./pages/GetStarted";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/community" element={<Community />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/book-demo" element={<BookDemo />} />
+          <Route path="/get-started" element={<GetStarted />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

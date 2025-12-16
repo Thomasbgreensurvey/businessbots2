@@ -53,8 +53,7 @@ const UrgencyTimer = () => {
 
 const Pricing = () => {
   const navigate = useNavigate();
-  const [selectedPlan, setSelectedPlan] = useState<string>("yearly");
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("annual");
+  const [selectedPlan, setSelectedPlan] = useState<string>("pro");
 
   useEffect(() => {
     document.title = "Pricing | Business Bots UK - AI Employees for Your Business";
@@ -64,30 +63,35 @@ const Pricing = () => {
     {
       id: "starter",
       name: "Starter",
-      monthlyPrice: 97,
-      annualPrice: 48.50,
-      discount: 50,
+      price: 49,
+      subtitle: "For businesses getting started online",
       gradient: "from-cyan-600 via-cyan-500 to-teal-500",
-      features: ["All 8 AI Employees", "1,000 tasks/month", "Email support", "Basic integrations"],
+      features: ["Social media profile setup (core platforms)", "Branding and bio optimisation", "Website chatbot setup", "Initial content seeding", "Email & chat support"],
     },
     {
-      id: "growth",
-      name: "Growth",
-      monthlyPrice: 147,
-      annualPrice: 73.50,
-      discount: 50,
+      id: "business",
+      name: "Business",
+      price: 149,
+      subtitle: "Professional online presence",
       gradient: "from-rose-600 via-pink-500 to-rose-400",
-      features: ["All 8 AI Employees", "5,000 tasks/month", "Priority support", "All integrations", "3 team members"],
+      features: ["Everything in Starter, plus:", "Setup of up to 15 social and business profiles", "Advanced SEO setup", "5 foundational backlinks", "Platform consistency and optimisation", "Email & chat support"],
+    },
+    {
+      id: "business-plus",
+      name: "Business Plus",
+      price: 249,
+      subtitle: "Automation and visibility growth",
+      gradient: "from-indigo-600 via-purple-500 to-indigo-400",
+      features: ["Everything in Business, plus:", "Social media automation", "Weekly content posting", "Lead capture forms and funnels", "Basic SEO optimisation", "2 additional backlinks", "Email & chat support"],
     },
     {
       id: "pro",
       name: "Pro",
-      monthlyPrice: 197,
-      annualPrice: 78.80,
-      discount: 60,
+      price: 499,
+      subtitle: "Scalable marketing systems",
       popular: true,
       gradient: "from-purple-600 via-violet-500 to-purple-400",
-      features: ["All 8 AI Employees", "Unlimited tasks", "24/7 Priority support", "All integrations", "10 team members", "API access"],
+      features: ["Everything in Business Plus, plus:", "Daily social content", "Advanced SEO", "5 authority backlinks", "Email marketing campaigns", "Advertising content creation support", "Email & chat support"],
     },
   ];
 
@@ -98,31 +102,43 @@ const Pricing = () => {
   ];
 
   const comparisonFeatures = [
-    { name: "AI Employees", starter: "8", growth: "8", pro: "8", enterprise: "Unlimited" },
-    { name: "Tasks per month", starter: "1,000", growth: "5,000", pro: "Unlimited", enterprise: "Unlimited" },
-    { name: "Team members", starter: "1", growth: "3", pro: "10", enterprise: "Unlimited" },
-    { name: "Languages", starter: "10", growth: "50", pro: "100+", enterprise: "100+" },
-    { name: "Custom integrations", starter: false, growth: true, pro: true, enterprise: true },
-    { name: "API access", starter: false, growth: false, pro: true, enterprise: true },
-    { name: "Custom training", starter: false, growth: false, pro: false, enterprise: true },
-    { name: "Dedicated manager", starter: false, growth: false, pro: false, enterprise: true },
-    { name: "SLA guarantee", starter: false, growth: false, pro: true, enterprise: true },
-    { name: "White-label", starter: false, growth: false, pro: false, enterprise: true },
-    { name: "Priority support", starter: false, growth: true, pro: true, enterprise: true },
+    { name: "AI Social Media Assistant", starter: true, business: true, businessPlus: true, pro: true, enterprise: true },
+    { name: "AI Inbound Chatbot", starter: true, business: true, businessPlus: true, pro: true, enterprise: true },
+    { name: "Social Profile Setup", starter: "Core", business: "Up to 15", businessPlus: "Up to 15", pro: "Up to 15", enterprise: "Custom" },
+    { name: "Content Posting Frequency", starter: "Setup only", business: "Setup only", businessPlus: "Weekly", pro: "Daily", enterprise: "Custom" },
+    { name: "Social Media Automation", starter: false, business: false, businessPlus: true, pro: true, enterprise: true },
+    { name: "Lead Capture & Funnels", starter: false, business: false, businessPlus: true, pro: true, enterprise: true },
+    { name: "Email Marketing", starter: false, business: false, businessPlus: false, pro: true, enterprise: true },
+    { name: "Advertising Content Support", starter: false, business: false, businessPlus: false, pro: true, enterprise: true },
+    { name: "SEO Setup", starter: "Basic", business: "Advanced", businessPlus: "Advanced", pro: "Advanced+", enterprise: "Custom" },
+    { name: "Backlinks", starter: false, business: "5", businessPlus: "7", pro: "10", enterprise: "Custom" },
+    { name: "Website / Web App", starter: "Add-on", business: "Add-on", businessPlus: "Add-on", pro: "Add-on", enterprise: "Included / Add-on" },
+    { name: "Hosting & Domain", starter: "Add-on", business: "Add-on", businessPlus: "Add-on", pro: "Add-on", enterprise: "Included / Add-on" },
+    { name: "AI Inbound Receptionist", starter: "Add-on", business: "Add-on", businessPlus: "Add-on", pro: "Add-on", enterprise: "Included / Add-on" },
+    { name: "Analytics & Reporting", starter: false, business: false, businessPlus: "Add-on", pro: "Add-on", enterprise: true },
+    { name: "Email & Chat Support", starter: true, business: true, businessPlus: true, pro: true, enterprise: true },
+    { name: "Telephone Support", starter: false, business: false, businessPlus: false, pro: false, enterprise: true },
+  ];
+
+  const addOns = [
+    { name: "Website or Web App Design", price: "from £499" },
+    { name: "Hosting, Domain & Business Email", price: "from £99" },
+    { name: "AI Inbound Receptionist", price: "from £99 / month" },
+    { name: "15-second Advert", price: "from £99" },
+    { name: "30-second Advert", price: "from £149" },
+    { name: "Sales & Marketing Campaigns", price: "from £299" },
+    { name: "Landing Pages", price: "from £149 per page" },
+    { name: "CRM Setup & Automation", price: "from £299" },
   ];
 
   const features = [
-    { icon: Users, title: "All 8 AI Employees", description: "Unlock Sprout, Lilly, Banjo, Timi, Like, Tobby, Nano, Skoot." },
+    { icon: Users, title: "All 8 AI Employees", description: "Unlock Sprout, Lilly, Banjo, Like, Zen, Tobby, Nano, Skoot." },
     { icon: Zap, title: "One-click tasks", description: "Complete tasks in seconds with pre-built use cases." },
     { icon: Brain, title: "Brain AI", description: "Personalize outputs based on your knowledge." },
     { icon: Globe, title: "100+ languages", description: "Go global with AI-powered communications." },
     { icon: Clock, title: "24/7 availability", description: "Your team works around the clock." },
     { icon: Shield, title: "Enterprise security", description: "Bank-level encryption for your data." },
   ];
-
-  const getPrice = (plan: typeof pricingPlans[0]) => {
-    return billingCycle === "annual" ? plan.annualPrice : plan.monthlyPrice;
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -147,14 +163,14 @@ const Pricing = () => {
       <div className="fixed top-[72px] left-0 right-0 z-40 bg-gradient-to-r from-purple-900 via-purple-800 to-purple-900 py-3 px-4 border-b border-purple-500/30">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
           <p className="text-white text-sm font-medium text-center">
-            🔥 <span className="text-amber-400 font-bold">Limited Time</span> — 14-day free trial
+            🔥 <span className="text-amber-400 font-bold">Limited Time</span> — Free consultation
           </p>
           <UrgencyTimer />
           <button 
-            onClick={() => document.getElementById('pricing-cards')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => navigate('/book-demo')}
             className="bg-amber-500 hover:bg-amber-400 text-black font-bold text-sm px-4 py-2 rounded-full transition-colors"
           >
-            Claim 60% OFF
+            Book Demo
           </button>
         </div>
       </div>
@@ -163,34 +179,15 @@ const Pricing = () => {
       <section className="pt-64 sm:pt-48 pb-8 px-6 md:px-10 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-background to-background pointer-events-none" />
         
-        <div className="max-w-6xl mx-auto relative z-10">
+        <div className="max-w-7xl mx-auto relative z-10">
           {/* Header */}
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Simple, transparent pricing</h1>
-            <p className="text-white/60 text-lg max-w-xl mx-auto">Choose the plan that scales with your business. All plans include a 14-day free trial.</p>
-          </motion.div>
-
-          {/* Billing Toggle */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex justify-center mb-10">
-            <div className="bg-white/5 border border-white/10 rounded-full p-1 flex items-center">
-              <button
-                onClick={() => setBillingCycle("monthly")}
-                className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${billingCycle === "monthly" ? "bg-white text-black" : "text-white/70 hover:text-white"}`}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setBillingCycle("annual")}
-                className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all flex items-center gap-2 ${billingCycle === "annual" ? "bg-white text-black" : "text-white/70 hover:text-white"}`}
-              >
-                Annual
-                <span className="bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">SAVE 60%</span>
-              </button>
-            </div>
+            <p className="text-white/60 text-lg max-w-xl mx-auto">Choose the plan that scales with your business.</p>
           </motion.div>
 
           {/* Pricing Cards */}
-          <div id="pricing-cards" className="grid md:grid-cols-4 gap-5 mb-12">
+          <div id="pricing-cards" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-12">
             {pricingPlans.map((plan, index) => (
               <motion.div
                 key={plan.id}
@@ -212,29 +209,19 @@ const Pricing = () => {
                   </div>
                 )}
                 
-                <div className="relative p-6">
-                  <h3 className="text-white font-bold text-xl mb-1">{plan.name}</h3>
-                  <p className="text-white/70 text-xs mb-4">{billingCycle === "annual" ? "Billed annually" : "Billed monthly"}</p>
+                <div className="relative p-5">
+                  <h3 className="text-white font-bold text-lg mb-1">{plan.name}</h3>
+                  <p className="text-white/70 text-xs mb-3">{plan.subtitle}</p>
 
-                  <div className="mb-4">
-                    <div className="flex items-baseline gap-1">
-                      {billingCycle === "annual" && <span className="text-white/50 line-through text-sm">£{plan.monthlyPrice}</span>}
-                      <span className="text-4xl font-bold text-white">£{getPrice(plan)}</span>
-                    </div>
+                  <div className="mb-3">
+                    <span className="text-3xl font-bold text-white">£{plan.price}</span>
                     <span className="text-white/70 text-sm">/month</span>
                   </div>
-                  
-                  {billingCycle === "annual" && (
-                    <div className="inline-flex items-center gap-1 bg-black/30 text-white px-2 py-1 rounded-md text-xs font-bold mb-4">
-                      <Zap className="w-3 h-3" />
-                      <span>{plan.discount}% OFF</span>
-                    </div>
-                  )}
 
-                  <ul className="space-y-2 mb-5">
+                  <ul className="space-y-1.5 mb-4">
                     {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-white/90 text-sm">
-                        <Check className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+                      <li key={i} className="flex items-start gap-2 text-white/90 text-xs">
+                        <Check className="w-3.5 h-3.5 text-white flex-shrink-0 mt-0.5" />
                         <span>{feature}</span>
                       </li>
                     ))}
@@ -243,57 +230,51 @@ const Pricing = () => {
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedPlan(plan.id);
-                      toast.success(`${plan.name} plan selected!`, { description: "Checkout coming soon. Start your 14-day free trial." });
+                      navigate('/get-started');
                     }}
-                    className="w-full py-3 rounded-xl font-semibold text-sm bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm transition-all border border-white/20"
+                    className="w-full py-2.5 rounded-xl font-semibold text-sm bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm transition-all border border-white/20"
                   >
-                    {selectedPlan === plan.id ? "Get Started" : "Select Plan"}
+                    Get Started
                   </button>
                 </div>
               </motion.div>
             ))}
 
-            {/* Enterprise Card */}
+            {/* Custom Premium Card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.6 }}
               className="relative rounded-2xl overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-orange-500 to-amber-500 opacity-90" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
               
               <div className="absolute top-3 right-3 bg-black text-amber-400 text-[10px] font-bold px-2 py-1 rounded-full">
-                ENTERPRISE
+                PREMIUM
               </div>
               
-              <div className="relative p-6">
-                <h3 className="text-white font-bold text-xl mb-1">Enterprise</h3>
-                <p className="text-white/70 text-xs mb-4">For large teams</p>
+              <div className="relative p-5">
+                <h3 className="text-white font-bold text-lg mb-1">Custom Premium</h3>
+                <p className="text-white/70 text-xs mb-3">Bespoke AI-powered operations</p>
 
-                <div className="mb-4">
-                  <span className="text-4xl font-bold text-white">Custom</span>
-                  <p className="text-white/70 text-sm">pricing</p>
-                </div>
-                
-                <div className="inline-flex items-center gap-1 bg-black/30 text-white px-2 py-1 rounded-md text-xs font-bold mb-4">
-                  <Building2 className="w-3 h-3" />
-                  <span>Tailored</span>
+                <div className="mb-3">
+                  <span className="text-2xl font-bold text-white">From £999</span>
+                  <span className="text-white/70 text-sm">/month</span>
                 </div>
 
-                <ul className="space-y-2 mb-5">
-                  {["Unlimited AI Employees", "Unlimited team members", "Custom training", "Dedicated manager", "White-label option", "SLA guarantee"].map((feature, i) => (
-                    <li key={i} className="flex items-start gap-2 text-white/90 text-sm">
-                      <Check className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
+                <ul className="space-y-1.5 mb-4">
+                  {["Custom AI workflows", "Tailored automations", "Advanced integrations", "SLA-based onboarding", "Email, Chat & Telephone support"].map((feature, i) => (
+                    <li key={i} className="flex items-start gap-2 text-white/90 text-xs">
+                      <Check className="w-3.5 h-3.5 text-white flex-shrink-0 mt-0.5" />
                       <span>{feature}</span>
                     </li>
                   ))}
                 </ul>
 
                 <button 
-                  onClick={() => window.location.href = 'mailto:sales@businessbotsuk.com?subject=Enterprise%20Plan%20Inquiry'}
-                  className="w-full py-3 rounded-xl font-semibold text-sm bg-black hover:bg-black/80 text-white transition-all"
+                  onClick={() => window.location.href = 'mailto:ai@businessbotsuk.com?subject=Custom%20Premium%20Plan%20Inquiry'}
+                  className="w-full py-2.5 rounded-xl font-semibold text-sm bg-black hover:bg-black/80 text-white transition-all"
                 >
                   Contact Sales
                 </button>
@@ -301,7 +282,7 @@ const Pricing = () => {
             </motion.div>
           </div>
 
-          <p className="text-center text-white/40 text-sm">14-day money-back guarantee • No credit card required for trial</p>
+          <p className="text-center text-white/40 text-sm">All prices billed monthly • Cancel anytime</p>
         </div>
       </section>
 
@@ -349,7 +330,7 @@ const Pricing = () => {
 
       {/* Comparison Table */}
       <section className="py-20 px-6 md:px-10">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-2xl md:text-3xl font-bold text-white mb-4 text-center">
             Compare Plans
           </motion.h2>
@@ -358,50 +339,86 @@ const Pricing = () => {
           </motion.p>
 
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="overflow-x-auto rounded-2xl border border-white/10">
-            <table className="w-full min-w-[640px]">
+            <table className="w-full min-w-[800px]">
               <thead>
                 <tr className="bg-white/5">
                   <th className="text-left py-4 px-6 text-white/60 font-medium text-sm">Features</th>
-                  <th className="text-center py-4 px-4 text-cyan-400 font-semibold">Starter</th>
-                  <th className="text-center py-4 px-4 text-rose-400 font-semibold">Growth</th>
-                  <th className="text-center py-4 px-4 text-purple-400 font-semibold">Pro ⭐</th>
-                  <th className="text-center py-4 px-4 text-amber-400 font-semibold">Enterprise</th>
+                  <th className="text-center py-4 px-3 text-cyan-400 font-semibold text-sm">Starter</th>
+                  <th className="text-center py-4 px-3 text-rose-400 font-semibold text-sm">Business</th>
+                  <th className="text-center py-4 px-3 text-indigo-400 font-semibold text-sm">Business Plus</th>
+                  <th className="text-center py-4 px-3 text-purple-400 font-semibold text-sm">Pro ⭐</th>
+                  <th className="text-center py-4 px-3 text-amber-400 font-semibold text-sm">Custom Premium</th>
                 </tr>
               </thead>
               <tbody>
                 {comparisonFeatures.map((feature, index) => (
                   <tr key={index} className="border-t border-white/5 hover:bg-white/[0.02] transition-colors">
                     <td className="py-4 px-6 text-white/80 text-sm">{feature.name}</td>
-                    <td className="text-center py-4 px-4">
+                    <td className="text-center py-4 px-3">
                       {typeof feature.starter === 'boolean' ? (
                         feature.starter ? <Check className="w-5 h-5 text-emerald-400 mx-auto" /> : <X className="w-5 h-5 text-white/20 mx-auto" />
-                      ) : <span className="text-white/70 text-sm">{feature.starter}</span>}
+                      ) : <span className="text-white/70 text-xs">{feature.starter}</span>}
                     </td>
-                    <td className="text-center py-4 px-4">
-                      {typeof feature.growth === 'boolean' ? (
-                        feature.growth ? <Check className="w-5 h-5 text-emerald-400 mx-auto" /> : <X className="w-5 h-5 text-white/20 mx-auto" />
-                      ) : <span className="text-white/70 text-sm">{feature.growth}</span>}
+                    <td className="text-center py-4 px-3">
+                      {typeof feature.business === 'boolean' ? (
+                        feature.business ? <Check className="w-5 h-5 text-emerald-400 mx-auto" /> : <X className="w-5 h-5 text-white/20 mx-auto" />
+                      ) : <span className="text-white/70 text-xs">{feature.business}</span>}
                     </td>
-                    <td className="text-center py-4 px-4 bg-purple-500/5">
+                    <td className="text-center py-4 px-3">
+                      {typeof feature.businessPlus === 'boolean' ? (
+                        feature.businessPlus ? <Check className="w-5 h-5 text-emerald-400 mx-auto" /> : <X className="w-5 h-5 text-white/20 mx-auto" />
+                      ) : <span className="text-white/70 text-xs">{feature.businessPlus}</span>}
+                    </td>
+                    <td className="text-center py-4 px-3 bg-purple-500/5">
                       {typeof feature.pro === 'boolean' ? (
                         feature.pro ? <Check className="w-5 h-5 text-emerald-400 mx-auto" /> : <X className="w-5 h-5 text-white/20 mx-auto" />
-                      ) : <span className="text-white font-medium text-sm">{feature.pro}</span>}
+                      ) : <span className="text-white font-medium text-xs">{feature.pro}</span>}
                     </td>
-                    <td className="text-center py-4 px-4 bg-amber-500/5">
+                    <td className="text-center py-4 px-3 bg-amber-500/5">
                       {typeof feature.enterprise === 'boolean' ? (
                         feature.enterprise ? <Check className="w-5 h-5 text-amber-400 mx-auto" /> : <X className="w-5 h-5 text-white/20 mx-auto" />
-                      ) : <span className="text-amber-400 font-medium text-sm">{feature.enterprise}</span>}
+                      ) : <span className="text-amber-400 font-medium text-xs">{feature.enterprise}</span>}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </motion.div>
+          <p className="text-center text-white/40 text-sm mt-6">Features marked as Add-on are available from an additional cost depending on scope.</p>
+        </div>
+      </section>
+
+      {/* Add-Ons Section */}
+      <section className="py-20 px-6 md:px-10 bg-zinc-900/50">
+        <div className="max-w-5xl mx-auto">
+          <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-2xl md:text-3xl font-bold text-white mb-4 text-center">
+            Optional Add-Ons
+          </motion.h2>
+          <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-white/60 text-center mb-12">
+            Enhance your plan with additional services
+          </motion.p>
+
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {addOns.map((addon, index) => (
+              <motion.div
+                key={addon.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+                className="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.05] transition-colors"
+              >
+                <h3 className="text-white font-semibold text-sm mb-2">{addon.name}</h3>
+                <p className="text-purple-400 font-bold text-sm">{addon.price}</p>
+              </motion.div>
+            ))}
+          </div>
+          <p className="text-center text-white/40 text-sm mt-8">Final pricing depends on scope and requirements.</p>
         </div>
       </section>
 
       {/* Features Grid */}
-      <section className="py-20 px-6 md:px-10 bg-zinc-900/50">
+      <section className="py-20 px-6 md:px-10">
         <div className="max-w-5xl mx-auto">
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-2xl md:text-3xl font-bold text-white mb-12 text-center">
             Everything included
@@ -431,7 +448,7 @@ const Pricing = () => {
       </section>
 
       {/* Meet Your AI Team - Matching Site Style */}
-      <section className="py-20 px-6 md:px-10">
+      <section className="py-20 px-6 md:px-10 bg-zinc-900/50">
         <div className="max-w-6xl mx-auto">
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-2xl md:text-3xl font-bold text-white mb-4 text-center">
             Meet Your AI Team
@@ -476,7 +493,7 @@ const Pricing = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 px-6 md:px-10 bg-zinc-900/50">
+      <section className="py-20 px-6 md:px-10">
         <div className="max-w-3xl mx-auto">
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-2xl md:text-3xl font-bold text-white mb-12 text-center">
             Frequently Asked Questions
@@ -484,10 +501,10 @@ const Pricing = () => {
 
           <div className="space-y-4">
             {[
-              { q: "Can I cancel anytime?", a: "Yes, you can cancel your subscription at any time. We also offer a 14-day money-back guarantee." },
-              { q: "Do I get all 8 AI employees?", a: "Absolutely! Every plan includes full access to all 8 specialized AI employees." },
-              { q: "Is there a free trial?", a: "Yes, we offer a 14-day free trial so you can experience the full power of Business Bots UK." },
-              { q: "What's included in Enterprise?", a: "Enterprise includes unlimited AI employees, team members, custom training, dedicated manager, white-label options, and SLA guarantees." },
+              { q: "Can I cancel anytime?", a: "Yes, you can cancel your subscription at any time with no penalty." },
+              { q: "Do I get all 8 AI employees?", a: "Yes! Every plan includes access to all 8 specialized AI employees." },
+              { q: "What payment methods do you accept?", a: "We accept all major credit cards, debit cards, and bank transfers." },
+              { q: "What's included in Custom Premium?", a: "Custom Premium includes custom AI workflows, tailored automations, advanced integrations, SLA-based onboarding, and dedicated telephone support." },
             ].map((item, index) => (
               <motion.div
                 key={index}
@@ -514,9 +531,14 @@ const Pricing = () => {
           <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-white/60 mb-8">
             Join thousands of businesses already using AI employees.
           </motion.p>
-          <motion.button initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="btn-primary text-lg px-12 py-4">
-            Start Your Free Trial
-          </motion.button>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button onClick={() => navigate('/get-started')} className="btn-primary text-lg px-12 py-4">
+              Get Started
+            </button>
+            <button onClick={() => navigate('/book-demo')} className="px-12 py-4 rounded-xl font-semibold text-white border border-white/20 hover:bg-white/10 transition-colors">
+              Book a Demo
+            </button>
+          </motion.div>
         </div>
       </section>
 
