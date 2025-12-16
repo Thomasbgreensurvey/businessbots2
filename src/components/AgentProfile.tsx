@@ -132,6 +132,9 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
             src={agent.image}
             alt={agent.name}
             className="w-full h-auto object-contain max-h-[50vh] md:max-h-[55vh]"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
         </motion.div>
       </section>
@@ -223,6 +226,8 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                   src={sproutTablet}
                   alt="Sprout with tablet showing email campaign"
                   className="w-full h-auto object-contain"
+                  loading="eager"
+                  decoding="async"
                 />
               </motion.div>
             </div>
@@ -269,6 +274,8 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                   src={likePhone}
                   alt="Like with phone for social media management"
                   className="w-full h-auto object-contain"
+                  loading="eager"
+                  decoding="async"
                 />
               </motion.div>
             </div>
@@ -315,6 +322,8 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                   src={tobbyHand}
                   alt="Tobby figurine in hand for outbound sales"
                   className="w-full h-auto object-contain"
+                  loading="eager"
+                  decoding="async"
                 />
               </motion.div>
             </div>
@@ -361,6 +370,8 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                   src={zenPhone}
                   alt="Zen with phone for lead generation"
                   className="w-full h-auto object-contain"
+                  loading="eager"
+                  decoding="async"
                 />
               </motion.div>
             </div>
@@ -407,6 +418,8 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                   src={nanoHeadset}
                   alt="Nano with headset for inbound sales"
                   className="w-full h-auto object-contain"
+                  loading="eager"
+                  decoding="async"
                 />
               </motion.div>
             </div>
@@ -453,6 +466,8 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                   src={lillyHeadset}
                   alt="Lilly with headset for HR support"
                   className="w-full h-auto object-contain"
+                  loading="eager"
+                  decoding="async"
                 />
               </motion.div>
             </div>
@@ -499,6 +514,8 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                   src={banjoSweater}
                   alt="Banjo for customer support"
                   className="w-full h-auto object-contain"
+                  loading="eager"
+                  decoding="async"
                 />
               </motion.div>
             </div>
@@ -545,6 +562,8 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                   src={skootTablet}
                   alt="Skoot with tablet for recruitment"
                   className="w-full h-auto object-contain"
+                  loading="eager"
+                  decoding="async"
                 />
               </motion.div>
             </div>

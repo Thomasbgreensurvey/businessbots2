@@ -246,6 +246,8 @@ const AgentNavItem = ({ agent, isActive, onClick }: AgentNavItemProps) => {
           src={agent.image}
           alt={agent.name}
           className="w-full h-full object-cover object-top scale-150 translate-y-2"
+          loading="eager"
+          decoding="async"
         />
       </div>
 
