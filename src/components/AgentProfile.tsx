@@ -149,46 +149,24 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
         </motion.div>
       </section>
 
-      {/* Hero CTA Bar */}
-      <motion.section
+      {/* Hero CTA - Single elegant button */}
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="relative z-20 -mt-8 mb-0"
+        className="relative z-20 -mt-4 mb-8 flex justify-center"
       >
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 p-4 sm:p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleDemoClick}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-white transition-all"
-              style={{ background: getAgentGradient(agent.glowColor) }}
-            >
-              <Calendar className="w-4 h-4" />
-              Book a Demo
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleContactClick}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-white/20 hover:bg-white/30 border border-white/30 transition-all"
-            >
-              <MessageCircle className="w-4 h-4" />
-              Contact Us
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleHireClick}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-white/20 hover:bg-white/30 border border-white/30 transition-all"
-            >
-              <CreditCard className="w-4 h-4" />
-              View Pricing
-            </motion.button>
-          </div>
-        </div>
-      </motion.section>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleDemoClick}
+          className="flex items-center gap-2 px-10 py-4 rounded-full font-bold text-white text-lg shadow-2xl"
+          style={{ background: getAgentGradient(agent.glowColor) }}
+        >
+          <Calendar className="w-5 h-5" />
+          Book Your Free Demo
+        </motion.button>
+      </motion.div>
 
       {/* Description Section - White Background like Sintra */}
       <section className="bg-white py-16 md:py-24">
@@ -202,6 +180,34 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
               <span style={{ color: getAgentAccentColor(agent.glowColor) }}>Meet {agent.name}.</span>{' '}
               {agent.extendedDescription.replace(`Meet ${agent.name}. `, '')}
             </h2>
+          </motion.div>
+          
+          {/* CTA after description */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-10 flex flex-col sm:flex-row items-center gap-4"
+          >
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleHireClick}
+              className="flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-white"
+              style={{ background: getAgentGradient(agent.glowColor) }}
+            >
+              <CreditCard className="w-5 h-5" />
+              View Pricing
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleContactClick}
+              className="flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-gray-700 border-2 border-gray-300 hover:bg-gray-100 transition-colors"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Contact Sales
+            </motion.button>
           </motion.div>
         </div>
       </section>
@@ -724,40 +730,22 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
             ))}
           </ul>
 
-          {/* CTA Buttons */}
+          {/* Single CTA */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mt-10"
+            className="mt-10 flex justify-center"
           >
             <motion.button 
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleHireClick}
-              className="flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-white text-lg"
-              style={{ background: getAgentGradient(agent.glowColor) }}
-            >
-              <CreditCard className="w-5 h-5" />
-              Hire {agent.name} Now
-            </motion.button>
-            <motion.button 
-              whileHover={{ scale: 1.03 }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleDemoClick}
-              className="flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-foreground border-2 border-border hover:bg-secondary transition-colors"
+              className="flex items-center justify-center gap-2 px-10 py-4 rounded-full font-bold text-white text-lg shadow-lg"
+              style={{ background: getAgentGradient(agent.glowColor) }}
             >
               <Calendar className="w-5 h-5" />
-              Book a Demo
-            </motion.button>
-            <motion.button 
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleContactClick}
-              className="flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-foreground border-2 border-border hover:bg-secondary transition-colors"
-            >
-              <MessageCircle className="w-5 h-5" />
-              Contact Us
+              Book a Demo with {agent.name}
             </motion.button>
           </motion.div>
         </div>
@@ -843,42 +831,22 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
             ))}
           </motion.div>
 
-          {/* Final CTA */}
+          {/* Final CTA - single elegant button */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-12 flex flex-col items-center gap-4"
+            className="mt-12 flex justify-center"
           >
-            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
-              <motion.button 
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleHireClick}
-                className="flex items-center justify-center gap-2 px-10 py-5 rounded-full font-bold text-white text-lg"
-                style={{ background: getAgentGradient(agent.glowColor) }}
-              >
-                <CreditCard className="w-5 h-5" />
-                Get Started with {agent.name}
-              </motion.button>
-              <motion.button 
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleDemoClick}
-                className="flex items-center justify-center gap-2 px-8 py-5 rounded-full font-semibold text-gray-700 border-2 border-gray-300 hover:bg-gray-100 transition-colors"
-              >
-                <Calendar className="w-5 h-5" />
-                Book a Demo
-              </motion.button>
-            </div>
             <motion.button 
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              onClick={handleContactClick}
-              className="flex items-center justify-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+              onClick={handleHireClick}
+              className="flex items-center justify-center gap-2 px-12 py-5 rounded-full font-bold text-white text-lg shadow-lg"
+              style={{ background: getAgentGradient(agent.glowColor) }}
             >
-              <MessageCircle className="w-4 h-4" />
-              <span className="underline">Have questions? Contact us</span>
+              <CreditCard className="w-5 h-5" />
+              Get Started with {agent.name}
             </motion.button>
           </motion.div>
         </div>
