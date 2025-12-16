@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Menu, Sparkles, Lightbulb } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Menu, Sparkles, Lightbulb, Calendar, MessageCircle, CreditCard } from "lucide-react";
 import { Agent, GlowColor, agents } from "@/data/agents";
 import sproutTablet from "@/assets/agents/sprout-tablet.png";
 import likePhone from "@/assets/agents/like-phone.jpeg";
@@ -25,6 +25,16 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
   const handleHireClick = () => {
     navigate('/pricing');
     toast.success(`Let's get ${agent.name} working for you!`, { description: "Choose a plan to get started." });
+  };
+
+  const handleDemoClick = () => {
+    navigate('/book-demo');
+    toast.success("Book your personalized demo", { description: `See ${agent.name} in action.` });
+  };
+
+  const handleContactClick = () => {
+    navigate('/contact');
+    toast.success("Get in touch with us", { description: "We'd love to hear from you." });
   };
 
   return (
@@ -138,6 +148,47 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
           />
         </motion.div>
       </section>
+
+      {/* Hero CTA Bar */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="relative z-20 -mt-8 mb-0"
+      >
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 p-4 sm:p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleDemoClick}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-white transition-all"
+              style={{ background: getAgentGradient(agent.glowColor) }}
+            >
+              <Calendar className="w-4 h-4" />
+              Book a Demo
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleContactClick}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-white/20 hover:bg-white/30 border border-white/30 transition-all"
+            >
+              <MessageCircle className="w-4 h-4" />
+              Contact Us
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleHireClick}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-white/20 hover:bg-white/30 border border-white/30 transition-all"
+            >
+              <CreditCard className="w-4 h-4" />
+              View Pricing
+            </motion.button>
+          </div>
+        </div>
+      </motion.section>
 
       {/* Description Section - White Background like Sintra */}
       <section className="bg-white py-16 md:py-24">
@@ -678,21 +729,36 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col sm:flex-row gap-4 mt-10"
+            className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mt-10"
           >
-            <button 
+            <motion.button 
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
               onClick={handleHireClick}
-              className="px-8 py-4 rounded-full font-bold text-white text-lg"
+              className="flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-white text-lg"
               style={{ background: getAgentGradient(agent.glowColor) }}
             >
+              <CreditCard className="w-5 h-5" />
               Hire {agent.name} Now
-            </button>
-            <button 
-              onClick={() => document.getElementById('how-it-works-section')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-8 py-4 rounded-full font-semibold text-foreground border border-border hover:bg-secondary transition-colors"
+            </motion.button>
+            <motion.button 
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleDemoClick}
+              className="flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-foreground border-2 border-border hover:bg-secondary transition-colors"
             >
-              Learn More
-            </button>
+              <Calendar className="w-5 h-5" />
+              Book a Demo
+            </motion.button>
+            <motion.button 
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleContactClick}
+              className="flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-foreground border-2 border-border hover:bg-secondary transition-colors"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Contact Us
+            </motion.button>
           </motion.div>
         </div>
       </section>
@@ -782,15 +848,92 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-12 text-center"
+            className="mt-12 flex flex-col items-center gap-4"
           >
-            <button 
-              onClick={handleHireClick}
-              className="px-10 py-5 rounded-full font-bold text-white text-lg"
-              style={{ background: getAgentGradient(agent.glowColor) }}
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+              <motion.button 
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleHireClick}
+                className="flex items-center justify-center gap-2 px-10 py-5 rounded-full font-bold text-white text-lg"
+                style={{ background: getAgentGradient(agent.glowColor) }}
+              >
+                <CreditCard className="w-5 h-5" />
+                Get Started with {agent.name}
+              </motion.button>
+              <motion.button 
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleDemoClick}
+                className="flex items-center justify-center gap-2 px-8 py-5 rounded-full font-semibold text-gray-700 border-2 border-gray-300 hover:bg-gray-100 transition-colors"
+              >
+                <Calendar className="w-5 h-5" />
+                Book a Demo
+              </motion.button>
+            </div>
+            <motion.button 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleContactClick}
+              className="flex items-center justify-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
-              Get Started with {agent.name}
-            </button>
+              <MessageCircle className="w-4 h-4" />
+              <span className="underline">Have questions? Contact us</span>
+            </motion.button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Pre-Footer CTA Section */}
+      <section className="relative py-16 md:py-24 overflow-hidden">
+        <div 
+          className="absolute inset-0"
+          style={{ background: getAgentGradient(agent.glowColor) }}
+        />
+        <div className="absolute inset-0 bg-black/30" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="text-3xl md:text-5xl font-bold text-white mb-4">
+              Ready to Transform Your Business?
+            </h3>
+            <p className="text-white/80 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
+              Let {agent.name} handle your {agent.shortRole.toLowerCase()} tasks while you focus on growing your business.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleDemoClick}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-lg bg-white text-gray-900 hover:bg-gray-100 transition-colors"
+              >
+                <Calendar className="w-5 h-5" />
+                Book Your Free Demo
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleContactClick}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-white bg-white/20 hover:bg-white/30 border border-white/40 transition-colors"
+              >
+                <MessageCircle className="w-5 h-5" />
+                Contact Sales
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleHireClick}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-white bg-white/20 hover:bg-white/30 border border-white/40 transition-colors"
+              >
+                <CreditCard className="w-5 h-5" />
+                View Plans
+              </motion.button>
+            </div>
           </motion.div>
         </div>
       </section>
