@@ -301,15 +301,7 @@ const Pricing = () => {
             </motion.div>
           </div>
 
-          <div className="text-center">
-            <p className="text-white/40 text-sm mb-6">14-day money-back guarantee • No credit card required for trial</p>
-            <button 
-              onClick={() => navigate('/book-demo')}
-              className="inline-flex items-center gap-2 text-[#4B5FD1] hover:text-[#6B7FE1] font-semibold transition-colors"
-            >
-              Prefer a live demo? Book a call with our team →
-            </button>
-          </div>
+          <p className="text-center text-white/40 text-sm">14-day money-back guarantee • No credit card required for trial</p>
         </div>
       </section>
 
