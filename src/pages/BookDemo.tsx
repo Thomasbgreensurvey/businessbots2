@@ -76,8 +76,25 @@ const BookDemo = () => {
 
       if (error) throw error;
 
+      // Send confirmation emails
+      try {
+        await supabase.functions.invoke("send-booking-confirmation", {
+          body: {
+            customerName: formData.name,
+            customerEmail: formData.email,
+            company: formData.company,
+            phone: formData.phone,
+            preferredDate: format(selectedDate, "EEEE, MMMM do, yyyy"),
+            preferredTime: selectedTime,
+            message: formData.message
+          }
+        });
+      } catch (emailError) {
+        console.error("Email error (non-blocking):", emailError);
+      }
+
       setIsBooked(true);
-      toast.success("Demo booked successfully! We'll be in touch soon.");
+      toast.success("Demo booked successfully! Check your email for confirmation.");
     } catch (error) {
       console.error("Booking error:", error);
       toast.error("Failed to book demo. Please try again.");
