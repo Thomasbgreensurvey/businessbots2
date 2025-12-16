@@ -179,12 +179,20 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-8" style={{ letterSpacing: '-0.02em', lineHeight: 1.05 }}>
               {featuredAgent.heroHeadline}
             </h1>
-            <button 
-              onClick={() => onSelectAgent(featuredAgent)}
-              className="btn-primary text-base px-8 py-4 shadow-lg shadow-accent/25 pointer-events-auto"
-            >
-              Get Business Bots
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3 pointer-events-auto">
+              <button 
+                onClick={() => navigate('/book-demo')}
+                className="btn-primary text-base px-8 py-4 shadow-lg shadow-accent/25"
+              >
+                Book a Demo
+              </button>
+              <button 
+                onClick={() => onSelectAgent(featuredAgent)}
+                className="text-base px-8 py-4 rounded-xl border border-white/20 text-white hover:bg-white/10 transition-colors backdrop-blur-sm"
+              >
+                Meet {featuredAgent.name}
+              </button>
+            </div>
           </motion.div>
         </div>
 
@@ -549,12 +557,20 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
               <p className="text-white/60 text-lg mb-10 max-w-xl">
                 Join thousands of businesses already scaling with AI employees. Start your journey today.
               </p>
-              <button 
-                onClick={() => onSelectAgent(agents[0])}
-                className="btn-primary text-lg px-10 py-5 shadow-lg shadow-accent/25"
-              >
-                Get Started with Business Bots
-              </button>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                <button 
+                  onClick={() => navigate('/book-demo')}
+                  className="btn-primary text-lg px-10 py-5 shadow-lg shadow-accent/25"
+                >
+                  Book a Demo
+                </button>
+                <button 
+                  onClick={() => navigate('/pricing')}
+                  className="text-lg px-10 py-5 rounded-xl border border-white/20 text-white hover:bg-white/10 transition-colors"
+                >
+                  View Pricing
+                </button>
+              </div>
             </motion.div>
 
             {/* Robot Figurine Image */}

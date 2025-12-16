@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Clock, CalendarDays, User, Building, Mail, Phone, Check } from "lucide-react";
+import { ArrowLeft, Clock, CalendarDays, User, Building, Mail, Phone, Check, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import logo from "@/assets/logo.png";
+import botsPair from "@/assets/bots-pair.jpeg";
 
 const timeSlots = [
   "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
@@ -149,8 +151,14 @@ const BookDemo = () => {
             <ArrowLeft className="w-5 h-5" />
             <span className="hidden sm:inline">Back</span>
           </button>
-          <h1 className="text-xl font-semibold text-gray-900">Book a Demo</h1>
-          <div className="w-16" />
+          <img src={logo} alt="Business Bots UK" className="h-8 w-auto" />
+          <a 
+            href="tel:01916733290" 
+            className="flex items-center gap-1.5 text-gray-600 hover:text-[#4B5FD1] transition-colors text-sm font-medium"
+          >
+            <Phone className="w-4 h-4" />
+            <span className="hidden sm:inline">0191 673 3290</span>
+          </a>
         </div>
       </header>
 
@@ -397,12 +405,39 @@ const BookDemo = () => {
 
           {/* Placeholder when form not visible */}
           {step < 3 && (
-            <div className="hidden lg:flex items-center justify-center bg-gray-50 rounded-2xl p-6">
-              <div className="text-center text-gray-400">
-                <CalendarDays className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                <p>Select a date and time to continue</p>
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="hidden lg:flex flex-col bg-gradient-to-br from-[#4B5FD1] to-[#3a4db8] rounded-2xl p-8 text-white"
+            >
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles className="w-5 h-5" />
+                  <span className="text-sm font-medium opacity-90">What to expect</span>
+                </div>
+                <h3 className="text-2xl font-bold mb-4">See AI in Action</h3>
+                <ul className="space-y-3 mb-8">
+                  {[
+                    "Live demo of all 8 AI employees",
+                    "Personalized walkthrough for your business",
+                    "Q&A with our AI specialists",
+                    "Custom implementation roadmap"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-white/90">
+                      <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
+              <div className="rounded-xl overflow-hidden">
+                <img 
+                  src={botsPair} 
+                  alt="Business Bots AI Team" 
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+            </motion.div>
           )}
         </div>
       </main>
