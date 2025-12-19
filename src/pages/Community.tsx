@@ -257,8 +257,7 @@ const Community = () => {
                       onChange={handleInputChange}
                       placeholder="Enter your name"
                       required
-                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all"
-                      style={{ focusRing: SKOOL_BLUE } as any}
+                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all bg-white text-gray-900 placeholder:text-gray-400"
                     />
                   </div>
                 </div>
@@ -276,7 +275,7 @@ const Community = () => {
                       onChange={handleInputChange}
                       placeholder="you@example.com"
                       required
-                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all"
+                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all bg-white text-gray-900 placeholder:text-gray-400"
                     />
                   </div>
                 </div>
@@ -293,7 +292,7 @@ const Community = () => {
                       value={formData.phone}
                       onChange={handleInputChange}
                       placeholder="Your phone number"
-                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all"
+                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all bg-white text-gray-900 placeholder:text-gray-400"
                     />
                   </div>
                 </div>
