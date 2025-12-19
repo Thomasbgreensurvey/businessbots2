@@ -40,6 +40,8 @@ export const AgentCard = ({ agent, onClick, index }: AgentCardProps) => {
             src={agent.image}
             alt={agent.name}
             className="w-full h-auto object-contain transform group-hover:scale-105 transition-transform duration-500"
+            loading="eager"
+            decoding="sync"
           />
         </div>
         

@@ -772,7 +772,7 @@ const AgentThumbnail = ({ agent, index, isActive, onHover, onClick }: AgentThumb
           alt={agent.name}
           className="w-full h-auto object-contain transform group-hover:scale-105 transition-transform duration-500"
           loading="eager"
-          decoding="async"
+          decoding="sync"
         />
       </div>
 
