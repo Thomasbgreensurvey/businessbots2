@@ -17,6 +17,8 @@ import Community from "./pages/Community";
 import Contact from "./pages/Contact";
 import BookDemo from "./pages/BookDemo";
 import GetStarted from "./pages/GetStarted";
+import Call from "./pages/Call";
+import Connect from "./pages/Connect";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,8 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/book-demo" element={<BookDemo />} />
           <Route path="/get-started" element={<GetStarted />} />
+          <Route path="/call" element={<Call />} />
+          <Route path="/connect" element={<Connect />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
