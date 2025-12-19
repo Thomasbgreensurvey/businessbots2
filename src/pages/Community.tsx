@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Users, Rocket, BookOpen, Award, Target, Zap, TrendingUp, ExternalLink, CheckCircle, GraduationCap, Briefcase, ChevronRight, Sparkles, Star, Play } from "lucide-react";
+import { ArrowLeft, Users, Rocket, BookOpen, Award, Target, Zap, TrendingUp, ExternalLink, CheckCircle, GraduationCap, Briefcase, ChevronRight, Sparkles, Star, Mail, User, Phone, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import skoolBadge from "@/assets/skool-badge.png";
 import skoolBanner from "@/assets/skool-banner.jpeg";
 import skoolLogo from "@/assets/skool-logo.jpeg";
@@ -26,9 +29,65 @@ const fadeInUp = {
 
 const Community = () => {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleJoinCommunity = () => {
     window.open(SKOOL_LINK, "_blank", "noopener,noreferrer");
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name.trim() || !formData.email.trim()) {
+      toast.error("Please fill in your name and email");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Save to contacts table
+      const { error: dbError } = await supabase.from("contacts").insert({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim() || null,
+        message: "Community funnel signup - Free AI lessons interest"
+      });
+
+      if (dbError) {
+        console.error("Database error:", dbError);
+        throw new Error("Failed to save your information");
+      }
+
+      // Send confirmation email
+      const { error: emailError } = await supabase.functions.invoke("send-community-confirmation", {
+        body: {
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim() || undefined
+        }
+      });
+
+      if (emailError) {
+        console.error("Email error:", emailError);
+        // Don't throw - still show success since DB save worked
+      }
+
+      setIsSuccess(true);
+      toast.success("Welcome to the community!");
+    } catch (error: any) {
+      console.error("Submission error:", error);
+      toast.error(error.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -126,6 +185,145 @@ const Community = () => {
               Join Free Community
               <ExternalLink className="w-5 h-5" />
             </motion.button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Lead Capture Form Section */}
+      <section className="py-16 md:py-20 px-4 bg-gray-50">
+        <div className="max-w-xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-8"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Get Free AI Training
+            </h2>
+            <p className="text-lg text-gray-600">
+              Learn AI in 15-minute lessons delivered straight to your inbox
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-white rounded-3xl p-8 shadow-xl"
+          >
+            {isSuccess ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-8"
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", duration: 0.5 }}
+                  className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+                  style={{ backgroundColor: `${SKOOL_BLUE}15` }}
+                >
+                  <CheckCircle className="w-10 h-10" style={{ color: SKOOL_BLUE }} />
+                </motion.div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">You're In!</h3>
+                <p className="text-gray-600 mb-6">
+                  Check your email for next steps and your welcome message.
+                </p>
+                <motion.button
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleJoinCommunity}
+                  className="w-full px-8 py-4 rounded-full text-white font-bold text-lg flex items-center justify-center gap-2 shadow-lg"
+                  style={{ backgroundColor: SKOOL_BLUE, boxShadow: `0 10px 40px ${SKOOL_BLUE}40` }}
+                >
+                  Join the Skool Community Now
+                  <ExternalLink className="w-5 h-5" />
+                </motion.button>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Your Name *
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="Enter your name"
+                      required
+                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all"
+                      style={{ focusRing: SKOOL_BLUE } as any}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address *
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="you@example.com"
+                      required
+                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone (Optional)
+                  </label>
+                  <div className="relative">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="Your phone number"
+                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all"
+                    />
+                  </div>
+                </div>
+
+                <motion.button
+                  type="submit"
+                  disabled={isSubmitting}
+                  whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                  whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+                  className="w-full py-4 rounded-full text-white font-bold text-lg flex items-center justify-center gap-2 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: SKOOL_BLUE, boxShadow: `0 10px 40px ${SKOOL_BLUE}40` }}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Joining...
+                    </>
+                  ) : (
+                    <>
+                      Get Free Access
+                      <ChevronRight className="w-5 h-5" />
+                    </>
+                  )}
+                </motion.button>
+
+                <p className="text-center text-sm text-gray-500 mt-4">
+                  No spam, ever. Unsubscribe anytime.
+                </p>
+              </form>
+            )}
           </motion.div>
         </div>
       </section>
@@ -420,24 +618,24 @@ const Community = () => {
               whileHover={{ scale: 1.03, y: -3 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleJoinCommunity}
-              className="px-10 py-5 bg-white font-bold text-lg rounded-full flex items-center gap-3 mx-auto shadow-2xl"
+              className="px-10 py-5 rounded-full bg-white font-bold text-lg flex items-center gap-3 mx-auto shadow-2xl"
               style={{ color: SKOOL_BLUE }}
             >
-              Join Business Bots UK Community
-              <ExternalLink className="w-6 h-6" />
+              Join Free Now
+              <ExternalLink className="w-5 h-5" />
             </motion.button>
-            <p className="text-white/70 mt-6 text-sm">
-              100% Free • No Credit Card Required • Instant Access
-            </p>
           </motion.div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 bg-white border-t border-gray-100">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-gray-500 text-sm">
-            © 2024 Business Bots UK. All rights reserved.
+      <footer className="py-8 px-4 bg-gray-900 text-gray-400">
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-sm">
+            © {new Date().getFullYear()} Business Bots UK. All rights reserved.
+          </p>
+          <p className="text-sm mt-2">
+            ai@businessbotsuk.com | 0191 673 3290
           </p>
         </div>
       </footer>

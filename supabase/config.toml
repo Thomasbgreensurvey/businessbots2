@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.send-getstarted-confirmation]
 verify_jwt = false
+
+[functions.send-community-confirmation]
+verify_jwt = false
