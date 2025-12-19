@@ -275,3 +275,11 @@ export const agents: Agent[] = [
 export const getAgent = (id: string): Agent | undefined => {
   return agents.find(agent => agent.id === id);
 };
+
+// Preload all agent images on app start for instant loading
+export const preloadAgentImages = () => {
+  agents.forEach(agent => {
+    const img = new Image();
+    img.src = agent.image;
+  });
+};
