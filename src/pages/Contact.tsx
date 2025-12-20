@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Phone, Mail, Send, CheckCircle, Clock } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
+import ReCaptcha, { ReCaptchaRef } from "@/components/ReCaptcha";
 
 const SKOOL_BLUE = "#4B5FD1";
 
@@ -35,6 +36,8 @@ const Contact = () => {
     message: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCaptchaRef>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -59,6 +62,11 @@ const Contact = () => {
         }
       });
       setErrors(fieldErrors);
+      return;
+    }
+
+    if (!recaptchaToken) {
+      toast.error("Please complete the reCAPTCHA verification");
       return;
     }
 
@@ -100,9 +108,19 @@ const Contact = () => {
     } catch (error) {
       console.error("Error submitting contact form:", error);
       toast.error("Failed to send message", { description: "Please try again or email us directly." });
+      recaptchaRef.current?.reset();
+      setRecaptchaToken(null);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token);
+  };
+
+  const handleRecaptchaExpired = () => {
+    setRecaptchaToken(null);
   };
 
   return (
@@ -313,9 +331,16 @@ const Contact = () => {
                 {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
               </div>
 
+              <ReCaptcha
+                ref={recaptchaRef}
+                onChange={handleRecaptchaChange}
+                onExpired={handleRecaptchaExpired}
+                className="flex flex-col items-center"
+              />
+
               <motion.button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !recaptchaToken}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full py-4 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all disabled:opacity-70"
@@ -333,6 +358,13 @@ const Contact = () => {
                   </>
                 )}
               </motion.button>
+
+              <p className="text-xs text-gray-500 text-center mt-4">
+                By submitting, you agree to our{" "}
+                <Link to="/privacy" className="underline hover:text-gray-700">Privacy Policy</Link>
+                {" "}and{" "}
+                <Link to="/terms" className="underline hover:text-gray-700">Terms & Conditions</Link>.
+              </p>
             </form>
           )}
         </motion.div>
@@ -341,6 +373,14 @@ const Contact = () => {
       {/* Footer */}
       <footer className="bg-gray-50 py-8 px-4 border-t border-gray-100">
         <div className="max-w-7xl mx-auto text-center">
+          <div className="flex justify-center gap-6 mb-4">
+            <Link to="/privacy" className="text-gray-600 hover:text-gray-900 text-sm">
+              Privacy Policy
+            </Link>
+            <Link to="/terms" className="text-gray-600 hover:text-gray-900 text-sm">
+              Terms & Conditions
+            </Link>
+          </div>
           <p className="text-gray-500 text-sm">
             © {new Date().getFullYear()} Business Bots UK. All rights reserved.
           </p>

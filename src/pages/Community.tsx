@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Users, Rocket, BookOpen, Award, Target, Zap, TrendingUp, ExternalLink, CheckCircle, GraduationCap, Briefcase, ChevronRight, Sparkles, Star, Mail, User, Phone, Loader2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import skoolBadge from "@/assets/skool-badge.png";
 import skoolBanner from "@/assets/skool-banner.jpeg";
 import skoolLogo from "@/assets/skool-logo.jpeg";
+import ReCaptcha, { ReCaptchaRef } from "@/components/ReCaptcha";
 
 const SKOOL_LINK = "https://www.skool.com/sales-ai-business-marketing-7663/about?ref=002573a2eb4443249a5fce3b6607713d";
 
@@ -32,6 +33,16 @@ const Community = () => {
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCaptchaRef>(null);
+
+  const handleRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token);
+  };
+
+  const handleRecaptchaExpired = () => {
+    setRecaptchaToken(null);
+  };
 
   const handleJoinCommunity = () => {
     window.open(SKOOL_LINK, "_blank", "noopener,noreferrer");
@@ -47,6 +58,11 @@ const Community = () => {
     
     if (!formData.name.trim() || !formData.email.trim()) {
       toast.error("Please fill in your name and email");
+      return;
+    }
+
+    if (!recaptchaToken) {
+      toast.error("Please complete the reCAPTCHA verification");
       return;
     }
 
@@ -85,6 +101,8 @@ const Community = () => {
     } catch (error: any) {
       console.error("Submission error:", error);
       toast.error(error.message || "Something went wrong. Please try again.");
+      recaptchaRef.current?.reset();
+      setRecaptchaToken(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -297,9 +315,16 @@ const Community = () => {
                   </div>
                 </div>
 
+                <ReCaptcha
+                  ref={recaptchaRef}
+                  onChange={handleRecaptchaChange}
+                  onExpired={handleRecaptchaExpired}
+                  className="flex flex-col items-center"
+                />
+
                 <motion.button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !recaptchaToken}
                   whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                   whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
                   className="w-full py-4 rounded-full text-white font-bold text-lg flex items-center justify-center gap-2 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
@@ -318,8 +343,11 @@ const Community = () => {
                   )}
                 </motion.button>
 
-                <p className="text-center text-sm text-gray-500 mt-4">
-                  No spam, ever. Unsubscribe anytime.
+                <p className="text-center text-xs text-gray-500 mt-4">
+                  No spam, ever. By joining you agree to our{" "}
+                  <Link to="/privacy" className="underline hover:text-gray-700">Privacy Policy</Link>
+                  {" "}and{" "}
+                  <Link to="/terms" className="underline hover:text-gray-700">Terms</Link>.
                 </p>
               </form>
             )}

@@ -1,14 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, Check, Loader2, Sparkles, User, Mail, Phone, Building } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import ReCaptcha, { ReCaptchaRef } from "@/components/ReCaptcha";
 
 const GetStarted = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCaptchaRef>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,12 +21,27 @@ const GetStarted = () => {
     message: "",
   });
 
+  const handleRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token);
+  };
+
+  const handleRecaptchaExpired = () => {
+    setRecaptchaToken(null);
+  };
+
   useEffect(() => {
     document.title = "Get Started | Business Bots UK";
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!recaptchaToken) {
+      toast.error("Please complete the reCAPTCHA verification");
+      return;
+    }
+    
+    setIsSubmitting(true);
     setIsSubmitting(true);
 
     try {
@@ -62,6 +80,8 @@ const GetStarted = () => {
       toast.error("Something went wrong", {
         description: "Please try again or contact us directly.",
       });
+      recaptchaRef.current?.reset();
+      setRecaptchaToken(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -247,10 +267,18 @@ const GetStarted = () => {
               />
             </div>
 
+            {/* reCAPTCHA */}
+            <ReCaptcha
+              ref={recaptchaRef}
+              onChange={handleRecaptchaChange}
+              onExpired={handleRecaptchaExpired}
+              className="flex flex-col items-center"
+            />
+
             {/* Submit */}
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !recaptchaToken}
               className="w-full py-4 rounded-lg font-semibold text-white bg-[#4B5FD1] hover:bg-[#3a4db8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg mt-2"
             >
               {isSubmitting ? (
@@ -262,6 +290,13 @@ const GetStarted = () => {
                 "Submit Request"
               )}
             </button>
+
+            <p className="text-xs text-gray-500 text-center mt-4">
+              By submitting, you agree to our{" "}
+              <Link to="/privacy" className="underline hover:text-gray-700">Privacy Policy</Link>
+              {" "}and{" "}
+              <Link to="/terms" className="underline hover:text-gray-700">Terms & Conditions</Link>.
+            </p>
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-6">
