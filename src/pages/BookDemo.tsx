@@ -76,8 +76,6 @@ const BookDemo = () => {
       toast.error("Please complete the reCAPTCHA verification");
       return;
     }
-      return;
-    }
 
     setIsSubmitting(true);
 
