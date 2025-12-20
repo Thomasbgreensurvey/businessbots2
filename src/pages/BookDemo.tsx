@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { ArrowLeft, Clock, CalendarDays, User, Building, Mail, Phone, Check } fr
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import ReCaptcha, { ReCaptchaRef } from "@/components/ReCaptcha";
 
 const timeSlots = [
   "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
@@ -23,6 +24,8 @@ const BookDemo = () => {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBooked, setIsBooked] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCaptchaRef>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -30,6 +33,14 @@ const BookDemo = () => {
     phone: "",
     message: ""
   });
+
+  const handleRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token);
+  };
+
+  const handleRecaptchaExpired = () => {
+    setRecaptchaToken(null);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -58,6 +69,13 @@ const BookDemo = () => {
 
     if (!formData.name || !formData.email) {
       toast.error("Please fill in required fields");
+      return;
+    }
+
+    if (!recaptchaToken) {
+      toast.error("Please complete the reCAPTCHA verification");
+      return;
+    }
       return;
     }
 
@@ -98,6 +116,8 @@ const BookDemo = () => {
     } catch (error) {
       console.error("Booking error:", error);
       toast.error("Failed to book demo. Please try again.");
+      recaptchaRef.current?.reset();
+      setRecaptchaToken(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -384,13 +404,27 @@ const BookDemo = () => {
                   </p>
                 </div>
 
+                <ReCaptcha
+                  ref={recaptchaRef}
+                  onChange={handleRecaptchaChange}
+                  onExpired={handleRecaptchaExpired}
+                  className="flex flex-col items-center"
+                />
+
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !recaptchaToken}
                   className="w-full bg-[#4B5FD1] hover:bg-[#3a4db8] text-white py-6 text-lg font-medium"
                 >
                   {isSubmitting ? "Booking..." : "Confirm Booking"}
                 </Button>
+
+                <p className="text-xs text-gray-500 text-center mt-4">
+                  By booking, you agree to our{" "}
+                  <Link to="/privacy" className="underline hover:text-gray-700">Privacy Policy</Link>
+                  {" "}and{" "}
+                  <Link to="/terms" className="underline hover:text-gray-700">Terms & Conditions</Link>.
+                </p>
               </form>
             </motion.div>
           )}
