@@ -80,12 +80,20 @@
     <priority>0.8</priority>
   </url>
   
-  <!-- Help Centre - Support -->
+  <!-- Help Centre - Support (also handles /product-help redirects) -->
   <url>
     <loc>https://businessbotsuk.com/help-centre</loc>
     <lastmod>2025-12-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
+  </url>
+  
+  <!-- Call - Direct Contact -->
+  <url>
+    <loc>https://businessbotsuk.com/call</loc>
+    <lastmod>2025-12-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   
   <!-- Community - Engagement -->

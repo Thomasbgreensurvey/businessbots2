@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { preloadAgentImages } from "@/data/agents";
 import Chatbot from "@/components/Chatbot";
 import Index from "./pages/Index";
@@ -56,6 +56,15 @@ const App = () => {
             <Route path="/get-started" element={<GetStarted />} />
             <Route path="/call" element={<Call />} />
             <Route path="/connect" element={<Connect />} />
+            {/* Redirects for old/indexed URLs to prevent 404s */}
+            <Route path="/product-help" element={<Navigate to="/help-centre" replace />} />
+            <Route path="/product-help/*" element={<Navigate to="/help-centre" replace />} />
+            <Route path="/products" element={<Navigate to="/" replace />} />
+            <Route path="/products/*" element={<Navigate to="/" replace />} />
+            <Route path="/services" element={<Navigate to="/" replace />} />
+            <Route path="/services/*" element={<Navigate to="/" replace />} />
+            <Route path="/about" element={<Navigate to="/" replace />} />
+            <Route path="/demo" element={<Navigate to="/book-demo" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Chatbot />

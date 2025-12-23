@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Phone, Mail, Send, CheckCircle, Clock } from "lucide-react";
+import { ArrowLeft, Phone, Mail, Send, CheckCircle, Clock, MapPin } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -168,7 +168,7 @@ const Contact = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-xl mx-auto mb-12"
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-3xl mx-auto mb-8"
         >
           <a
             href="tel:01916733290"
@@ -199,6 +199,33 @@ const Contact = () => {
             <div className="text-left">
               <p className="text-sm text-gray-500">Email us</p>
               <p className="font-semibold text-gray-900">ai@businessbotsuk.com</p>
+            </div>
+          </a>
+        </motion.div>
+
+        {/* Address Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="max-w-xl mx-auto mb-12"
+        >
+          <a
+            href="https://maps.google.com/?q=The+Beacon+Business+Centre+Westgate+Road+Newcastle+upon+Tyne+NE4+9PQ"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors w-full"
+          >
+            <div 
+              className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: SKOOL_BLUE }}
+            >
+              <MapPin className="w-5 h-5 text-white" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm text-gray-500">Visit us</p>
+              <p className="font-semibold text-gray-900">The Beacon Business Centre</p>
+              <p className="text-gray-600 text-sm">Westgate Road, Newcastle upon Tyne, NE4 9PQ</p>
             </div>
           </a>
         </motion.div>
