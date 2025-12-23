@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Loader2, Bot, User, ExternalLink, Minimize2 } from "lucide-react";
+import { X, Send, Loader2, User, ExternalLink, Minimize2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import banjoImg from "@/assets/agents/banjo.png";
 
 type Message = {
   role: "user" | "assistant";
@@ -15,7 +16,7 @@ const quickActions = [
   { label: "AI Employees", message: "Tell me about the 8 AI Employees" },
   { label: "Pricing", message: "What are the pricing plans?" },
   { label: "Free Course", message: "Tell me about the free AI training course" },
-  { label: "Free Trial", message: "How do I start a free trial?" },
+  { label: "Book Demo", message: "How do I book a demo?" },
 ];
 
 const Chatbot = () => {
@@ -24,7 +25,7 @@ const Chatbot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hey! 👋 I'm Biz Bot, your AI assistant. Ask me about our AI Employees, pricing, or the free community. How can I help?",
+      content: "Hey there! 👋 I'm Banjo, your AI Customer Support specialist. I'm here to help you 24/7 with any questions about our AI Employees, pricing, or how to get started. What can I help you with today?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -151,7 +152,7 @@ const Chatbot = () => {
             href={part}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 underline"
+            className="inline-flex items-center gap-1 text-indigo-400 hover:text-indigo-300 underline"
           >
             {isSkool ? "Join Free Community" : "Link"}
             <ExternalLink className="w-3 h-3" />
@@ -164,25 +165,54 @@ const Chatbot = () => {
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Button - Banjo Avatar */}
       <AnimatePresence>
         {!isOpen && (
           <motion.button
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-white shadow-2xl flex items-center justify-center hover:shadow-purple-500/30"
-            style={{ boxShadow: "0 8px 32px rgba(139, 92, 246, 0.4)" }}
+            className="fixed bottom-6 right-6 z-50 group"
           >
-            <MessageCircle className="w-7 h-7" />
+            {/* Glow effect */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-indigo-600 blur-lg opacity-60 group-hover:opacity-80 transition-opacity" />
+            
+            {/* Main button container */}
+            <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-indigo-600 p-0.5 shadow-2xl">
+              <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center overflow-hidden">
+                <img 
+                  src={banjoImg} 
+                  alt="Banjo - AI Support Agent" 
+                  className="w-14 h-14 object-cover object-top scale-125"
+                />
+              </div>
+            </div>
+            
+            {/* Online indicator */}
             <motion.span
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-white"
+              className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-emerald-400 rounded-full border-2 border-slate-900 shadow-lg"
             />
+            
+            {/* Chat prompt bubble */}
+            <motion.div
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
+              className="absolute right-full mr-3 top-1/2 -translate-y-1/2 hidden md:block"
+            >
+              <div className="bg-white text-slate-900 text-sm font-medium px-4 py-2 rounded-xl shadow-xl whitespace-nowrap">
+                <span className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-indigo-500" />
+                  Chat with Banjo
+                </span>
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 rotate-45 w-2 h-2 bg-white" />
+              </div>
+            </motion.div>
           </motion.button>
         )}
       </AnimatePresence>
@@ -195,40 +225,69 @@ const Chatbot = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className={`fixed z-50 bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-700/50 shadow-2xl flex flex-col overflow-hidden ${
+            className={`fixed z-50 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border border-indigo-500/20 shadow-2xl flex flex-col overflow-hidden ${
               isExpanded
                 ? "bottom-4 right-4 left-4 top-4 md:left-auto md:w-[500px] md:h-[700px] rounded-2xl"
-                : "bottom-6 right-6 w-[380px] h-[550px] rounded-2xl"
+                : "bottom-6 right-6 w-[380px] h-[580px] rounded-2xl"
             }`}
-            style={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)" }}
+            style={{ boxShadow: "0 25px 50px -12px rgba(99, 102, 241, 0.25)" }}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 border-b border-slate-700/50">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                    <Bot className="w-5 h-5 text-white" />
+            {/* Header - Enhanced with Banjo */}
+            <div className="relative px-5 py-4 bg-gradient-to-r from-indigo-600/30 via-purple-600/20 to-indigo-600/30 border-b border-indigo-500/20">
+              {/* Subtle pattern overlay */}
+              <div className="absolute inset-0 opacity-10" style={{
+                backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+                backgroundSize: '20px 20px'
+              }} />
+              
+              <div className="relative flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    {/* Avatar glow */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 blur-md opacity-50" />
+                    <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 p-0.5">
+                      <div className="w-full h-full rounded-full bg-slate-900 overflow-hidden">
+                        <img 
+                          src={banjoImg} 
+                          alt="Banjo" 
+                          className="w-full h-full object-cover object-top scale-125"
+                        />
+                      </div>
+                    </div>
+                    <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-slate-900" />
                   </div>
-                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-slate-900" />
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-white text-base">Banjo</h3>
+                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 rounded-full border border-indigo-500/30">
+                        AI
+                      </span>
+                    </div>
+                    <p className="text-xs text-indigo-200/70">Customer Support Agent • Online</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-white text-sm">Biz Bot</h3>
-                  <p className="text-xs text-slate-400">AI Assistant</p>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                    aria-label="Expand chat"
+                  >
+                    <Minimize2 className="w-4 h-4 text-indigo-300/70" />
+                  </button>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                    aria-label="Close chat"
+                  >
+                    <X className="w-4 h-4 text-indigo-300/70" />
+                  </button>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                >
-                  <Minimize2 className="w-4 h-4 text-slate-400" />
-                </button>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                >
-                  <X className="w-4 h-4 text-slate-400" />
-                </button>
+              
+              {/* Agent capabilities hint */}
+              <div className="relative mt-3 flex items-center gap-2 text-[11px] text-indigo-200/50">
+                <Sparkles className="w-3 h-3" />
+                <span>I can handle 1,000+ conversations at once • 100+ languages • 24/7</span>
               </div>
             </div>
 
@@ -242,23 +301,29 @@ const Chatbot = () => {
                   className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   {message.role === "assistant" && (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0 flex items-center justify-center">
-                      <Bot className="w-4 h-4 text-white" />
+                    <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex-shrink-0 p-0.5">
+                      <div className="w-full h-full rounded-full bg-slate-900 overflow-hidden">
+                        <img 
+                          src={banjoImg} 
+                          alt="Banjo" 
+                          className="w-full h-full object-cover object-top scale-125"
+                        />
+                      </div>
                     </div>
                   )}
                   <div
                     className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                       message.role === "user"
-                        ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-br-md"
-                        : "bg-slate-800/80 text-slate-100 rounded-bl-md border border-slate-700/50"
+                        ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-br-md"
+                        : "bg-slate-800/80 text-slate-100 rounded-bl-md border border-indigo-500/20"
                     }`}
                   >
                     {message.role === "assistant" ? renderMessageContent(message.content) : message.content}
                     {message.role === "assistant" && message.content === "" && isLoading && (
                       <span className="inline-flex gap-1">
-                        <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                        <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                        <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                       </span>
                     )}
                   </div>
@@ -275,13 +340,14 @@ const Chatbot = () => {
             {/* Quick Actions */}
             {messages.length <= 2 && (
               <div className="px-4 pb-3">
+                <p className="text-[11px] text-indigo-300/50 mb-2 font-medium">Quick questions:</p>
                 <div className="flex flex-wrap gap-2">
                   {quickActions.map((action) => (
                     <button
                       key={action.label}
                       onClick={() => handleSend(action.message)}
                       disabled={isLoading}
-                      className="px-3 py-1.5 text-xs font-medium bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 rounded-full border border-slate-700/50 transition-colors disabled:opacity-50"
+                      className="px-3 py-1.5 text-xs font-medium bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 rounded-full border border-indigo-500/30 transition-all hover:border-indigo-500/50 disabled:opacity-50"
                     >
                       {action.label}
                     </button>
@@ -291,7 +357,7 @@ const Chatbot = () => {
             )}
 
             {/* Input */}
-            <div className="p-4 border-t border-slate-700/50 bg-slate-900/80">
+            <div className="p-4 border-t border-indigo-500/20 bg-slate-900/80">
               <div className="flex items-center gap-3">
                 <input
                   ref={inputRef}
@@ -299,20 +365,20 @@ const Chatbot = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Type a message..."
+                  placeholder="Ask Banjo anything..."
                   disabled={isLoading}
-                  className="flex-1 px-4 py-3 bg-slate-800/80 border border-slate-700/50 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent disabled:opacity-50"
+                  className="flex-1 px-4 py-3 bg-slate-800/80 border border-indigo-500/20 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-transparent disabled:opacity-50"
                 />
                 <button
                   onClick={() => handleSend()}
                   disabled={!input.trim() || isLoading}
-                  className="p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-white hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl text-white hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/25"
                 >
                   {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                 </button>
               </div>
-              <p className="text-center text-xs text-slate-500 mt-3">
-                Powered by Business Bots UK
+              <p className="text-center text-[10px] text-slate-500 mt-3">
+                Powered by <span className="text-indigo-400 font-medium">Business Bots UK</span> • Banjo resolves 80% of queries instantly
               </p>
             </div>
           </motion.div>
