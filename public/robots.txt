@@ -1,30 +1,80 @@
-# Business Bots UK - AI Automation Solutions
+# =============================================================
+# Business Bots UK - AI Employees for Business Automation
 # https://businessbotsuk.com
+# Last Updated: 2025-12-23
+# =============================================================
 
+# Google (Priority - Main Search Engine)
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 1
+Allow: /book-demo
+Allow: /pricing
+Allow: /blog
+Allow: /case-studies
+Allow: /faq
+Allow: /what-is-ai-employee
+Allow: /help-centre
+Allow: /community
+Allow: /contact
+Allow: /privacy
+Allow: /terms
+Crawl-delay: 0
 
+User-agent: Googlebot-Image
+Allow: /
+Crawl-delay: 0
+
+User-agent: Googlebot-News
+Allow: /blog
+Allow: /
+Crawl-delay: 0
+
+User-agent: Googlebot-Video
+Allow: /
+Crawl-delay: 0
+
+# Microsoft Bing (Second Priority)
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 0
+
+User-agent: BingPreview
+Allow: /
+
+User-agent: msnbot
+Allow: /
 Crawl-delay: 1
 
+# Apple (Safari Search, Siri, Spotlight)
+User-agent: Applebot
+Allow: /
+Crawl-delay: 0
+
+# Yahoo (Uses Bing)
 User-agent: Slurp
 Allow: /
-Crawl-delay: 2
+Crawl-delay: 1
 
+# DuckDuckGo
 User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 0
+
+# Yandex (Russian - international reach)
+User-agent: YandexBot
 Allow: /
 Crawl-delay: 1
 
+User-agent: YandexImages
+Allow: /
+Crawl-delay: 1
+
+# Baidu (Chinese - international business)
 User-agent: Baiduspider
 Allow: /
 Crawl-delay: 2
 
-User-agent: YandexBot
-Allow: /
-Crawl-delay: 2
-
+# Social Media Crawlers (Important for sharing)
 User-agent: Twitterbot
 Allow: /
 
@@ -37,14 +87,65 @@ Allow: /
 User-agent: Pinterest
 Allow: /
 
-User-agent: *
+User-agent: Slackbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+# AI/LLM Crawlers (For AI visibility)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# SEO Tools (Allow for analysis)
+User-agent: AhrefsBot
 Allow: /
 Crawl-delay: 2
 
-# Sitemap location
+User-agent: SemrushBot
+Allow: /
+Crawl-delay: 2
+
+User-agent: MJ12bot
+Allow: /
+Crawl-delay: 2
+
+User-agent: rogerbot
+Allow: /
+Crawl-delay: 2
+
+# Default rule for all other bots
+User-agent: *
+Allow: /
+Crawl-delay: 1
+
+# Sitemaps - Critical for indexing
 Sitemap: https://businessbotsuk.com/sitemap.xml
 
-# Disallow admin and private paths
+# Disallow sensitive paths
 Disallow: /api/
 Disallow: /admin/
+Disallow: /_next/
 Disallow: /*.json$
+Disallow: /private/
+
+# Host directive
+Host: https://businessbotsuk.com
