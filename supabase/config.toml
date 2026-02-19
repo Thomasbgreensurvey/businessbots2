@@ -20,3 +20,9 @@ verify_jwt = false
 
 [functions.seo-scan]
 verify_jwt = false
+
+[functions.track-intelligence]
+verify_jwt = false
+
+[functions.generate-blog-content]
+verify_jwt = false

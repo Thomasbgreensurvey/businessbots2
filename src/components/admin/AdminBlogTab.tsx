@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Pencil, Trash2, Save, X, Tag, Eye, Clock } from "lucide-react";
+import { Plus, Pencil, Trash2, Save, X, Tag, Eye, Upload, Wand2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface BlogPost {
@@ -34,6 +34,9 @@ const AdminBlogTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType:
   const [newTag, setNewTag] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
+  const [uploading, setUploading] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { fetchAll(); }, []);
 
@@ -49,7 +52,6 @@ const AdminBlogTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType:
     if (catsRes.data) setCategories(catsRes.data);
     if (tagsRes.data) setTags(tagsRes.data);
     
-    // Count views per post from audit_logs
     const counts: Record<string, number> = {};
     (viewsRes.data || []).forEach((v: any) => {
       if (v.entity_id) counts[v.entity_id] = (counts[v.entity_id] || 0) + 1;
@@ -73,13 +75,31 @@ const AdminBlogTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType:
     setSelectedTags(data?.map((t) => t.tag_id) || []);
   };
 
+  // Auto-ping search engines when publishing
+  const autoPingSearchEngines = async (slug: string) => {
+    try {
+      // Google Indexing API
+      await supabase.functions.invoke("ping-search-engines", {
+        body: { action: "google_index_urls", urls: [`/blog/${slug}`] },
+      });
+      // IndexNow
+      await supabase.functions.invoke("ping-search-engines", {
+        body: { action: "indexnow", urls: [`/blog/${slug}`] },
+      });
+      toast.success("🚀 Auto-indexed to Google & Bing", { description: `/blog/${slug}` });
+    } catch {
+      toast.warning("Post saved but auto-index failed");
+    }
+  };
+
   const handleSave = async () => {
     if (!editing) return;
     const slug = editing.slug || slugify(editing.title);
+    const isPublishing = editing.status === "published";
     const payload = {
       title: editing.title, slug, content: editing.content, excerpt: editing.excerpt,
       featured_image: editing.featured_image, status: editing.status, category_id: editing.category_id,
-      published_at: editing.status === "published" ? editing.published_at || new Date().toISOString() : editing.published_at,
+      published_at: isPublishing ? editing.published_at || new Date().toISOString() : editing.published_at,
     };
 
     if (isNew) {
@@ -90,6 +110,7 @@ const AdminBlogTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType:
       }
       onAuditLog("create", "blog_post", data?.id || "", { title: editing.title });
       toast.success("Post created");
+      if (isPublishing) await autoPingSearchEngines(slug);
     } else {
       const { error } = await supabase.from("blog_posts").update(payload).eq("id", editing.id);
       if (error) { toast.error(error.message); return; }
@@ -99,6 +120,7 @@ const AdminBlogTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType:
       }
       onAuditLog("update", "blog_post", editing.id, { title: editing.title });
       toast.success("Post updated");
+      if (isPublishing) await autoPingSearchEngines(slug);
     }
     setEditing(null);
     setIsNew(false);
@@ -111,6 +133,42 @@ const AdminBlogTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType:
     onAuditLog("delete", "blog_post", post.id, { title: post.title });
     toast.success("Post deleted");
     fetchAll();
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editing) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error } = await supabase.storage.from("blog-images").upload(path, file);
+    if (error) {
+      toast.error(`Upload failed: ${error.message}`);
+      setUploading(false);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from("blog-images").getPublicUrl(path);
+    setEditing({ ...editing, featured_image: urlData.publicUrl });
+    toast.success("Image uploaded");
+    setUploading(false);
+  };
+
+  const handleGenerateContent = async () => {
+    if (!editing?.title) { toast.error("Enter a title first"); return; }
+    setGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-blog-content", {
+        body: { title: editing.title },
+      });
+      if (error) throw error;
+      if (data?.content) {
+        setEditing({ ...editing, content: data.content });
+        toast.success("Content generated — review and edit before publishing");
+      }
+    } catch (e: any) {
+      toast.error(`Generation failed: ${e.message}`);
+    }
+    setGenerating(false);
   };
 
   const addCategory = async () => {
@@ -153,10 +211,22 @@ const AdminBlogTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType:
             <label className="text-[10px] text-emerald-400/60 uppercase tracking-wider mb-1 block">Excerpt</label>
             <Input value={editing.excerpt || ""} onChange={(e) => setEditing({ ...editing, excerpt: e.target.value })} className="bg-white/5 border-white/10 text-white" placeholder="Short description" />
           </div>
+          
+          {/* Featured Image Upload */}
           <div>
-            <label className="text-[10px] text-emerald-400/60 uppercase tracking-wider mb-1 block">Featured Image URL</label>
-            <Input value={editing.featured_image || ""} onChange={(e) => setEditing({ ...editing, featured_image: e.target.value })} className="bg-white/5 border-white/10 text-white" placeholder="https://..." />
+            <label className="text-[10px] text-emerald-400/60 uppercase tracking-wider mb-1 block">Featured Image</label>
+            <div className="flex gap-2 items-center">
+              <Input value={editing.featured_image || ""} onChange={(e) => setEditing({ ...editing, featured_image: e.target.value })} className="bg-white/5 border-white/10 text-white flex-1" placeholder="URL or upload →" />
+              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+              <Button size="sm" variant="outline" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="border-white/10 text-white shrink-0">
+                {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+              </Button>
+            </div>
+            {editing.featured_image && (
+              <img src={editing.featured_image} alt="Preview" className="mt-2 rounded-lg h-32 object-cover border border-white/10" />
+            )}
           </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-[10px] text-emerald-400/60 uppercase tracking-wider mb-1 block">Status</label>
@@ -186,13 +256,21 @@ const AdminBlogTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType:
             </div>
           </div>
           <div>
-            <label className="text-[10px] text-emerald-400/60 uppercase tracking-wider mb-1 block">Content (Markdown)</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-[10px] text-emerald-400/60 uppercase tracking-wider">Content (HTML/Tailwind)</label>
+              <Button size="sm" variant="outline" onClick={handleGenerateContent} disabled={generating} className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 text-xs">
+                {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Wand2 className="w-3.5 h-3.5 mr-1" />}
+                AI Generate
+              </Button>
+            </div>
             <textarea value={editing.content} onChange={(e) => setEditing({ ...editing, content: e.target.value })} rows={16}
-              className="w-full rounded-md border border-white/10 bg-white/5 text-white px-3 py-2 text-sm font-mono resize-y" placeholder="Write your post content here..." />
+              className="w-full rounded-md border border-white/10 bg-white/5 text-white px-3 py-2 text-sm font-mono resize-y" placeholder="Write HTML/Tailwind content or click AI Generate..." />
           </div>
-          <Button onClick={handleSave} className="bg-emerald-600 hover:bg-emerald-700 text-white">
-            <Save className="w-4 h-4 mr-1" /> Save Post
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={handleSave} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Save className="w-4 h-4 mr-1" /> {editing.status === "published" ? "Publish & Index" : "Save Draft"}
+            </Button>
+          </div>
         </div>
       </div>
     );
