@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SITE_URL = "https://businessbotsuk.lovable.app";
+const SITE_URL = "https://businessbotsuk.com";
 const SITEMAP_URL = `${SITE_URL}/sitemap.xml`;
 const INDEXNOW_KEY = "b7b4a2d8e5c14f90b1d3a6c8e7f2b5a1";
 
@@ -99,7 +99,7 @@ Deno.serve(async (req) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          host: "businessbotsuk.lovable.app",
+          host: "businessbotsuk.com",
           key: INDEXNOW_KEY,
           keyLocation: `${SITE_URL}/${INDEXNOW_KEY}.txt`,
           urlList: urls.map((u: string) => `${SITE_URL}${u}`),
