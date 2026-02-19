@@ -94,8 +94,11 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
           duration: 6000,
         });
       } else {
+        const errMsg = typeof googleResult?.response?.error === "string"
+          ? googleResult.response.error
+          : googleResult?.response?.error?.message || "Check audit logs for details";
         toast.warning(`Google returned status ${googleResult?.status || "unknown"}`, {
-          description: googleResult?.response?.error || "Check audit logs for details",
+          description: errMsg,
         });
       }
 
