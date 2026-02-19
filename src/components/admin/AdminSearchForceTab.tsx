@@ -234,7 +234,9 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
                         <span className="text-emerald-400/70">notifyTime: {google.response.urlNotificationMetadata.latestUpdate.notifyTime}</span>
                       )}
                       {google?.response?.error && (
-                        <span className="text-red-400/70">{google.response.error}</span>
+                        <span className="text-red-400/70">
+                          {typeof google.response.error === "string" ? google.response.error : google.response.error?.message || JSON.stringify(google.response.error)}
+                        </span>
                       )}
                       {(log.details as any)?.avgScore !== undefined && `Score: ${(log.details as any).avgScore}/100`}
                       {(log.details as any)?.urls && `${(log.details as any).urls} URLs`}
