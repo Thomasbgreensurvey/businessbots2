@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Radar, RotateCw, Globe, Zap, FileSearch, Loader2, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Radar, RotateCw, Globe, Zap, FileSearch, Loader2, CheckCircle, XCircle, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
 interface PingResult {
   engine: string;
   status: number;
   url: string;
+  response?: any;
 }
 
 interface PingLog {
@@ -59,12 +60,11 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
 
   const rebuildSitemap = async () => {
     setActionLoading("sitemap");
-    // Generate sitemap XML from known pages + published blog posts
     const { data: posts } = await supabase.from("blog_posts").select("slug, updated_at").eq("status", "published");
     const blogUrls = (posts || []).map(p => `  <url><loc>https://businessbotsuk.lovable.app/blog/${p.slug}</loc><lastmod>${p.updated_at?.split("T")[0]}</lastmod></url>`);
     const pageUrls = SITE_PAGES.map(p => `  <url><loc>https://businessbotsuk.lovable.app${p}</loc><lastmod>${new Date().toISOString().split("T")[0]}</lastmod></url>`);
     const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...pageUrls, ...blogUrls].join("\n")}\n</urlset>`;
-    
+
     await onAuditLog("sitemap_rebuild", "seo", "sitemap", { urls: SITE_PAGES.length + (posts?.length || 0), timestamp: new Date().toISOString() });
     toast.success(`Sitemap rebuilt with ${SITE_PAGES.length + (posts?.length || 0)} URLs`);
     console.log("Generated sitemap:\n", sitemapContent);
@@ -75,15 +75,36 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
   const pingEngines = async () => {
     setActionLoading("ping");
     try {
+      // Google Indexing API v3 + Bing sitemap ping
       const { data, error } = await supabase.functions.invoke("ping-search-engines", {
         body: { action: "ping_sitemap" },
       });
       if (error) throw error;
-      // Also send IndexNow
+
+      // IndexNow batch submission
       await supabase.functions.invoke("ping-search-engines", {
         body: { action: "indexnow", urls: SITE_PAGES },
       });
-      toast.success("Search engines pinged successfully");
+
+      // Check Google result
+      const googleResult = data?.results?.find((r: PingResult) => r.engine === "Google");
+      if (googleResult?.status === 200) {
+        toast.success("🚀 Google VIP Indexing Request Successful", {
+          description: `notifyTime: ${googleResult.response?.urlNotificationMetadata?.latestUpdate?.notifyTime || "confirmed"}`,
+          duration: 6000,
+        });
+      } else {
+        toast.warning(`Google returned status ${googleResult?.status || "unknown"}`, {
+          description: googleResult?.response?.error || "Check audit logs for details",
+        });
+      }
+
+      // IndexNow / Bing toast
+      const bingResult = data?.results?.find((r: PingResult) => r.engine === "Bing");
+      if (bingResult?.status === 200) {
+        toast.success("Bing sitemap ping successful");
+      }
+
       fetchHistory();
     } catch (e: any) {
       toast.error(`Ping failed: ${e.message}`);
@@ -93,7 +114,6 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
 
   const optimiseContent = async () => {
     setActionLoading("optimise");
-    // Run SEO scan then auto-fill missing metadata
     try {
       const { data } = await supabase.functions.invoke("seo-scan");
       const lowScorePages = (data?.results || []).filter((r: any) => r.score < 50);
@@ -115,6 +135,24 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
     if (details.urls) return "Sitemap Rebuild";
     if (details.pagesOptimised !== undefined) return "Content Optimise";
     return "Action";
+  };
+
+  const renderGoogleStatus = (google: PingResult | undefined) => {
+    if (!google) return <span className="text-white/20 text-xs">—</span>;
+    if (google.status === 200) {
+      return (
+        <span className="flex items-center gap-1.5">
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+          <span className="text-xs font-mono text-emerald-400">Google Verified Index Request</span>
+        </span>
+      );
+    }
+    return (
+      <span className="flex items-center gap-1.5">
+        <XCircle className="w-3.5 h-3.5 text-red-400" />
+        <span className="text-xs font-mono text-red-400">{google.status} Error</span>
+      </span>
+    );
   };
 
   return (
@@ -159,7 +197,7 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
               <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Date</th>
               <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Action</th>
               <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Google Status</th>
-              <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Bing Status</th>
+              <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Bing / IndexNow</th>
               <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Details</th>
             </tr>
           </thead>
@@ -179,23 +217,22 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
                     <td className="px-4 py-3">
                       <span className="text-white text-xs font-medium">{getActionLabel(log.details)}</span>
                     </td>
-                    <td className="px-4 py-3">
-                      {google ? (
-                        <span className="flex items-center gap-1.5">
-                          {google.status === 200 ? <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> : <XCircle className="w-3.5 h-3.5 text-red-400" />}
-                          <span className={`text-xs font-mono ${google.status === 200 ? "text-emerald-400" : "text-red-400"}`}>{google.status} OK</span>
-                        </span>
-                      ) : <span className="text-white/20 text-xs">—</span>}
-                    </td>
+                    <td className="px-4 py-3">{renderGoogleStatus(google)}</td>
                     <td className="px-4 py-3">
                       {bing ? (
                         <span className="flex items-center gap-1.5">
                           {bing.status === 200 || bing.status === 202 ? <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> : <XCircle className="w-3.5 h-3.5 text-red-400" />}
-                          <span className={`text-xs font-mono ${bing.status === 200 || bing.status === 202 ? "text-emerald-400" : "text-red-400"}`}>{bing.status}</span>
+                          <span className={`text-xs font-mono ${bing.status === 200 || bing.status === 202 ? "text-emerald-400" : "text-red-400"}`}>{bing.status} {bing.engine}</span>
                         </span>
                       ) : <span className="text-white/20 text-xs">—</span>}
                     </td>
-                    <td className="px-4 py-3 text-white/40 text-xs max-w-[200px] truncate">
+                    <td className="px-4 py-3 text-white/40 text-xs max-w-[250px] truncate">
+                      {google?.response?.urlNotificationMetadata?.latestUpdate?.notifyTime && (
+                        <span className="text-emerald-400/70">notifyTime: {google.response.urlNotificationMetadata.latestUpdate.notifyTime}</span>
+                      )}
+                      {google?.response?.error && (
+                        <span className="text-red-400/70">{google.response.error}</span>
+                      )}
                       {(log.details as any)?.avgScore !== undefined && `Score: ${(log.details as any).avgScore}/100`}
                       {(log.details as any)?.urls && `${(log.details as any).urls} URLs`}
                       {(log.details as any)?.pagesOptimised !== undefined && `${(log.details as any).pagesOptimised} pages flagged`}
