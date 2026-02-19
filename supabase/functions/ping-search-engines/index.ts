@@ -8,7 +8,7 @@ const corsHeaders = {
 
 const SITE_URL = "https://businessbotsuk.lovable.app";
 const SITEMAP_URL = `${SITE_URL}/sitemap.xml`;
-const INDEXNOW_KEY = "businessbotsuk2024key";
+const INDEXNOW_KEY = "b7b4a2d8e5c14f90b1d3a6c8e7f2b5a1";
 
 async function getGoogleAccessToken(): Promise<string> {
   const credsJson = Deno.env.get("GOOGLE_INDEXING_CREDENTIALS");
