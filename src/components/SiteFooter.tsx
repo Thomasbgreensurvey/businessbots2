@@ -194,6 +194,8 @@ const SiteFooter = () => {
             <Link to="/help-centre" className="hover:text-white transition-colors">Help Centre</Link>
             <span>•</span>
             <Link to="/book-demo" className="hover:text-white transition-colors">Book a Demo</Link>
+            <span>•</span>
+            <Link to="/admin" className="hover:text-white transition-colors">Admin</Link>
           </div>
 
           <p className="text-white/30 text-xs">
