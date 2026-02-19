@@ -22,6 +22,7 @@ import BookDemo from "./pages/BookDemo";
 import GetStarted from "./pages/GetStarted";
 import Call from "./pages/Call";
 import Connect from "./pages/Connect";
+import SEOAudit from "./pages/SEOAudit";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ const App = () => {
             <Route path="/get-started" element={<GetStarted />} />
             <Route path="/call" element={<Call />} />
             <Route path="/connect" element={<Connect />} />
+            <Route path="/seo-audit" element={<SEOAudit />} />
             {/* Redirects for old/indexed URLs to prevent 404s */}
             <Route path="/product-help" element={<Navigate to="/help-centre" replace />} />
             <Route path="/product-help/*" element={<Navigate to="/help-centre" replace />} />
