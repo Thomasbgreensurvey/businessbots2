@@ -9,11 +9,13 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { prompt, title } = await req.json();
+    const { prompt, title, type } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    const systemPrompt = `You are a senior content writer for Business Bots UK, an AI automation agency based in Newcastle upon Tyne, North East England.
+    const seoMetaPrompt = `You are an SEO specialist for Business Bots UK, an AI automation agency in Newcastle upon Tyne, North East England. Generate metadata as a JSON object with "title" and "description" keys. Title must be under 60 chars with primary keyword. Description must be under 155 chars, compelling, action-oriented. Return ONLY raw JSON, no markdown, no code fences.`;
+
+    const blogPrompt = `You are a senior content writer for Business Bots UK, an AI automation agency based in Newcastle upon Tyne, North East England.
 
 STRICT RULES:
 - Return ONLY raw HTML with Tailwind CSS classes. No markdown whatsoever.
@@ -25,6 +27,8 @@ STRICT RULES:
 - Reference Business Bots UK AI employees by name (Sprout, Lilly, Banjo, Timi, Like, Tobby, Nano, Skoot) where natural.
 - End with a clear CTA linking to /book-demo.
 - Aim for 800-1200 words of rich, engaging content.`;
+
+    const systemPrompt = type === "seo-meta" ? seoMetaPrompt : blogPrompt;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

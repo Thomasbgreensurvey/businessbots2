@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Eye, CheckCircle, Clock, MapPin, Loader2 } from "lucide-react";
+import { Eye, CheckCircle, Clock, Loader2, Radio, Monitor, Smartphone, Tablet } from "lucide-react";
 
 interface Conversion {
   id: string;
@@ -9,11 +9,31 @@ interface Conversion {
   created_at: string;
 }
 
+interface JourneyEvent {
+  id: string;
+  created_at: string;
+  action: string;
+  page: string;
+  duration?: number;
+  referrer?: string;
+  screen?: string;
+  sessionId?: string;
+}
+
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+const DeviceIcon = ({ screen }: { screen?: string }) => {
+  if (!screen) return <Monitor className="w-3.5 h-3.5 text-white/30" />;
+  const w = parseInt(screen.split("x")[0] || "0");
+  if (w <= 480) return <Smartphone className="w-3.5 h-3.5 text-blue-400" />;
+  if (w <= 1024) return <Tablet className="w-3.5 h-3.5 text-purple-400" />;
+  return <Monitor className="w-3.5 h-3.5 text-emerald-400" />;
+};
+
 const AdminIntelligenceTab = () => {
   const [conversions, setConversions] = useState<Conversion[]>([]);
+  const [journeys, setJourneys] = useState<JourneyEvent[]>([]);
   const [heatmapData, setHeatmapData] = useState<number[][]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,10 +41,11 @@ const AdminIntelligenceTab = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    const [contactsRes, bookingsRes, logsRes] = await Promise.all([
+    const [contactsRes, bookingsRes, logsRes, visitorRes] = await Promise.all([
       supabase.from("contacts").select("id, name, created_at").order("created_at", { ascending: false }).limit(30),
       supabase.from("demo_bookings").select("id, name, created_at").order("created_at", { ascending: false }).limit(30),
       supabase.from("audit_logs").select("created_at").order("created_at", { ascending: false }).limit(500),
+      supabase.from("audit_logs").select("*").eq("entity_type", "visitor").order("created_at", { ascending: false }).limit(100),
     ]);
 
     const contacts: Conversion[] = (contactsRes.data || []).map(c => ({ ...c, type: "contact" as const }));
@@ -32,11 +53,27 @@ const AdminIntelligenceTab = () => {
     const merged = [...contacts, ...bookings].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     setConversions(merged);
 
-    // Build heatmap from audit_logs timestamps
+    // Parse visitor journeys
+    const parsed: JourneyEvent[] = (visitorRes.data || []).map((log: any) => {
+      const d = log.details as any || {};
+      return {
+        id: log.id,
+        created_at: log.created_at,
+        action: log.action,
+        page: log.entity_id || "/",
+        duration: d.duration,
+        referrer: d.referrer,
+        screen: d.screen,
+        sessionId: d.sessionId,
+      };
+    });
+    setJourneys(parsed);
+
+    // Build heatmap
     const grid: number[][] = DAYS.map(() => Array(24).fill(0));
     (logsRes.data || []).forEach((log: any) => {
       const d = new Date(log.created_at);
-      const day = (d.getDay() + 6) % 7; // Mon=0
+      const day = (d.getDay() + 6) % 7;
       const hour = d.getHours();
       grid[day][hour]++;
     });
@@ -45,8 +82,22 @@ const AdminIntelligenceTab = () => {
   };
 
   const maxHeat = Math.max(1, ...heatmapData.flat());
+  const formatDate = (d: string) => new Date(d).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit" });
 
-  const formatDate = (d: string) => new Date(d).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+  const formatDuration = (dur?: number) => {
+    if (dur == null) return "—";
+    if (dur < 60) return `${dur}s`;
+    return `${Math.floor(dur / 60)}m ${dur % 60}s`;
+  };
+
+  const formatReferrer = (ref?: string) => {
+    if (!ref) return "Direct";
+    try {
+      return new URL(ref).hostname.replace("www.", "");
+    } catch {
+      return ref.slice(0, 30);
+    }
+  };
 
   if (loading) {
     return <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-white/30" /></div>;
@@ -54,6 +105,62 @@ const AdminIntelligenceTab = () => {
 
   return (
     <div className="space-y-8">
+      {/* Live Journey Feed */}
+      <div>
+        <div className="flex items-center gap-2 mb-4">
+          <Radio className="w-5 h-5 text-emerald-400" />
+          <h3 className="text-sm font-bold text-white uppercase tracking-wider">Live Journey Feed</h3>
+          <div className="flex items-center gap-1.5 ml-auto">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-white/30 text-xs">{journeys.length} events</span>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-white/10 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-white/5 border-b border-white/10">
+                {["Timestamp", "Page Path", "Dwell Time", "Referrer", "Device"].map(h => (
+                  <th key={h} className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider whitespace-nowrap">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {journeys.length === 0 ? (
+                <tr><td colSpan={5} className="px-4 py-8 text-center text-white/30 text-xs">No visitor data yet. Browse the site to generate tracking events.</td></tr>
+              ) : (
+                journeys.map((j) => (
+                  <tr key={j.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <td className="px-4 py-2.5 text-white/50 font-mono text-xs">{formatDate(j.created_at)}</td>
+                    <td className="px-4 py-2.5 text-white font-mono text-xs">{j.page}</td>
+                    <td className="px-4 py-2.5">
+                      {j.action === "page_exit" && j.duration != null ? (
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold font-mono border ${
+                          j.duration >= 30 ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" :
+                          j.duration >= 10 ? "text-amber-400 bg-amber-500/10 border-amber-500/20" :
+                          "text-red-400 bg-red-500/10 border-red-500/20"
+                        }`}>
+                          {formatDuration(j.duration)}
+                        </span>
+                      ) : (
+                        <span className="text-white/20 text-xs">—</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2.5 text-white/40 text-xs">{formatReferrer(j.referrer)}</td>
+                    <td className="px-4 py-2.5">
+                      <div className="flex items-center gap-1.5">
+                        <DeviceIcon screen={j.screen} />
+                        <span className="text-white/30 text-[10px] font-mono">{j.screen || "—"}</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       {/* Path to Conversion */}
       <div>
         <div className="flex items-center gap-2 mb-4">
@@ -109,7 +216,6 @@ const AdminIntelligenceTab = () => {
         </div>
 
         <div className="rounded-xl border border-white/10 p-4 bg-white/[0.02] overflow-x-auto">
-          {/* Hour labels */}
           <div className="flex mb-1 ml-10">
             {HOURS.map(h => (
               <div key={h} className="flex-1 text-center text-[9px] text-white/30 font-mono min-w-[20px]">
@@ -117,7 +223,6 @@ const AdminIntelligenceTab = () => {
               </div>
             ))}
           </div>
-          {/* Grid */}
           {DAYS.map((day, di) => (
             <div key={day} className="flex items-center gap-1 mb-0.5">
               <span className="w-8 text-[10px] text-white/40 font-mono text-right shrink-0">{day}</span>
@@ -141,7 +246,6 @@ const AdminIntelligenceTab = () => {
               </div>
             </div>
           ))}
-          {/* Legend */}
           <div className="flex items-center justify-end gap-2 mt-3">
             <span className="text-[9px] text-white/30">Less</span>
             {[0.1, 0.3, 0.5, 0.7, 1].map(i => (
