@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
 import blogStudio from "@/assets/blog-studio.jpeg";
 const SKOOL_BLUE = "#4B5FD1";
 
@@ -19,47 +22,21 @@ const fadeInUp = {
   animate: { opacity: 1, y: 0 }
 };
 
-const blogPosts = [
-  {
-    id: 1,
-    title: "How AI Employees Are Transforming Small Businesses",
-    excerpt: "Discover how small businesses are leveraging AI employees to automate tasks, reduce costs, and scale their operations without hiring additional staff.",
-    date: "Dec 2, 2024",
-    readTime: "5 min read",
-    category: "AI Insights",
-    slug: "ai-employees-transforming-small-businesses"
-  },
-  {
-    id: 2,
-    title: "The Future of Customer Support: AI vs Human",
-    excerpt: "Exploring the balance between AI-powered support and human touch in creating exceptional customer experiences.",
-    date: "Nov 28, 2024",
-    readTime: "7 min read",
-    category: "Customer Support",
-    slug: "future-of-customer-support"
-  },
-  {
-    id: 3,
-    title: "5 Ways to Automate Your Email Marketing Today",
-    excerpt: "Practical tips for setting up automated email campaigns that nurture leads and drive conversions on autopilot.",
-    date: "Nov 22, 2024",
-    readTime: "4 min read",
-    category: "Marketing",
-    slug: "automate-email-marketing"
-  },
-  {
-    id: 4,
-    title: "Building Your AI Team: A Step-by-Step Guide",
-    excerpt: "Learn how to identify which AI employees your business needs and how to integrate them into your workflow.",
-    date: "Nov 15, 2024",
-    readTime: "8 min read",
-    category: "Getting Started",
-    slug: "building-your-ai-team"
-  }
-];
-
 const Blog = () => {
   const navigate = useNavigate();
+
+  const { data: posts, isLoading } = useQuery({
+    queryKey: ["blog-posts-public"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("id, title, slug, excerpt, published_at, status, category_id, blog_categories(name)")
+        .eq("status", "published")
+        .order("published_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const handlePostClick = (slug: string) => {
     navigate(`/blog/${slug}`);
@@ -146,42 +123,56 @@ const Blog = () => {
       {/* Blog Posts */}
       <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <motion.div 
-            variants={staggerContainer}
-            initial="initial"
-            animate="animate"
-            className="space-y-8"
-          >
-            {blogPosts.map((post) => (
-              <motion.article
-                key={post.id}
-                variants={fadeInUp}
-                whileHover={{ y: -4 }}
-                whileTap={{ scale: 0.99 }}
-                onClick={() => handlePostClick(post.slug)}
-                className="group p-6 md:p-8 rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-300 cursor-pointer bg-white"
-              >
-                <div className="flex flex-wrap items-center gap-3 mb-4">
-                  <span 
-                    className="px-3 py-1 text-sm font-medium rounded-full"
-                    style={{ backgroundColor: `${SKOOL_BLUE}10`, color: SKOOL_BLUE }}
-                  >
-                    {post.category}
+          {isLoading ? (
+            <div className="flex justify-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+            </div>
+          ) : !posts?.length ? (
+            <p className="text-center text-gray-500 py-20">No posts published yet. Check back soon!</p>
+          ) : (
+            <motion.div 
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+              className="space-y-8"
+            >
+              {posts.map((post) => (
+                <motion.article
+                  key={post.id}
+                  variants={fadeInUp}
+                  whileHover={{ y: -4 }}
+                  whileTap={{ scale: 0.99 }}
+                  onClick={() => handlePostClick(post.slug)}
+                  className="group p-6 md:p-8 rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-300 cursor-pointer bg-white"
+                >
+                  <div className="flex flex-wrap items-center gap-3 mb-4">
+                    {(post as any).blog_categories?.name && (
+                      <span 
+                        className="px-3 py-1 text-sm font-medium rounded-full"
+                        style={{ backgroundColor: `${SKOOL_BLUE}10`, color: SKOOL_BLUE }}
+                      >
+                        {(post as any).blog_categories.name}
+                      </span>
+                    )}
+                    {post.published_at && (
+                      <span className="text-gray-400 text-sm">
+                        {format(new Date(post.published_at), "MMM d, yyyy")}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-[#4B5FD1] transition-colors">
+                    {post.title}
+                  </h3>
+                  {post.excerpt && (
+                    <p className="text-gray-600 mb-4 leading-relaxed">{post.excerpt}</p>
+                  )}
+                  <span className="font-medium transition-colors" style={{ color: SKOOL_BLUE }}>
+                    Read article →
                   </span>
-                  <span className="text-gray-400 text-sm">{post.date}</span>
-                  <span className="text-gray-400 text-sm">·</span>
-                  <span className="text-gray-400 text-sm">{post.readTime}</span>
-                </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-[#4B5FD1] transition-colors">
-                  {post.title}
-                </h3>
-                <p className="text-gray-600 mb-4 leading-relaxed">{post.excerpt}</p>
-                <span className="font-medium transition-colors" style={{ color: SKOOL_BLUE }}>
-                  Read article →
-                </span>
-              </motion.article>
-            ))}
-          </motion.div>
+                </motion.article>
+              ))}
+            </motion.div>
+          )}
         </div>
       </section>
 
