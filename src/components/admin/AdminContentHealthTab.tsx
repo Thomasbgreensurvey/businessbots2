@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, Loader2, CheckCircle, AlertTriangle, XCircle, RefreshCw } from "lucide-react";
+import { Shield, Loader2, CheckCircle, AlertTriangle, XCircle, RefreshCw, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 interface ScanResult {
@@ -31,6 +31,7 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
   const [results, setResults] = useState<ScanResult[]>([]);
   const [avgScore, setAvgScore] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const [lastScan, setLastScan] = useState<string | null>(null);
 
   useEffect(() => { runScan(); }, []);
@@ -49,9 +50,88 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
     setLoading(false);
   };
 
+  const autoGenerateMeta = async () => {
+    // Find pages missing title or description
+    const gaps = results.filter(r =>
+      r.statuses.title !== "good" || r.statuses.description !== "good"
+    );
+
+    if (gaps.length === 0) {
+      toast.info("All pages already have complete meta data!");
+      return;
+    }
+
+    setGenerating(true);
+    let updated = 0;
+
+    try {
+      for (const page of gaps) {
+        const { data, error } = await supabase.functions.invoke("generate-blog-content", {
+          body: {
+            prompt: `Generate SEO metadata for a page at path "${page.path}" on a website called "Business Bots UK" — an AI employee agency in North East England. Return ONLY a JSON object with "title" (under 60 chars, include main keyword) and "description" (under 155 chars, compelling, action-oriented). No markdown, no code fences, just raw JSON.`,
+            type: "seo-meta",
+          },
+        });
+
+        if (error) {
+          console.error(`Meta gen failed for ${page.path}:`, error);
+          continue;
+        }
+
+        let meta: { title?: string; description?: string } = {};
+        try {
+          const raw = typeof data === "string" ? data : data?.content || data?.html || JSON.stringify(data);
+          // Extract JSON from response
+          const jsonMatch = raw.match(/\{[\s\S]*?\}/);
+          if (jsonMatch) {
+            meta = JSON.parse(jsonMatch[0]);
+          }
+        } catch {
+          console.error(`Failed to parse meta for ${page.path}`);
+          continue;
+        }
+
+        if (!meta.title && !meta.description) continue;
+
+        // Upsert into seo_metadata
+        const { data: existing } = await supabase
+          .from("seo_metadata")
+          .select("id")
+          .eq("page_path", page.path)
+          .maybeSingle();
+
+        if (existing) {
+          await supabase.from("seo_metadata").update({
+            title: meta.title || null,
+            description: meta.description || null,
+          }).eq("id", existing.id);
+        } else {
+          await supabase.from("seo_metadata").insert({
+            page_path: page.path,
+            title: meta.title || null,
+            description: meta.description || null,
+          });
+        }
+
+        updated++;
+      }
+
+      onAuditLog("auto_generate_meta", "seo", "batch", { pagesProcessed: gaps.length, pagesUpdated: updated });
+      toast.success(`Generated meta for ${updated}/${gaps.length} pages`);
+
+      // Re-scan to show updated results
+      await runScan();
+    } catch (e: any) {
+      toast.error(`Auto-generate failed: ${e.message}`);
+    }
+
+    setGenerating(false);
+  };
+
   const goodCount = results.filter(r => r.score >= 80).length;
   const warnCount = results.filter(r => r.score >= 50 && r.score < 80).length;
   const critCount = results.filter(r => r.score < 50).length;
+  const gapCount = results.filter(r => r.statuses.title !== "good" || r.statuses.description !== "good").length;
 
   return (
     <div className="space-y-6">
@@ -64,13 +144,23 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
             {lastScan && <p className="text-white/30 text-xs mt-0.5">Last scan: {new Date(lastScan).toLocaleString("en-GB")}</p>}
           </div>
         </div>
-        <button
-          onClick={runScan}
-          disabled={loading}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 text-xs font-medium hover:bg-emerald-600/30 transition-colors disabled:opacity-50"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Rescan
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={autoGenerateMeta}
+            disabled={generating || loading || gapCount === 0}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-600/20 border border-purple-500/30 text-purple-400 text-xs font-medium hover:bg-purple-600/30 transition-colors disabled:opacity-50"
+          >
+            <Sparkles className={`w-3.5 h-3.5 ${generating ? "animate-pulse" : ""}`} />
+            {generating ? `Generating...` : `Auto-Generate Missing Meta (${gapCount})`}
+          </button>
+          <button
+            onClick={runScan}
+            disabled={loading}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 text-xs font-medium hover:bg-emerald-600/30 transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Rescan
+          </button>
+        </div>
       </div>
 
       {/* Summary Strip */}
