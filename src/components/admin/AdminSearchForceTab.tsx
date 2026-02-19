@@ -61,8 +61,8 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
   const rebuildSitemap = async () => {
     setActionLoading("sitemap");
     const { data: posts } = await supabase.from("blog_posts").select("slug, updated_at").eq("status", "published");
-    const blogUrls = (posts || []).map(p => `  <url><loc>https://businessbotsuk.lovable.app/blog/${p.slug}</loc><lastmod>${p.updated_at?.split("T")[0]}</lastmod></url>`);
-    const pageUrls = SITE_PAGES.map(p => `  <url><loc>https://businessbotsuk.lovable.app${p}</loc><lastmod>${new Date().toISOString().split("T")[0]}</lastmod></url>`);
+    const blogUrls = (posts || []).map(p => `  <url><loc>https://businessbotsuk.com/blog/${p.slug}</loc><lastmod>${p.updated_at?.split("T")[0]}</lastmod></url>`);
+    const pageUrls = SITE_PAGES.map(p => `  <url><loc>https://businessbotsuk.com${p}</loc><lastmod>${new Date().toISOString().split("T")[0]}</lastmod></url>`);
     const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...pageUrls, ...blogUrls].join("\n")}\n</urlset>`;
 
     await onAuditLog("sitemap_rebuild", "seo", "sitemap", { urls: SITE_PAGES.length + (posts?.length || 0), timestamp: new Date().toISOString() });
@@ -201,14 +201,15 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
               <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Action</th>
               <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Google Status</th>
               <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Bing / IndexNow</th>
+              <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Target Domain</th>
               <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Details</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={5} className="px-4 py-8 text-center text-white/30"><Loader2 className="w-5 h-5 animate-spin mx-auto" /></td></tr>
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-white/30"><Loader2 className="w-5 h-5 animate-spin mx-auto" /></td></tr>
             ) : pingHistory.length === 0 ? (
-              <tr><td colSpan={5} className="px-4 py-8 text-center text-white/30 text-xs">No indexing activity yet. Run your first scan above.</td></tr>
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-white/30 text-xs">No indexing activity yet. Run your first scan above.</td></tr>
             ) : (
               pingHistory.map((log) => {
                 const results = (log.details as any)?.results as PingResult[] | undefined;
@@ -228,6 +229,13 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
                           <span className={`text-xs font-mono ${bing.status === 200 || bing.status === 202 ? "text-emerald-400" : "text-red-400"}`}>{bing.status} {bing.engine}</span>
                         </span>
                       ) : <span className="text-white/20 text-xs">—</span>}
+                    </td>
+                    <td className="px-4 py-3">
+                      {google?.url ? (
+                        <span className="text-xs font-mono text-cyan-400">{google.url}</span>
+                      ) : (
+                        <span className="text-xs font-mono text-white/30">businessbotsuk.com</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-white/40 text-xs max-w-[250px] truncate">
                       {google?.response?.urlNotificationMetadata?.latestUpdate?.notifyTime && (

@@ -32,7 +32,11 @@ preloadAgentImages();
 
 const App = () => {
   useEffect(() => {
-    // Ensure images are preloaded on mount as well
+    // 301-equivalent: redirect .lovable.app subdomain to live domain
+    if (window.location.hostname === "businessbotsuk.lovable.app") {
+      window.location.replace("https://businessbotsuk.com" + window.location.pathname + window.location.search);
+      return;
+    }
     preloadAgentImages();
   }, []);
 
