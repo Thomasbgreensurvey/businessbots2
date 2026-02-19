@@ -197,7 +197,11 @@ const SiteFooter = () => {
           </div>
 
           <p className="text-white/30 text-xs">
-            © {new Date().getFullYear()} Business Bots UK. All rights reserved. AI Employees for Business Automation.
+            © {new Date().getFullYear()}{" "}
+            <Link to="/admin" className="text-white/30 hover:text-white/50 transition-colors cursor-pointer">
+              Business Bots UK
+            </Link>
+            . All rights reserved. AI Employees for Business Automation.
           </p>
         </div>
       </div>
