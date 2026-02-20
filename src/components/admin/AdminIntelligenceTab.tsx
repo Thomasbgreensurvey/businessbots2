@@ -116,20 +116,21 @@ const AdminIntelligenceTab = () => {
           </div>
         </div>
 
-        <div className="rounded-xl border border-white/10 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-white/5 border-b border-white/10">
-                {["Timestamp", "Page Path", "Dwell Time", "Referrer", "Device"].map(h => (
-                  <th key={h} className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider whitespace-nowrap">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {journeys.length === 0 ? (
-                <tr><td colSpan={5} className="px-4 py-8 text-center text-white/30 text-xs">No visitor data yet. Browse the site to generate tracking events.</td></tr>
-              ) : (
-                journeys.map((j) => (
+        {/* Desktop */}
+        <div className="rounded-xl border border-white/10 overflow-hidden hidden md:block">
+          <div className="overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <table className="w-full text-sm min-w-[600px]">
+              <thead>
+                <tr className="bg-white/5 border-b border-white/10">
+                  {["Timestamp", "Page Path", "Dwell Time", "Referrer", "Device"].map(h => (
+                    <th key={h} className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider whitespace-nowrap">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {journeys.length === 0 ? (
+                  <tr><td colSpan={5} className="px-4 py-8 text-center text-white/30 text-xs">No visitor data yet.</td></tr>
+                ) : journeys.map((j) => (
                   <tr key={j.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                     <td className="px-4 py-2.5 text-white/50 font-mono text-xs">{formatDate(j.created_at)}</td>
                     <td className="px-4 py-2.5 text-white font-mono text-xs">{j.page}</td>
@@ -139,12 +140,8 @@ const AdminIntelligenceTab = () => {
                           j.duration >= 30 ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" :
                           j.duration >= 10 ? "text-amber-400 bg-amber-500/10 border-amber-500/20" :
                           "text-red-400 bg-red-500/10 border-red-500/20"
-                        }`}>
-                          {formatDuration(j.duration)}
-                        </span>
-                      ) : (
-                        <span className="text-white/20 text-xs">—</span>
-                      )}
+                        }`}>{formatDuration(j.duration)}</span>
+                      ) : <span className="text-white/20 text-xs">—</span>}
                     </td>
                     <td className="px-4 py-2.5 text-white/40 text-xs">{formatReferrer(j.referrer)}</td>
                     <td className="px-4 py-2.5">
@@ -154,10 +151,44 @@ const AdminIntelligenceTab = () => {
                       </div>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {/* Mobile cards */}
+        <div className="md:hidden space-y-3">
+          {journeys.length === 0 ? (
+            <p className="text-center text-white/30 text-xs py-8">No visitor data yet.</p>
+          ) : journeys.map((j) => (
+            <div key={j.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-white/50 font-mono text-xs">{formatDate(j.created_at)}</span>
+                <div className="flex items-center gap-1.5">
+                  <DeviceIcon screen={j.screen} />
+                  <span className="text-white/30 text-[10px] font-mono">{j.screen || "—"}</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-emerald-400/60 text-[10px] uppercase tracking-wider">Page</span>
+                <span className="text-white font-mono text-xs">{j.page}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-emerald-400/60 text-[10px] uppercase tracking-wider">Dwell</span>
+                {j.action === "page_exit" && j.duration != null ? (
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold font-mono border ${
+                    j.duration >= 30 ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" :
+                    j.duration >= 10 ? "text-amber-400 bg-amber-500/10 border-amber-500/20" :
+                    "text-red-400 bg-red-500/10 border-red-500/20"
+                  }`}>{formatDuration(j.duration)}</span>
+                ) : <span className="text-white/20 text-xs">—</span>}
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-emerald-400/60 text-[10px] uppercase tracking-wider">Referrer</span>
+                <span className="text-white/40 text-xs">{formatReferrer(j.referrer)}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -169,30 +200,29 @@ const AdminIntelligenceTab = () => {
           <span className="text-white/30 text-xs ml-auto">{conversions.length} total</span>
         </div>
 
-        <div className="rounded-xl border border-white/10 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-white/5 border-b border-white/10">
-                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Timestamp</th>
-                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Lead</th>
-                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Channel</th>
-                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {conversions.length === 0 ? (
-                <tr><td colSpan={4} className="px-4 py-8 text-center text-white/30 text-xs">No conversions recorded yet.</td></tr>
-              ) : (
-                conversions.map((c) => (
+        {/* Desktop */}
+        <div className="rounded-xl border border-white/10 overflow-hidden hidden md:block">
+          <div className="overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <table className="w-full text-sm min-w-[500px]">
+              <thead>
+                <tr className="bg-white/5 border-b border-white/10">
+                  <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Timestamp</th>
+                  <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Lead</th>
+                  <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Channel</th>
+                  <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {conversions.length === 0 ? (
+                  <tr><td colSpan={4} className="px-4 py-8 text-center text-white/30 text-xs">No conversions recorded yet.</td></tr>
+                ) : conversions.map((c) => (
                   <tr key={`${c.type}-${c.id}`} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                     <td className="px-4 py-3 text-white/50 font-mono text-xs">{formatDate(c.created_at)}</td>
                     <td className="px-4 py-3 text-white text-xs font-medium">{c.name}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
                         c.type === "booking" ? "bg-purple-500/10 text-purple-400 border border-purple-500/20" : "bg-blue-500/10 text-blue-400 border border-blue-500/20"
-                      }`}>
-                        {c.type === "booking" ? "Demo Booking" : "Contact Form"}
-                      </span>
+                      }`}>{c.type === "booking" ? "Demo Booking" : "Contact Form"}</span>
                     </td>
                     <td className="px-4 py-3">
                       <span className="flex items-center gap-1 text-emerald-400">
@@ -201,10 +231,36 @@ const AdminIntelligenceTab = () => {
                       </span>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {/* Mobile cards */}
+        <div className="md:hidden space-y-3">
+          {conversions.length === 0 ? (
+            <p className="text-center text-white/30 text-xs py-8">No conversions recorded yet.</p>
+          ) : conversions.map((c) => (
+            <div key={`${c.type}-${c.id}`} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-white/50 font-mono text-xs">{formatDate(c.created_at)}</span>
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                  c.type === "booking" ? "bg-purple-500/10 text-purple-400 border border-purple-500/20" : "bg-blue-500/10 text-blue-400 border border-blue-500/20"
+                }`}>{c.type === "booking" ? "Demo" : "Contact"}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-emerald-400/60 text-[10px] uppercase tracking-wider">Lead</span>
+                <span className="text-white text-xs font-medium">{c.name}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-emerald-400/60 text-[10px] uppercase tracking-wider">Status</span>
+                <span className="flex items-center gap-1 text-emerald-400">
+                  <CheckCircle className="w-3.5 h-3.5" />
+                  <span className="text-xs font-medium">Converted</span>
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

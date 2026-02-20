@@ -56,7 +56,7 @@ const Admin = () => {
 
   if (authenticated) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white">
+      <div className="min-h-screen bg-slate-950 text-white max-w-[100vw] overflow-x-hidden">
         {/* Header */}
         <div className="border-b border-emerald-500/10 px-4 sm:px-6 py-3">
           <div className="max-w-[1600px] mx-auto flex items-center justify-between">
@@ -81,9 +81,9 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="border-b border-white/5 px-4 sm:px-6 bg-slate-950/80">
-          <div className="max-w-[1600px] mx-auto flex gap-0.5 overflow-x-auto scrollbar-hide">
+        {/* Tabs — sticky on mobile */}
+        <div className="border-b border-white/5 px-4 sm:px-6 bg-slate-950/95 backdrop-blur-sm sticky top-0 z-30">
+          <div className="max-w-[1600px] mx-auto flex gap-0.5 overflow-x-auto scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
             {TABS.map(({ key, label, icon: Icon }) => (
               <button
                 key={key}
@@ -101,7 +101,7 @@ const Admin = () => {
         </div>
 
         {/* Content */}
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6 max-w-[100vw] overflow-x-hidden">
           {activeTab === "search" && <AdminSearchForceTab onAuditLog={logAudit} />}
           {activeTab === "health" && <AdminContentHealthTab onAuditLog={logAudit} />}
           {activeTab === "intel" && <AdminIntelligenceTab />}

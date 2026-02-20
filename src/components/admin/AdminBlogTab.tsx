@@ -290,53 +290,90 @@ const AdminBlogTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType:
       ) : posts.length === 0 ? (
         <p className="text-white/40 text-sm text-center py-8">No posts yet. Create your first one!</p>
       ) : (
-        <div className="rounded-xl border border-white/10 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-white/5 border-b border-white/10">
-                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Post Title</th>
-                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Status</th>
-                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Views</th>
-                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Published</th>
-                <th className="text-right px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {posts.map((post) => (
-                <tr key={post.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                  <td className="px-4 py-3">
-                    <div className="text-white text-xs font-medium">{post.title}</div>
-                    <div className="text-white/30 text-[10px] font-mono mt-0.5">/{post.slug}</div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge className={`text-[10px] ${post.status === "published" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : post.status === "draft" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" : "bg-white/10 text-white/40"}`}>
-                      {post.status}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="flex items-center gap-1 text-white/60 text-xs font-mono">
-                      <Eye className="w-3 h-3 text-emerald-400/60" />
-                      {viewCounts[post.slug] || 0}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-white/40 text-xs font-mono">
-                    {post.published_at ? new Date(post.published_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "2-digit" }) : "—"}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <button onClick={() => handleEdit(post)} className="p-1.5 rounded hover:bg-white/10 text-white/40 hover:text-white transition-colors">
-                        <Pencil className="w-3.5 h-3.5" />
-                      </button>
-                      <button onClick={() => handleDelete(post)} className="p-1.5 rounded hover:bg-red-500/10 text-white/40 hover:text-red-400 transition-colors">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </td>
+        <>
+        {/* Desktop */}
+        <div className="rounded-xl border border-white/10 overflow-hidden hidden md:block">
+          <div className="overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <table className="w-full text-sm min-w-[600px]">
+              <thead>
+                <tr className="bg-white/5 border-b border-white/10">
+                  <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Post Title</th>
+                  <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Status</th>
+                  <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Views</th>
+                  <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Published</th>
+                  <th className="text-right px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {posts.map((post) => (
+                  <tr key={post.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <td className="px-4 py-3">
+                      <div className="text-white text-xs font-medium">{post.title}</div>
+                      <div className="text-white/30 text-[10px] font-mono mt-0.5">/{post.slug}</div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge className={`text-[10px] ${post.status === "published" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : post.status === "draft" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" : "bg-white/10 text-white/40"}`}>
+                        {post.status}
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="flex items-center gap-1 text-white/60 text-xs font-mono">
+                        <Eye className="w-3 h-3 text-emerald-400/60" />
+                        {viewCounts[post.slug] || 0}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-white/40 text-xs font-mono">
+                      {post.published_at ? new Date(post.published_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "2-digit" }) : "—"}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button onClick={() => handleEdit(post)} className="p-1.5 rounded hover:bg-white/10 text-white/40 hover:text-white transition-colors">
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button onClick={() => handleDelete(post)} className="p-1.5 rounded hover:bg-red-500/10 text-white/40 hover:text-red-400 transition-colors">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
+        {/* Mobile cards */}
+        <div className="md:hidden space-y-3">
+          {posts.map((post) => (
+            <div key={post.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 space-y-2">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <div className="text-white text-xs font-medium">{post.title}</div>
+                  <div className="text-white/30 text-[10px] font-mono mt-0.5">/{post.slug}</div>
+                </div>
+                <Badge className={`text-[10px] shrink-0 ${post.status === "published" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : post.status === "draft" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" : "bg-white/10 text-white/40"}`}>
+                  {post.status}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-1 text-white/60 text-xs font-mono">
+                  <Eye className="w-3 h-3 text-emerald-400/60" /> {viewCounts[post.slug] || 0} views
+                </span>
+                <span className="text-white/40 text-xs font-mono">
+                  {post.published_at ? new Date(post.published_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "2-digit" }) : "—"}
+                </span>
+              </div>
+              <div className="flex items-center justify-end gap-2 pt-1 border-t border-white/5">
+                <button onClick={() => handleEdit(post)} className="p-2 min-h-[44px] min-w-[44px] rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors flex items-center justify-center">
+                  <Pencil className="w-4 h-4" />
+                </button>
+                <button onClick={() => handleDelete(post)} className="p-2 min-h-[44px] min-w-[44px] rounded-lg hover:bg-red-500/10 text-white/40 hover:text-red-400 transition-colors flex items-center justify-center">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        </>
       )}
 
       {/* Categories & Tags */}

@@ -172,7 +172,7 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
             key={key}
             onClick={action}
             disabled={!!actionLoading}
-            className={`relative overflow-hidden rounded-xl p-4 bg-gradient-to-br ${color} border border-white/10 hover:border-white/20 transition-all group disabled:opacity-50`}
+            className={`relative overflow-hidden rounded-xl p-4 min-h-[56px] bg-gradient-to-br ${color} border border-white/10 hover:border-white/20 transition-all group disabled:opacity-50`}
           >
             <div className="flex flex-col items-center gap-2 text-center">
               {actionLoading === key ? (
@@ -192,70 +192,112 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
         <h3 className="text-sm font-bold text-white uppercase tracking-wider">Indexing History</h3>
       </div>
 
-      {/* Indexing Table */}
-      <div className="rounded-xl border border-white/10 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-white/5 border-b border-white/10">
-              <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Date</th>
-              <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Action</th>
-              <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Google Status</th>
-              <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Bing / IndexNow</th>
-              <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Target Domain</th>
-              <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Details</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan={6} className="px-4 py-8 text-center text-white/30"><Loader2 className="w-5 h-5 animate-spin mx-auto" /></td></tr>
-            ) : pingHistory.length === 0 ? (
-              <tr><td colSpan={6} className="px-4 py-8 text-center text-white/30 text-xs">No indexing activity yet. Run your first scan above.</td></tr>
-            ) : (
-              pingHistory.map((log) => {
-                const results = (log.details as any)?.results as PingResult[] | undefined;
-                const google = results?.find(r => r.engine === "Google");
-                const bing = results?.find(r => r.engine === "Bing" || r.engine === "IndexNow");
-                return (
-                  <tr key={log.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                    <td className="px-4 py-3 text-white/60 font-mono text-xs">{formatDate(log.created_at)}</td>
-                    <td className="px-4 py-3">
-                      <span className="text-white text-xs font-medium">{getActionLabel(log.details)}</span>
-                    </td>
-                    <td className="px-4 py-3">{renderGoogleStatus(google)}</td>
-                    <td className="px-4 py-3">
-                      {bing ? (
-                        <span className="flex items-center gap-1.5">
-                          {bing.status === 200 || bing.status === 202 ? <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> : <XCircle className="w-3.5 h-3.5 text-red-400" />}
-                          <span className={`text-xs font-mono ${bing.status === 200 || bing.status === 202 ? "text-emerald-400" : "text-red-400"}`}>{bing.status} {bing.engine}</span>
-                        </span>
-                      ) : <span className="text-white/20 text-xs">—</span>}
-                    </td>
-                    <td className="px-4 py-3">
-                      {google?.url ? (
-                        <span className="text-xs font-mono text-cyan-400">{google.url}</span>
-                      ) : (
-                        <span className="text-xs font-mono text-white/30">businessbotsuk.com</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-white/40 text-xs max-w-[250px] truncate">
-                      {google?.response?.urlNotificationMetadata?.latestUpdate?.notifyTime && (
-                        <span className="text-emerald-400/70">notifyTime: {google.response.urlNotificationMetadata.latestUpdate.notifyTime}</span>
-                      )}
-                      {google?.response?.error && (
-                        <span className="text-red-400/70">
-                          {typeof google.response.error === "string" ? google.response.error : google.response.error?.message || JSON.stringify(google.response.error)}
-                        </span>
-                      )}
-                      {(log.details as any)?.avgScore !== undefined && `Score: ${(log.details as any).avgScore}/100`}
-                      {(log.details as any)?.urls && `${(log.details as any).urls} URLs`}
-                      {(log.details as any)?.pagesOptimised !== undefined && `${(log.details as any).pagesOptimised} pages flagged`}
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+      {/* Indexing Table — Desktop */}
+      <div className="rounded-xl border border-white/10 overflow-hidden hidden md:block">
+        <div className="overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <table className="w-full text-sm min-w-[700px]">
+            <thead>
+              <tr className="bg-white/5 border-b border-white/10">
+                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Date</th>
+                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Action</th>
+                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Google Status</th>
+                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Bing / IndexNow</th>
+                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Target Domain</th>
+                <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-xs uppercase tracking-wider">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-white/30"><Loader2 className="w-5 h-5 animate-spin mx-auto" /></td></tr>
+              ) : pingHistory.length === 0 ? (
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-white/30 text-xs">No indexing activity yet. Run your first scan above.</td></tr>
+              ) : (
+                pingHistory.map((log) => {
+                  const results = (log.details as any)?.results as PingResult[] | undefined;
+                  const google = results?.find(r => r.engine === "Google");
+                  const bing = results?.find(r => r.engine === "Bing" || r.engine === "IndexNow");
+                  return (
+                    <tr key={log.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                      <td className="px-4 py-3 text-white/60 font-mono text-xs">{formatDate(log.created_at)}</td>
+                      <td className="px-4 py-3">
+                        <span className="text-white text-xs font-medium">{getActionLabel(log.details)}</span>
+                      </td>
+                      <td className="px-4 py-3">{renderGoogleStatus(google)}</td>
+                      <td className="px-4 py-3">
+                        {bing ? (
+                          <span className="flex items-center gap-1.5">
+                            {bing.status === 200 || bing.status === 202 ? <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> : <XCircle className="w-3.5 h-3.5 text-red-400" />}
+                            <span className={`text-xs font-mono ${bing.status === 200 || bing.status === 202 ? "text-emerald-400" : "text-red-400"}`}>{bing.status} {bing.engine}</span>
+                          </span>
+                        ) : <span className="text-white/20 text-xs">—</span>}
+                      </td>
+                      <td className="px-4 py-3">
+                        {google?.url ? (
+                          <span className="text-xs font-mono text-cyan-400">{google.url}</span>
+                        ) : (
+                          <span className="text-xs font-mono text-white/30">businessbotsuk.com</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-white/40 text-xs max-w-[250px] truncate">
+                        {google?.response?.urlNotificationMetadata?.latestUpdate?.notifyTime && (
+                          <span className="text-emerald-400/70">notifyTime: {google.response.urlNotificationMetadata.latestUpdate.notifyTime}</span>
+                        )}
+                        {google?.response?.error && (
+                          <span className="text-red-400/70">
+                            {typeof google.response.error === "string" ? google.response.error : google.response.error?.message || JSON.stringify(google.response.error)}
+                          </span>
+                        )}
+                        {(log.details as any)?.avgScore !== undefined && `Score: ${(log.details as any).avgScore}/100`}
+                        {(log.details as any)?.urls && `${(log.details as any).urls} URLs`}
+                        {(log.details as any)?.pagesOptimised !== undefined && `${(log.details as any).pagesOptimised} pages flagged`}
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Indexing Cards — Mobile */}
+      <div className="md:hidden space-y-3">
+        {loading ? (
+          <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-white/30" /></div>
+        ) : pingHistory.length === 0 ? (
+          <p className="text-center text-white/30 text-xs py-8">No indexing activity yet.</p>
+        ) : (
+          pingHistory.map((log) => {
+            const results = (log.details as any)?.results as PingResult[] | undefined;
+            const google = results?.find(r => r.engine === "Google");
+            const bing = results?.find(r => r.engine === "Bing" || r.engine === "IndexNow");
+            return (
+              <div key={log.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-white/50 font-mono text-xs">{formatDate(log.created_at)}</span>
+                  <span className="text-white text-xs font-medium">{getActionLabel(log.details)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-emerald-400/60 text-[10px] uppercase tracking-wider">Google</span>
+                  {renderGoogleStatus(google)}
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-emerald-400/60 text-[10px] uppercase tracking-wider">Bing</span>
+                  {bing ? (
+                    <span className="flex items-center gap-1.5">
+                      {bing.status === 200 || bing.status === 202 ? <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> : <XCircle className="w-3.5 h-3.5 text-red-400" />}
+                      <span className={`text-xs font-mono ${bing.status === 200 || bing.status === 202 ? "text-emerald-400" : "text-red-400"}`}>{bing.status}</span>
+                    </span>
+                  ) : <span className="text-white/20 text-xs">—</span>}
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-emerald-400/60 text-[10px] uppercase tracking-wider">Domain</span>
+                  <span className="text-xs font-mono text-cyan-400">{google?.url || "businessbotsuk.com"}</span>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

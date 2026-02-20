@@ -136,7 +136,7 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
   return (
     <div className="space-y-6">
       {/* Header Stats */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Shield className="w-5 h-5 text-emerald-400" />
           <div>
@@ -148,15 +148,15 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
           <button
             onClick={autoGenerateMeta}
             disabled={generating || loading || gapCount === 0}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-600/20 border border-purple-500/30 text-purple-400 text-xs font-medium hover:bg-purple-600/30 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-3 py-2 min-h-[44px] rounded-lg bg-purple-600/20 border border-purple-500/30 text-purple-400 text-xs font-medium hover:bg-purple-600/30 transition-colors disabled:opacity-50"
           >
             <Sparkles className={`w-3.5 h-3.5 ${generating ? "animate-pulse" : ""}`} />
-            {generating ? `Generating...` : `Auto-Generate Missing Meta (${gapCount})`}
+            {generating ? `Generating...` : `Auto-Gen (${gapCount})`}
           </button>
           <button
             onClick={runScan}
             disabled={loading}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 text-xs font-medium hover:bg-emerald-600/30 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-3 py-2 min-h-[44px] rounded-lg bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 text-xs font-medium hover:bg-emerald-600/30 transition-colors disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Rescan
           </button>
@@ -179,34 +179,64 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
       </div>
 
       {/* Full-width Audit Table */}
-      <div className="rounded-xl border border-white/10 overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-white/5 border-b border-white/10">
-              {["Page Path", "Title", "Meta Desc", "OG Image", "Keywords", "SEO Score"].map(h => (
-                <th key={h} className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider whitespace-nowrap">{h}</th>
+      <div className="rounded-xl border border-white/10 overflow-hidden hidden md:block">
+        <div className="overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <table className="w-full text-sm min-w-[600px]">
+            <thead>
+              <tr className="bg-white/5 border-b border-white/10">
+                {["Page Path", "Title", "Meta Desc", "OG Image", "Keywords", "SEO Score"].map(h => (
+                  <th key={h} className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider whitespace-nowrap">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan={6} className="px-4 py-12 text-center"><Loader2 className="w-5 h-5 animate-spin mx-auto text-white/30" /></td></tr>
+              ) : results.length === 0 ? (
+                <tr><td colSpan={6} className="px-4 py-12 text-center text-white/30 text-xs">No results. Run a scan.</td></tr>
+              ) : (
+                results.map((r) => (
+                  <tr key={r.path} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <td className="px-4 py-3 text-white font-mono text-xs">{r.path}</td>
+                    <td className="px-4 py-3"><StatusDot status={r.statuses.title || "missing"} /></td>
+                    <td className="px-4 py-3"><StatusDot status={r.statuses.description || "missing"} /></td>
+                    <td className="px-4 py-3"><StatusDot status={r.statuses.og_image || "missing"} /></td>
+                    <td className="px-4 py-3"><StatusDot status={r.statuses.keywords || "missing"} /></td>
+                    <td className="px-4 py-3"><ScoreCell score={r.score} /></td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {/* Mobile cards */}
+      <div className="md:hidden space-y-3">
+        {loading ? (
+          <div className="flex justify-center py-12"><Loader2 className="w-5 h-5 animate-spin text-white/30" /></div>
+        ) : results.length === 0 ? (
+          <p className="text-center text-white/30 text-xs py-12">No results. Run a scan.</p>
+        ) : results.map((r) => (
+          <div key={r.path} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-white font-mono text-xs">{r.path}</span>
+              <ScoreCell score={r.score} />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { label: "Title", key: "title" },
+                { label: "Desc", key: "description" },
+                { label: "OG", key: "og_image" },
+                { label: "Keywords", key: "keywords" },
+              ].map(({ label, key }) => (
+                <div key={key} className="flex items-center gap-1.5">
+                  <StatusDot status={r.statuses[key] || "missing"} />
+                  <span className="text-white/40 text-[10px] uppercase">{label}</span>
+                </div>
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan={6} className="px-4 py-12 text-center"><Loader2 className="w-5 h-5 animate-spin mx-auto text-white/30" /></td></tr>
-            ) : results.length === 0 ? (
-              <tr><td colSpan={6} className="px-4 py-12 text-center text-white/30 text-xs">No results. Run a scan.</td></tr>
-            ) : (
-              results.map((r) => (
-                <tr key={r.path} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                  <td className="px-4 py-3 text-white font-mono text-xs">{r.path}</td>
-                  <td className="px-4 py-3"><StatusDot status={r.statuses.title || "missing"} /></td>
-                  <td className="px-4 py-3"><StatusDot status={r.statuses.description || "missing"} /></td>
-                  <td className="px-4 py-3"><StatusDot status={r.statuses.og_image || "missing"} /></td>
-                  <td className="px-4 py-3"><StatusDot status={r.statuses.keywords || "missing"} /></td>
-                  <td className="px-4 py-3"><ScoreCell score={r.score} /></td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
