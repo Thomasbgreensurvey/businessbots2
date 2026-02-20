@@ -133,7 +133,12 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
 
   const getActionLabel = (details: any) => {
     if (!details) return "Unknown";
-    if (details.results) return "Search Ping";
+    if (details.results) {
+      const engines = (details.results as PingResult[]).map(r => r.engine);
+      if (engines.includes("Google")) return "Search Ping";
+      if (engines.includes("IndexNow")) return "IndexNow Batch";
+      return "Search Ping";
+    }
     if (details.avgScore !== undefined) return "SEO Scan";
     if (details.urls) return "Sitemap Rebuild";
     if (details.pagesOptimised !== undefined) return "Content Optimise";
@@ -242,10 +247,16 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
                         {google?.response?.urlNotificationMetadata?.latestUpdate?.notifyTime && (
                           <span className="text-emerald-400/70">notifyTime: {google.response.urlNotificationMetadata.latestUpdate.notifyTime}</span>
                         )}
+                        {google?.response?.urlNotificationMetadata?.url && !google?.response?.urlNotificationMetadata?.latestUpdate?.notifyTime && (
+                          <span className="text-emerald-400/70">✓ Indexed: {google.response.urlNotificationMetadata.url}</span>
+                        )}
                         {google?.response?.error && (
                           <span className="text-red-400/70">
                             {typeof google.response.error === "string" ? google.response.error : google.response.error?.message || JSON.stringify(google.response.error)}
                           </span>
+                        )}
+                        {!google && bing && (
+                          <span className="text-cyan-400/70">{bing.url}</span>
                         )}
                         {(log.details as any)?.avgScore !== undefined && `Score: ${(log.details as any).avgScore}/100`}
                         {(log.details as any)?.urls && `${(log.details as any).urls} URLs`}
