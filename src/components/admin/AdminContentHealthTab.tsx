@@ -53,7 +53,7 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
   const autoGenerateMeta = async () => {
     // Find pages missing title or description
     const gaps = results.filter(r =>
-      r.statuses.title !== "good" || r.statuses.description !== "good"
+      r.statuses.title !== "good" || r.statuses.description !== "good" || r.statuses.keywords !== "good"
     );
 
     if (gaps.length === 0) {
@@ -68,7 +68,7 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
       for (const page of gaps) {
         const { data, error } = await supabase.functions.invoke("generate-blog-content", {
           body: {
-            prompt: `Generate SEO metadata for a page at path "${page.path}" on a website called "Business Bots UK" — an AI employee agency in North East England. Return ONLY a JSON object with "title" (under 60 chars, include main keyword) and "description" (under 155 chars, compelling, action-oriented). No markdown, no code fences, just raw JSON.`,
+            prompt: `Generate SEO metadata for a page at path "${page.path}" on a website called "Business Bots UK" — an AI employee agency in North East England. Return ONLY a JSON object with "title" (under 60 chars, include main keyword), "description" (under 155 chars, compelling, action-oriented), and "keywords" (comma-separated string of exactly 5 relevant SEO keywords). No markdown, no code fences, just raw JSON.`,
             type: "seo-meta",
           },
         });
@@ -78,10 +78,9 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
           continue;
         }
 
-        let meta: { title?: string; description?: string } = {};
+        let meta: { title?: string; description?: string; keywords?: string } = {};
         try {
           const raw = typeof data === "string" ? data : data?.content || data?.html || JSON.stringify(data);
-          // Extract JSON from response
           const jsonMatch = raw.match(/\{[\s\S]*?\}/);
           if (jsonMatch) {
             meta = JSON.parse(jsonMatch[0]);
@@ -91,9 +90,13 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
           continue;
         }
 
-        if (!meta.title && !meta.description) continue;
+        if (!meta.title && !meta.description && !meta.keywords) continue;
 
-        // Upsert into seo_metadata
+        const upsertData: any = {};
+        if (meta.title) upsertData.title = meta.title;
+        if (meta.description) upsertData.description = meta.description;
+        if (meta.keywords) upsertData.keywords = meta.keywords;
+
         const { data: existing } = await supabase
           .from("seo_metadata")
           .select("id")
@@ -101,15 +104,11 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
           .maybeSingle();
 
         if (existing) {
-          await supabase.from("seo_metadata").update({
-            title: meta.title || null,
-            description: meta.description || null,
-          }).eq("id", existing.id);
+          await supabase.from("seo_metadata").update(upsertData).eq("id", existing.id);
         } else {
           await supabase.from("seo_metadata").insert({
             page_path: page.path,
-            title: meta.title || null,
-            description: meta.description || null,
+            ...upsertData,
           });
         }
 
@@ -131,7 +130,7 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
   const goodCount = results.filter(r => r.score >= 80).length;
   const warnCount = results.filter(r => r.score >= 50 && r.score < 80).length;
   const critCount = results.filter(r => r.score < 50).length;
-  const gapCount = results.filter(r => r.statuses.title !== "good" || r.statuses.description !== "good").length;
+  const gapCount = results.filter(r => r.statuses.title !== "good" || r.statuses.description !== "good" || r.statuses.keywords !== "good").length;
 
   return (
     <div className="space-y-6">
