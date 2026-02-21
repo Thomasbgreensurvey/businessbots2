@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Pencil, Trash2, Save, X, Tag, Eye, Upload, Wand2, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Save, X, Tag, Eye, Upload, Wand2, Loader2, Globe } from "lucide-react";
 import { toast } from "sonner";
 
 interface BlogPost {
@@ -36,6 +36,7 @@ const AdminBlogTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType:
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
   const [uploading, setUploading] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [bulkIndexing, setBulkIndexing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { fetchAll(); }, []);
@@ -61,6 +62,40 @@ const AdminBlogTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType:
   };
 
   const slugify = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+  const SITE_PAGES = [
+    "/", "/pricing", "/blog", "/community", "/faq", "/help-centre",
+    "/contact", "/book-demo", "/get-started", "/case-studies",
+    "/what-is-an-ai-employee", "/call", "/connect",
+  ];
+
+  const handleBulkIndex = async () => {
+    setBulkIndexing(true);
+    try {
+      // Gather all published blog slugs
+      const { data: published } = await supabase
+        .from("blog_posts")
+        .select("slug")
+        .eq("status", "published");
+      const blogUrls = (published || []).map((p) => `/blog/${p.slug}`);
+      const allUrls = [...SITE_PAGES, ...blogUrls];
+
+      // Google Indexing API batch
+      await supabase.functions.invoke("ping-search-engines", {
+        body: { action: "google_index_urls", urls: allUrls },
+      });
+      // IndexNow batch
+      await supabase.functions.invoke("ping-search-engines", {
+        body: { action: "indexnow", urls: allUrls },
+      });
+
+      onAuditLog("bulk_index", "seo", "site", { urlCount: allUrls.length });
+      toast.success(`🚀 Bulk indexed ${allUrls.length} URLs to Google & Bing`);
+    } catch (e: any) {
+      toast.error(`Bulk index failed: ${e.message}`);
+    }
+    setBulkIndexing(false);
+  };
 
   const handleNew = () => {
     setEditing({ id: "", title: "", slug: "", content: "", excerpt: null, featured_image: null, status: "draft", category_id: null, published_at: null, created_at: "", updated_at: "" });
@@ -278,11 +313,17 @@ const AdminBlogTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType:
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <h3 className="text-sm font-bold text-white uppercase tracking-wider">Blog Engagement</h3>
-        <Button onClick={handleNew} size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">
-          <Plus className="w-4 h-4 mr-1" /> New Post
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button onClick={handleBulkIndex} size="sm" disabled={bulkIndexing} className="bg-blue-600 hover:bg-blue-700 text-white">
+            {bulkIndexing ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Globe className="w-4 h-4 mr-1" />}
+            {bulkIndexing ? "Indexing..." : "Bulk Index Site"}
+          </Button>
+          <Button onClick={handleNew} size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Plus className="w-4 h-4 mr-1" /> New Post
+          </Button>
+        </div>
       </div>
 
       {loading ? (

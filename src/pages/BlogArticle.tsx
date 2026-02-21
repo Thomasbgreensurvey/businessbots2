@@ -12,8 +12,22 @@ const SKOOL_BLUE = "#4B5FD1";
 
 // Location silos for blog geo-footer
 const blogLocationSilos = {
-  "North East": ["Newcastle upon Tyne", "Gateshead", "Jesmond", "Gosforth", "Sunderland", "Durham"],
-  "Nationwide": ["London", "Manchester", "Birmingham", "Leeds", "Edinburgh", "Glasgow"],
+  "North East AI Services": [
+    { label: "AI Automation Newcastle", query: "AI Automation Newcastle" },
+    { label: "AI Employees Gateshead", query: "AI Employees Gateshead" },
+    { label: "AI Voice Agents Jesmond", query: "AI Voice Agents Jesmond" },
+    { label: "Lead Gen Bots Gosforth", query: "Lead Gen Bots Gosforth" },
+    { label: "AI Chatbots Sunderland", query: "AI Chatbots Sunderland" },
+    { label: "Business Bots Durham", query: "Business Bots Durham" },
+  ],
+  "Nationwide": [
+    { label: "AI Employees London", query: "AI Employees London" },
+    { label: "AI Automation Manchester", query: "AI Automation Manchester" },
+    { label: "AI Chatbots Birmingham", query: "AI Chatbots Birmingham" },
+    { label: "AI Voice Agents Leeds", query: "AI Voice Agents Leeds" },
+    { label: "AI Employees Edinburgh", query: "AI Employees Edinburgh" },
+    { label: "AI Automation Glasgow", query: "AI Automation Glasgow" },
+  ],
 };
 
 const BlogArticle = () => {
@@ -168,14 +182,14 @@ const BlogArticle = () => {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">AI Automation Services Across the UK</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-            {Object.entries(blogLocationSilos).map(([region, cities]) => (
+            {Object.entries(blogLocationSilos).map(([region, items]) => (
               <div key={region}>
                 <h3 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">{region}</h3>
                 <ul className="space-y-1">
-                  {cities.map((city) => (
-                    <li key={city}>
-                      <Link to={`/?location=${encodeURIComponent(city)}`} className="text-gray-500 text-sm hover:text-blue-600 transition-colors">
-                        AI Employees {city}
+                  {items.map((item) => (
+                    <li key={item.label}>
+                      <Link to={`/?location=${encodeURIComponent(item.query)}`} className="text-gray-500 text-sm hover:text-blue-600 transition-colors">
+                        {item.label}
                       </Link>
                     </li>
                   ))}
