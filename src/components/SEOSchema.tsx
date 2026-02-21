@@ -189,18 +189,18 @@ const SEOSchema = ({
     image: product.image,
     sku: product.sku,
     brand: {
-      "@type": "Organization",
-      name: product.brand || NAP.name,
+      "@type": "Brand",
+      name: "Business Bots UK",
     },
     offers: {
       "@type": "Offer",
       url: "https://businessbotsuk.com/",
-      priceCurrency: product.priceCurrency || "GBP",
+      priceCurrency: "GBP",
       price: "499.00",
       availability: "https://schema.org/InStock",
       seller: {
         "@type": "Organization",
-        name: NAP.name,
+        name: "Business Bots UK",
       },
     },
     aggregateRating: {
@@ -216,7 +216,7 @@ const SEOSchema = ({
         "@type": "Person",
         name: "Newcastle SME Owner",
       },
-      datePublished: "2024-11-15",
+      datePublished: "2026-02-21",
       reviewRating: {
         "@type": "Rating",
         ratingValue: "5",

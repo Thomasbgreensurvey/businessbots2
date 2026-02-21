@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Activity, FileText, LogIn, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Activity, FileText, LogIn, Loader2, Trash2, ChevronDown } from "lucide-react";
+import { toast } from "sonner";
 
 interface AuditLog {
   id: string;
@@ -11,6 +13,8 @@ interface AuditLog {
   details: Record<string, unknown> | null;
   created_at: string;
 }
+
+const PAGE_SIZE = 20;
 
 const actionColors: Record<string, string> = {
   create: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
@@ -30,13 +34,16 @@ const AdminAuditTab = () => {
   const [bookings, setBookings] = useState<any[]>([]);
   const [tab, setTab] = useState<"actions" | "forms" | "logins">("actions");
   const [loading, setLoading] = useState(true);
+  const [actionPage, setActionPage] = useState(1);
+  const [loginPage, setLoginPage] = useState(1);
+  const [cleaningUp, setCleaningUp] = useState(false);
 
   useEffect(() => { fetchAll(); }, []);
 
   const fetchAll = async () => {
     setLoading(true);
     const [logsRes, contactsRes, bookingsRes] = await Promise.all([
-      supabase.from("audit_logs").select("*").order("created_at", { ascending: false }).limit(100),
+      supabase.from("audit_logs").select("*").order("created_at", { ascending: false }).limit(200),
       supabase.from("contacts").select("*").order("created_at", { ascending: false }).limit(50),
       supabase.from("demo_bookings").select("*").order("created_at", { ascending: false }).limit(50),
     ]);
@@ -46,9 +53,35 @@ const AdminAuditTab = () => {
     setLoading(false);
   };
 
+  const runHousekeeping = async () => {
+    setCleaningUp(true);
+    try {
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - 30);
+      const cutoffISO = cutoff.toISOString();
+
+      const { error } = await supabase
+        .from("audit_logs")
+        .delete()
+        .lt("created_at", cutoffISO);
+
+      if (error) throw error;
+      toast.success("Housekeeping complete — removed logs older than 30 days");
+      fetchAll();
+    } catch (e: any) {
+      toast.error(`Cleanup failed: ${e.message}`);
+    }
+    setCleaningUp(false);
+  };
+
   const actionLogs = logs.filter((l) => !["login_success", "login_fail"].includes(l.action));
   const loginLogs = logs.filter((l) => ["login_success", "login_fail"].includes(l.action));
   const formatDate = (d: string) => new Date(d).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+
+  const paginatedActions = actionLogs.slice(0, actionPage * PAGE_SIZE);
+  const paginatedLogins = loginLogs.slice(0, loginPage * PAGE_SIZE);
+  const hasMoreActions = actionLogs.length > actionPage * PAGE_SIZE;
+  const hasMoreLogins = loginLogs.length > loginPage * PAGE_SIZE;
 
   const getDetail = (log: AuditLog) => {
     if (log.details && typeof log.details === "object" && "title" in log.details) return String(log.details.title);
@@ -70,9 +103,9 @@ const AdminAuditTab = () => {
               </tr>
             </thead>
             <tbody>
-              {actionLogs.length === 0 ? (
+              {paginatedActions.length === 0 ? (
                 <tr><td colSpan={4} className="px-4 py-8 text-center text-white/30 text-xs">No actions logged yet.</td></tr>
-              ) : actionLogs.slice(0, 50).map((log) => (
+              ) : paginatedActions.map((log) => (
                 <tr key={log.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                   <td className="px-4 py-3 text-white/40 font-mono text-xs">{formatDate(log.created_at)}</td>
                   <td className="px-4 py-3"><Badge className={`text-[10px] ${actionColors[log.action] || "bg-white/10 text-white/60"}`}>{log.action}</Badge></td>
@@ -86,9 +119,9 @@ const AdminAuditTab = () => {
       </div>
       {/* Mobile cards */}
       <div className="md:hidden space-y-3">
-        {actionLogs.length === 0 ? (
+        {paginatedActions.length === 0 ? (
           <p className="text-center text-white/30 text-xs py-8">No actions logged yet.</p>
-        ) : actionLogs.slice(0, 50).map((log) => (
+        ) : paginatedActions.map((log) => (
           <div key={log.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-white/40 font-mono text-xs">{formatDate(log.created_at)}</span>
@@ -105,6 +138,13 @@ const AdminAuditTab = () => {
           </div>
         ))}
       </div>
+      {hasMoreActions && (
+        <div className="flex justify-center pt-2">
+          <Button variant="ghost" size="sm" onClick={() => setActionPage((p) => p + 1)} className="text-emerald-400 hover:text-emerald-300">
+            <ChevronDown className="w-4 h-4 mr-1" /> Load More ({actionLogs.length - paginatedActions.length} remaining)
+          </Button>
+        </div>
+      )}
     </>
   );
 
@@ -163,9 +203,9 @@ const AdminAuditTab = () => {
             <th className="text-left px-4 py-3 text-emerald-400/80 font-medium text-[10px] uppercase tracking-wider">Result</th>
           </tr></thead>
           <tbody>
-            {loginLogs.length === 0 ? (
+            {paginatedLogins.length === 0 ? (
               <tr><td colSpan={2} className="px-4 py-8 text-center text-white/30 text-xs">No login attempts.</td></tr>
-            ) : loginLogs.map((log) => (
+            ) : paginatedLogins.map((log) => (
               <tr key={log.id} className="border-b border-white/5 hover:bg-white/5">
                 <td className="px-4 py-3 text-white/40 font-mono text-xs">{formatDate(log.created_at)}</td>
                 <td className="px-4 py-3"><Badge className={`text-[10px] ${actionColors[log.action]}`}>{log.action === "login_success" ? "✓ Success" : "✗ Failed"}</Badge></td>
@@ -175,31 +215,50 @@ const AdminAuditTab = () => {
         </table>
       </div>
       <div className="md:hidden space-y-3">
-        {loginLogs.length === 0 ? (
+        {paginatedLogins.length === 0 ? (
           <p className="text-center text-white/30 text-xs py-8">No login attempts.</p>
-        ) : loginLogs.map((log) => (
+        ) : paginatedLogins.map((log) => (
           <div key={log.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 flex items-center justify-between">
             <span className="text-white/40 font-mono text-xs">{formatDate(log.created_at)}</span>
             <Badge className={`text-[10px] ${actionColors[log.action]}`}>{log.action === "login_success" ? "✓ Success" : "✗ Failed"}</Badge>
           </div>
         ))}
       </div>
+      {hasMoreLogins && (
+        <div className="flex justify-center pt-2">
+          <Button variant="ghost" size="sm" onClick={() => setLoginPage((p) => p + 1)} className="text-emerald-400 hover:text-emerald-300">
+            <ChevronDown className="w-4 h-4 mr-1" /> Load More ({loginLogs.length - paginatedLogins.length} remaining)
+          </Button>
+        </div>
+      )}
     </>
   );
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-2 flex-wrap">
-        {[
-          { key: "actions" as const, label: "Admin Actions", icon: Activity },
-          { key: "forms" as const, label: "Form Submissions", icon: FileText },
-          { key: "logins" as const, label: "Login Attempts", icon: LogIn },
-        ].map(({ key, label, icon: Icon }) => (
-          <button key={key} onClick={() => setTab(key)}
-            className={`flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-full text-xs font-medium transition-colors ${tab === key ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-white/5 text-white/50 hover:bg-white/10"}`}>
-            <Icon className="w-3.5 h-3.5" /> {label}
-          </button>
-        ))}
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          {[
+            { key: "actions" as const, label: "Admin Actions", icon: Activity },
+            { key: "forms" as const, label: "Form Submissions", icon: FileText },
+            { key: "logins" as const, label: "Login Attempts", icon: LogIn },
+          ].map(({ key, label, icon: Icon }) => (
+            <button key={key} onClick={() => setTab(key)}
+              className={`flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-full text-xs font-medium transition-colors ${tab === key ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-white/5 text-white/50 hover:bg-white/10"}`}>
+              <Icon className="w-3.5 h-3.5" /> {label}
+            </button>
+          ))}
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={runHousekeeping}
+          disabled={cleaningUp}
+          className="text-amber-400 hover:text-amber-300 hover:bg-amber-500/10"
+        >
+          <Trash2 className="w-3.5 h-3.5 mr-1" />
+          {cleaningUp ? "Cleaning..." : "Housekeeping (30d)"}
+        </Button>
       </div>
 
       {loading ? (

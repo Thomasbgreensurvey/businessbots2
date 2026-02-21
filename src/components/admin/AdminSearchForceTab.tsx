@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Radar, RotateCw, Globe, Zap, FileSearch, Loader2, CheckCircle, XCircle, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Radar, RotateCw, Globe, Zap, FileSearch, Loader2, CheckCircle, XCircle, ShieldCheck, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 
 interface PingResult {
@@ -30,6 +31,7 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
   const [pingHistory, setPingHistory] = useState<PingLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [pingPage, setPingPage] = useState(1);
 
   useEffect(() => { fetchHistory(); }, []);
 
@@ -40,10 +42,13 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
       .select("id, created_at, details")
       .in("action", ["search_ping", "seo_scan", "sitemap_rebuild", "content_optimise"])
       .order("created_at", { ascending: false })
-      .limit(20);
+      .limit(100);
     setPingHistory((data || []) as PingLog[]);
     setLoading(false);
   };
+
+  const paginatedHistory = pingHistory.slice(0, pingPage * 20);
+  const hasMorePings = pingHistory.length > pingPage * 20;
 
   const runSEOScan = async () => {
     setActionLoading("scan");
@@ -217,7 +222,7 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
               ) : pingHistory.length === 0 ? (
                 <tr><td colSpan={6} className="px-4 py-8 text-center text-white/30 text-xs">No indexing activity yet. Run your first scan above.</td></tr>
               ) : (
-                pingHistory.map((log) => {
+                paginatedHistory.map((log) => {
                   const results = (log.details as any)?.results as PingResult[] | undefined;
                   const google = results?.find(r => r.engine === "Google");
                   const bing = results?.find(r => r.engine === "Bing" || r.engine === "IndexNow");
@@ -278,7 +283,7 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
         ) : pingHistory.length === 0 ? (
           <p className="text-center text-white/30 text-xs py-8">No indexing activity yet.</p>
         ) : (
-          pingHistory.map((log) => {
+          paginatedHistory.map((log) => {
             const results = (log.details as any)?.results as PingResult[] | undefined;
             const google = results?.find(r => r.engine === "Google");
             const bing = results?.find(r => r.engine === "Bing" || r.engine === "IndexNow");
@@ -310,6 +315,15 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
           })
         )}
       </div>
+
+      {/* Load More */}
+      {hasMorePings && (
+        <div className="flex justify-center pt-2">
+          <Button variant="ghost" size="sm" onClick={() => setPingPage((p) => p + 1)} className="text-emerald-400 hover:text-emerald-300">
+            <ChevronDown className="w-4 h-4 mr-1" /> Load More ({pingHistory.length - paginatedHistory.length} remaining)
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
