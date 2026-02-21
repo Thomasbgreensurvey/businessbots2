@@ -684,6 +684,15 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
         pageTitle="AI Employees for Business | Automate Sales, Support & Marketing 24/7 | Business Bots UK"
         pageDescription="Hire AI employees that work 24/7 to automate your business. 8 AI agents for sales automation, customer support, lead generation, email marketing & recruitment."
         breadcrumbs={[]}
+        products={agents.map((a) => ({
+          name: `${a.name} – AI ${a.shortRole}`,
+          description: a.description,
+          image: `https://businessbotsuk.com/agents/${a.id}.png`,
+          sku: `BBUK-${a.id.toUpperCase()}`,
+          price: "499",
+          ratingValue: "5",
+          reviewCount: "12",
+        }))}
       />
 
       {/* Footer */}

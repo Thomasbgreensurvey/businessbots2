@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import OptimizedImage from "@/components/OptimizedImage";
+import SEOSchema from "@/components/SEOSchema";
 import { ArrowLeft, ArrowRight, Check, Menu, Sparkles, Lightbulb, Calendar, MessageCircle, CreditCard } from "lucide-react";
 import { Agent, GlowColor, agents } from "@/data/agents";
 import sproutTablet from "@/assets/agents/sprout-tablet.png";
@@ -45,6 +46,20 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
         background: getAgentGradient(agent.glowColor),
       }}
     >
+      {/* Product Schema for this AI Employee */}
+      <SEOSchema
+        pageTitle={`${agent.name} – AI ${agent.shortRole} | Business Bots UK`}
+        pageDescription={agent.description}
+        products={[{
+          name: `${agent.name} – AI ${agent.shortRole}`,
+          description: agent.extendedDescription,
+          image: `https://businessbotsuk.com/agents/${agent.id}.png`,
+          sku: `BBUK-${agent.id.toUpperCase()}`,
+          price: "499",
+          ratingValue: "5",
+          reviewCount: "12",
+        }]}
+      />
       {/* Fixed Header */}
       <header className="fixed top-0 left-0 right-0 z-50 px-4 md:px-10 py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
