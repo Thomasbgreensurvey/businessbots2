@@ -68,7 +68,7 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
       for (const page of gaps) {
         const { data, error } = await supabase.functions.invoke("generate-blog-content", {
           body: {
-            prompt: `Generate SEO metadata for a page at path "${page.path}" on a website called "Business Bots UK" — an AI employee agency in North East England. Return ONLY a JSON object with "title" (under 60 chars, include main keyword), "description" (under 155 chars, compelling, action-oriented), and "keywords" (comma-separated string of exactly 5 relevant SEO keywords). No markdown, no code fences, just raw JSON.`,
+            prompt: `Generate SEO metadata for a page at path "${page.path}" on "Business Bots UK" — an AI employee automation agency in Newcastle upon Tyne, North East England. Return ONLY a JSON object with "title" (under 60 chars, include main keyword), "description" (under 155 chars, compelling, action-oriented), and "keywords" (a comma-separated string of 5-8 high-intent SEO keywords targeting AI automation, AI employees, and local North East searches). No markdown, no code fences, just raw JSON.`,
             type: "seo-meta",
           },
         });
