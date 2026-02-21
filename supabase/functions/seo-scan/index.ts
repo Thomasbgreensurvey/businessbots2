@@ -47,9 +47,10 @@ Deno.serve(async (req) => {
       else if (entry.description.length < 50) { score -= 5; issues.push("Description too short"); statuses.description = "warning"; }
       else { statuses.description = "good"; }
 
-      // OG Image
+      // OG Image — accept any URL starting with https:// or /
       if (!entry.og_image) { score -= 15; issues.push("Missing OG image"); statuses.og_image = "missing"; }
-      else { statuses.og_image = "good"; }
+      else if (entry.og_image.startsWith("https://") || entry.og_image.startsWith("/")) { statuses.og_image = "good"; }
+      else { score -= 10; issues.push("OG image not a valid URL"); statuses.og_image = "warning"; }
 
       // Keywords — 15 points at stake
       if (!entry.keywords || entry.keywords.trim() === "") { score -= 15; issues.push("No keywords"); statuses.keywords = "missing"; }

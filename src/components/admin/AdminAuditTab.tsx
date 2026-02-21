@@ -57,7 +57,7 @@ const AdminAuditTab = () => {
     setCleaningUp(true);
     try {
       const cutoff = new Date();
-      cutoff.setDate(cutoff.getDate() - 30);
+      cutoff.setDate(cutoff.getDate() - 3);
       const cutoffISO = cutoff.toISOString();
 
       const { error } = await supabase
@@ -66,7 +66,7 @@ const AdminAuditTab = () => {
         .lt("created_at", cutoffISO);
 
       if (error) throw error;
-      toast.success("Housekeeping complete — removed logs older than 30 days");
+      toast.success("Housekeeping complete — removed logs older than 3 days");
       fetchAll();
     } catch (e: any) {
       toast.error(`Cleanup failed: ${e.message}`);
@@ -257,7 +257,7 @@ const AdminAuditTab = () => {
           className="text-amber-400 hover:text-amber-300 hover:bg-amber-500/10"
         >
           <Trash2 className="w-3.5 h-3.5 mr-1" />
-          {cleaningUp ? "Cleaning..." : "Housekeeping (30d)"}
+          {cleaningUp ? "Cleaning..." : "Housekeeping (3d)"}
         </Button>
       </div>
 
