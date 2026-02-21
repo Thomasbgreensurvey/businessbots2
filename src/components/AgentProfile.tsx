@@ -48,14 +48,15 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
     >
       {/* Product Schema for this AI Employee */}
       <SEOSchema
-        pageTitle={`${agent.name} – AI ${agent.shortRole} | Business Bots UK`}
+        pageTitle={`${agent.name} - ${agent.role} | Business Bots UK`}
         pageDescription={agent.description}
         products={[{
-          name: `${agent.name} – AI ${agent.shortRole}`,
+          name: `${agent.name} - ${agent.role}`,
           description: agent.extendedDescription,
           image: `https://businessbotsuk.com/agents/${agent.id}.png`,
           sku: `BBUK-${agent.id.toUpperCase()}`,
           price: "499",
+          priceCurrency: "GBP",
           ratingValue: "5",
           reviewCount: "12",
         }]}
