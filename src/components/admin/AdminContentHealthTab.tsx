@@ -53,7 +53,7 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
   const autoGenerateMeta = async () => {
     // Find pages missing title or description
     const gaps = results.filter(r =>
-      r.statuses.title !== "good" || r.statuses.description !== "good" || r.statuses.keywords !== "good"
+      r.statuses.title !== "good" || r.statuses.description !== "good" || r.statuses.keywords !== "good" || r.statuses.og_image !== "good"
     );
 
     if (gaps.length === 0) {
@@ -96,6 +96,8 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
         if (meta.title) upsertData.title = meta.title;
         if (meta.description) upsertData.description = meta.description;
         if (meta.keywords) upsertData.keywords = meta.keywords;
+        // Always ensure og_image is populated
+        upsertData.og_image = "https://businessbotsuk.com/og-image.png";
 
         const { data: existing } = await supabase
           .from("seo_metadata")
@@ -130,7 +132,7 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
   const goodCount = results.filter(r => r.score >= 80).length;
   const warnCount = results.filter(r => r.score >= 50 && r.score < 80).length;
   const critCount = results.filter(r => r.score < 50).length;
-  const gapCount = results.filter(r => r.statuses.title !== "good" || r.statuses.description !== "good" || r.statuses.keywords !== "good").length;
+  const gapCount = results.filter(r => r.statuses.title !== "good" || r.statuses.description !== "good" || r.statuses.keywords !== "good" || r.statuses.og_image !== "good").length;
 
   return (
     <div className="space-y-6">
