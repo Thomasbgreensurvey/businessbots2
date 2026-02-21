@@ -15,6 +15,18 @@ const NAP = {
   lng: "-1.6294",
 };
 
+interface ProductData {
+  name: string;
+  description: string;
+  image: string;
+  sku: string;
+  brand?: string;
+  price: string;
+  priceCurrency?: string;
+  ratingValue?: string;
+  reviewCount?: string;
+}
+
 interface SEOSchemaProps {
   pageTitle: string;
   pageDescription: string;
@@ -27,6 +39,7 @@ interface SEOSchemaProps {
     author?: string;
     image?: string;
   };
+  products?: ProductData[];
 }
 
 const SEOSchema = ({
@@ -35,6 +48,7 @@ const SEOSchema = ({
   breadcrumbs,
   faqItems,
   articleData,
+  products,
 }: SEOSchemaProps) => {
   const location = useLocation();
   const currentUrl = `https://businessbotsuk.com${location.pathname}`;
@@ -166,6 +180,38 @@ const SEOSchema = ({
       }
     : null;
 
+  // Build Product schemas
+  const productSchemas = products?.map((product) => ({
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: product.image,
+    sku: product.sku,
+    brand: {
+      "@type": "Organization",
+      name: product.brand || NAP.name,
+    },
+    offers: {
+      "@type": "Offer",
+      url: currentUrl,
+      priceCurrency: product.priceCurrency || "GBP",
+      price: product.price,
+      availability: "https://schema.org/InStock",
+      seller: {
+        "@type": "Organization",
+        name: NAP.name,
+      },
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: product.ratingValue || "5",
+      bestRating: "5",
+      worstRating: "1",
+      reviewCount: product.reviewCount || "12",
+    },
+  })) || [];
+
   return (
     <>
       {breadcrumbSchema && (
@@ -190,6 +236,13 @@ const SEOSchema = ({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
         />
       )}
+      {productSchemas.map((schema, i) => (
+        <script
+          key={`product-${i}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
     </>
   );
 };

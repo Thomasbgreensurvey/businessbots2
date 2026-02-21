@@ -169,6 +169,14 @@ const AdminSEOTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType: 
           <h3 className="text-lg font-semibold text-white">SEO Overview</h3>
           <p className="text-white/40 text-xs mt-1">Average score: <span className={avgScore >= 80 ? "text-emerald-400" : avgScore >= 50 ? "text-amber-400" : "text-red-400"}>{Math.round(avgScore)}/100</span></p>
         </div>
+        <a
+          href="https://search.google.com/test/rich-results?url=https%3A%2F%2Fbusinessbotsuk.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium hover:bg-emerald-500/20 transition-colors"
+        >
+          <Search className="w-3 h-3" /> Rich Results Test
+        </a>
       </div>
 
       {loading ? (
