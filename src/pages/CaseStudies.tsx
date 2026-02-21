@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import caseStudiesBot from "@/assets/case-studies-bot.png";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const SKOOL_BLUE = "#4B5FD1";
 
@@ -143,10 +144,12 @@ const CaseStudies = () => {
           transition={{ delay: 0.3 }}
           className="max-w-md mx-auto"
         >
-          <img 
+          <OptimizedImage 
             src={caseStudiesBot}
             alt="Business Bots UK AI assistant"
             className="w-full h-auto object-contain"
+            width={448}
+            height={448}
           />
         </motion.div>
       </section>

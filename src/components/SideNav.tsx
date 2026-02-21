@@ -3,6 +3,7 @@ import { X, FileText, Briefcase, HelpCircle, LifeBuoy, Bot, CreditCard, Users, M
 import { agents, Agent } from "@/data/agents";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
+import OptimizedImage from "@/components/OptimizedImage";
 
 interface SideNavProps {
   isOpen: boolean;
@@ -69,7 +70,7 @@ export const SideNav = ({ isOpen, onClose, onSelectAgent, selectedAgentId }: Sid
                 <X className="w-5 h-5 text-white" />
               </button>
               <div className="flex items-center gap-2">
-                <img src={logo} alt="Business Bots UK" className="h-10 w-auto" />
+                <OptimizedImage src={logo} alt="Business Bots UK" className="h-10 w-auto" width={40} height={40} priority />
               </div>
             </div>
 
