@@ -685,11 +685,12 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
         pageDescription="Hire AI employees that work 24/7 to automate your business. 8 AI agents for sales automation, customer support, lead generation, email marketing & recruitment."
         breadcrumbs={[]}
         products={agents.map((a) => ({
-          name: `${a.name} – AI ${a.shortRole}`,
+          name: `${a.name} - ${a.role}`,
           description: a.description,
           image: `https://businessbotsuk.com/agents/${a.id}.png`,
           sku: `BBUK-${a.id.toUpperCase()}`,
           price: "499",
+          priceCurrency: "GBP",
           ratingValue: "5",
           reviewCount: "12",
         }))}
