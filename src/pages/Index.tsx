@@ -6,6 +6,7 @@ import { AgentProfile } from "@/components/AgentProfile";
 import { SideNav } from "@/components/SideNav";
 import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle, ChevronLeft, ChevronRight, Phone, Calendar, CreditCard } from "lucide-react";
 import { toast } from "sonner";
+import OptimizedImage from "@/components/OptimizedImage";
 import logo from "@/assets/logo.png";
 import integrationsImg from "@/assets/integrations.jpeg";
 import robotFigurine from "@/assets/robot-figurine.png";
@@ -100,7 +101,7 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             >
               <Menu className="w-5 h-5 text-white" />
             </button>
-            <img src={logo} alt="Business Bots UK" className="h-16 md:h-20 w-auto" />
+            <OptimizedImage src={logo} alt="Business Bots UK" className="h-16 md:h-20 w-auto" width={80} height={80} priority />
           </div>
           <div className="flex items-center gap-2 md:gap-4">
             {/* Phone Number */}
@@ -198,14 +199,14 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="absolute right-[-5%] sm:right-0 bottom-[10%] sm:bottom-0 z-10 w-[75%] sm:w-[60%] md:w-[50%] lg:w-[45%] pointer-events-none"
         >
-          <img
+          <OptimizedImage
             src={featuredAgent.image}
             alt={featuredAgent.name}
             className="w-full h-auto object-contain max-h-[60vh] sm:max-h-[75vh] md:max-h-[85vh] cursor-pointer drop-shadow-2xl pointer-events-auto"
             onClick={() => onSelectAgent(featuredAgent)}
-            loading="eager"
-            fetchPriority="high"
-            decoding="async"
+            width={600}
+            height={800}
+            priority
           />
         </motion.div>
 
@@ -354,10 +355,12 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             viewport={{ once: true }}
             className="rounded-3xl overflow-hidden"
           >
-            <img 
+            <OptimizedImage 
               src={robotHighfive} 
               alt="AI Bot giving a high five" 
               className="w-full h-auto object-cover"
+              width={896}
+              height={504}
             />
           </motion.div>
           
@@ -448,10 +451,12 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             viewport={{ once: true }}
             className="rounded-3xl overflow-hidden"
           >
-            <img 
+            <OptimizedImage 
               src={phoneApp} 
               alt="Business Bots UK mobile app" 
               className="w-full h-auto object-cover"
+              width={896}
+              height={504}
             />
           </motion.div>
           
@@ -536,10 +541,12 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             viewport={{ once: true }}
             className="rounded-3xl overflow-hidden"
           >
-            <img 
+            <OptimizedImage 
               src={phoneIntegrations} 
               alt="Business Bots UK integrations" 
               className="w-full h-auto object-cover"
+              width={896}
+              height={504}
             />
           </motion.div>
         </div>
@@ -570,10 +577,12 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             viewport={{ once: true }}
             className="flex justify-center"
           >
-            <img 
+            <OptimizedImage 
               src={integrationsImg} 
               alt="Integrations with Facebook, Instagram, Gmail, Google Calendar, Outlook, Google Drive, Strava, and Notion" 
               className="w-full max-w-3xl rounded-2xl"
+              width={768}
+              height={432}
             />
           </motion.div>
         </div>
@@ -588,10 +597,12 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             viewport={{ once: true }}
             className="rounded-3xl overflow-hidden"
           >
-            <img 
+            <OptimizedImage 
               src={botsPair} 
               alt="Business Bots UK AI assistants" 
               className="w-full h-auto object-cover"
+              width={896}
+              height={504}
             />
           </motion.div>
           
@@ -656,10 +667,12 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
               viewport={{ once: true }}
               className="flex justify-center"
             >
-              <img 
+              <OptimizedImage 
                 src={robotFigurine} 
                 alt="AI Bot figurine - Your new team member" 
                 className="w-full max-w-md drop-shadow-2xl"
+                width={448}
+                height={448}
               />
             </motion.div>
           </div>
@@ -707,12 +720,13 @@ const AgentThumbnail = ({ agent, index, isActive, onHover, onClick }: AgentThumb
     >
       {/* Agent Image */}
       <div className="absolute inset-0 flex items-end justify-center">
-        <img
+        <OptimizedImage
           src={agent.image}
           alt={agent.name}
           className="w-full h-auto object-contain transform group-hover:scale-105 transition-transform duration-500"
-          loading="eager"
-          decoding="sync"
+          width={300}
+          height={400}
+          priority
         />
       </div>
 
@@ -793,12 +807,13 @@ const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
               className="relative aspect-[3/4] md:aspect-[4/3] cursor-pointer"
               onClick={() => onSelectAgent(currentAgent)}
             >
-              <img
+              <OptimizedImage
                 src={currentAgent.image}
                 alt={currentAgent.name}
                 className="w-full h-full object-contain object-bottom"
-                loading="eager"
-                decoding="async"
+                width={800}
+                height={600}
+                priority
               />
               
               {/* Navigation Arrows */}
@@ -859,7 +874,9 @@ const AgentCarousel = ({ agents, onSelectAgent }: AgentCarouselProps) => {
   );
 };
 
-function getAgentGradient(color: string): string {
+import { GlowColor } from "@/data/agents";
+
+function getAgentGradient(color: GlowColor): string {
   const gradients: Record<string, string> = {
     emerald: 'linear-gradient(145deg, hsl(145 55% 35%) 0%, hsl(155 50% 22%) 100%)',
     rose: 'linear-gradient(145deg, hsl(340 65% 50%) 0%, hsl(350 60% 32%) 100%)',

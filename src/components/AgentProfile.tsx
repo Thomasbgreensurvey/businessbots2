@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import OptimizedImage from "@/components/OptimizedImage";
 import { ArrowLeft, ArrowRight, Check, Menu, Sparkles, Lightbulb, Calendar, MessageCircle, CreditCard } from "lucide-react";
 import { Agent, GlowColor, agents } from "@/data/agents";
 import sproutTablet from "@/assets/agents/sprout-tablet.png";
@@ -138,13 +139,13 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
           transition={{ duration: 0.7, delay: 0.3 }}
           className="relative z-10 w-full max-w-lg md:max-w-2xl flex-1 flex items-end justify-center"
         >
-          <img
+          <OptimizedImage
             src={agent.image}
             alt={agent.name}
             className="w-full h-auto object-contain max-h-[50vh] md:max-h-[55vh]"
-            loading="eager"
-            fetchPriority="high"
-            decoding="async"
+            width={600}
+            height={800}
+            priority
           />
         </motion.div>
       </section>
@@ -279,12 +280,12 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                 transition={{ duration: 0.7 }}
                 className="w-full max-w-sm md:max-w-md"
               >
-                <img
+                <OptimizedImage
                   src={sproutTablet}
                   alt="Sprout with tablet showing email campaign"
                   className="w-full h-auto object-contain"
-                  loading="eager"
-                  decoding="async"
+                  width={448}
+                  height={448}
                 />
               </motion.div>
             </div>
@@ -327,12 +328,12 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                 transition={{ duration: 0.7 }}
                 className="w-full max-w-sm md:max-w-md"
               >
-                <img
+                <OptimizedImage
                   src={likePhone}
                   alt="Like with phone for social media management"
                   className="w-full h-auto object-contain"
-                  loading="eager"
-                  decoding="async"
+                  width={448}
+                  height={448}
                 />
               </motion.div>
             </div>
@@ -375,12 +376,12 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                 transition={{ duration: 0.7 }}
                 className="w-full max-w-sm md:max-w-md"
               >
-                <img
+                <OptimizedImage
                   src={tobbyHand}
                   alt="Tobby figurine in hand for outbound sales"
                   className="w-full h-auto object-contain"
-                  loading="eager"
-                  decoding="async"
+                  width={448}
+                  height={448}
                 />
               </motion.div>
             </div>
@@ -423,12 +424,12 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                 transition={{ duration: 0.7 }}
                 className="w-full max-w-sm md:max-w-md"
               >
-                <img
+                <OptimizedImage
                   src={zenPhone}
                   alt="Zen with phone for lead generation"
                   className="w-full h-auto object-contain"
-                  loading="eager"
-                  decoding="async"
+                  width={448}
+                  height={448}
                 />
               </motion.div>
             </div>
@@ -471,12 +472,12 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                 transition={{ duration: 0.7 }}
                 className="w-full max-w-sm md:max-w-md"
               >
-                <img
+                <OptimizedImage
                   src={nanoHeadset}
                   alt="Nano with headset for inbound sales"
                   className="w-full h-auto object-contain"
-                  loading="eager"
-                  decoding="async"
+                  width={448}
+                  height={448}
                 />
               </motion.div>
             </div>
@@ -519,12 +520,12 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                 transition={{ duration: 0.7 }}
                 className="w-full max-w-sm md:max-w-md"
               >
-                <img
+                <OptimizedImage
                   src={lillyHeadset}
                   alt="Lilly with headset for HR support"
                   className="w-full h-auto object-contain"
-                  loading="eager"
-                  decoding="async"
+                  width={448}
+                  height={448}
                 />
               </motion.div>
             </div>
@@ -567,12 +568,12 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                 transition={{ duration: 0.7 }}
                 className="w-full max-w-sm md:max-w-md"
               >
-                <img
+                <OptimizedImage
                   src={banjoSweater}
                   alt="Banjo for customer support"
                   className="w-full h-auto object-contain"
-                  loading="eager"
-                  decoding="async"
+                  width={448}
+                  height={448}
                 />
               </motion.div>
             </div>
@@ -615,12 +616,12 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                 transition={{ duration: 0.7 }}
                 className="w-full max-w-sm md:max-w-md"
               >
-                <img
+                <OptimizedImage
                   src={skootTablet}
                   alt="Skoot with tablet for recruitment"
                   className="w-full h-auto object-contain"
-                  loading="eager"
-                  decoding="async"
+                  width={448}
+                  height={448}
                 />
               </motion.div>
             </div>
@@ -938,10 +939,12 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
                   className="rounded-xl overflow-hidden aspect-square relative cursor-pointer group"
                   style={{ background: getAgentGradient(otherAgent.glowColor) }}
                 >
-                  <img
+                  <OptimizedImage
                     src={otherAgent.image}
                     alt={otherAgent.name}
                     className="w-full h-full object-contain object-bottom group-hover:scale-105 transition-transform duration-300"
+                    width={200}
+                    height={200}
                   />
                   <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
                     <p className="text-white font-semibold text-sm">{otherAgent.name}</p>

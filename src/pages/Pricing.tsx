@@ -5,6 +5,7 @@ import { ArrowLeft, Check, X, Users, Zap, Globe, Clock, Brain, MessageCircle, Sh
 import { toast } from "sonner";
 import { agents, GlowColor } from "@/data/agents";
 import logo from "@/assets/logo.png";
+import OptimizedImage from "@/components/OptimizedImage";
 
 // Gradient helper
 const getAgentGradient = (glowColor: GlowColor): string => {
@@ -153,7 +154,7 @@ const Pricing = () => {
             <button onClick={() => navigate("/")} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors border border-white/10">
               <ArrowLeft className="w-5 h-5 text-white" />
             </button>
-            <img src={logo} alt="Business Bots UK" className="h-10 w-auto" />
+            <OptimizedImage src={logo} alt="Business Bots UK" className="h-10 w-auto" width={40} height={40} priority />
           </div>
           <span className="font-robotic text-white font-bold text-sm md:text-base tracking-wide">Business Bots UK</span>
         </div>
@@ -471,10 +472,12 @@ const Pricing = () => {
               >
                 {/* Agent Image */}
                 <div className="absolute inset-0 flex items-end justify-center">
-                  <img
+                  <OptimizedImage
                     src={agent.image}
                     alt={agent.name}
                     className="w-full h-auto object-contain transform group-hover:scale-105 transition-transform duration-500"
+                    width={300}
+                    height={400}
                   />
                 </div>
 

@@ -8,6 +8,7 @@ import skoolBadge from "@/assets/skool-badge.png";
 import skoolBanner from "@/assets/skool-banner.jpeg";
 import skoolLogo from "@/assets/skool-logo.jpeg";
 import ReCaptcha, { ReCaptchaRef } from "@/components/ReCaptcha";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const SKOOL_LINK = "https://www.skool.com/sales-ai-business-marketing-7663/about?ref=002573a2eb4443249a5fce3b6607713d";
 
@@ -399,10 +400,12 @@ const Community = () => {
             className="rounded-3xl overflow-hidden shadow-2xl cursor-pointer"
             onClick={handleJoinCommunity}
           >
-            <img 
+            <OptimizedImage 
               src={skoolBanner} 
               alt="Sales & AI Business Marketing Academy" 
               className="w-full h-auto"
+              width={896}
+              height={504}
             />
           </motion.div>
         </div>
@@ -473,7 +476,7 @@ const Community = () => {
               className="rounded-3xl overflow-hidden shadow-lg cursor-pointer"
               onClick={handleJoinCommunity}
             >
-              <img src={skoolLogo} alt="Sales & AI Business Marketing" className="w-full h-auto" />
+              <OptimizedImage src={skoolLogo} alt="Sales & AI Business Marketing" className="w-full h-auto" width={400} height={400} />
             </motion.div>
 
             <motion.div
@@ -600,7 +603,7 @@ const Community = () => {
               whileHover={{ rotate: 5, scale: 1.1 }}
               className="w-24 h-24 flex-shrink-0"
             >
-              <img src={skoolBadge} alt="Skool Badge" className="w-full h-full object-contain" />
+              <OptimizedImage src={skoolBadge} alt="Skool Badge" className="w-full h-full object-contain" width={96} height={96} />
             </motion.div>
             <div className="text-center md:text-left">
               <h3 className="text-xl font-bold text-gray-900 mb-2">Join Our Skool Community</h3>

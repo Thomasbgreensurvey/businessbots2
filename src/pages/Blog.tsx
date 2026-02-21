@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import blogStudio from "@/assets/blog-studio.jpeg";
+import OptimizedImage from "@/components/OptimizedImage";
 const SKOOL_BLUE = "#4B5FD1";
 
 const staggerContainer = {
@@ -106,10 +107,12 @@ const Blog = () => {
           className="max-w-4xl mx-auto"
         >
           <div className="rounded-2xl overflow-hidden shadow-xl">
-            <img 
+            <OptimizedImage 
               src={blogStudio}
               alt="Business Bots UK studio with AI assistants"
               className="w-full h-auto object-cover"
+              width={896}
+              height={504}
             />
           </div>
         </motion.div>
