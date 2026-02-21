@@ -90,14 +90,13 @@ const AdminContentHealthTab = ({ onAuditLog }: { onAuditLog: (action: string, en
           continue;
         }
 
-        if (!meta.title && !meta.description && !meta.keywords) continue;
-
-        const upsertData: any = {};
+        const upsertData: any = {
+          // Always ensure og_image is populated
+          og_image: "https://businessbotsuk.com/og-image.png",
+        };
         if (meta.title) upsertData.title = meta.title;
         if (meta.description) upsertData.description = meta.description;
         if (meta.keywords) upsertData.keywords = meta.keywords;
-        // Always ensure og_image is populated
-        upsertData.og_image = "https://businessbotsuk.com/og-image.png";
 
         const { data: existing } = await supabase
           .from("seo_metadata")
