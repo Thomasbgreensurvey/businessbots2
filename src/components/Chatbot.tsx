@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, Loader2, User, ExternalLink, Minimize2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import banjoImg from "@/assets/agents/banjo.png";
+import banjoImg from "@/assets/agents/banjo-new.jpeg";
 
 type Message = {
   role: "user" | "assistant";
