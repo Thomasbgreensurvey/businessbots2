@@ -51,9 +51,9 @@ Deno.serve(async (req) => {
       if (!entry.og_image) { score -= 15; issues.push("Missing OG image"); statuses.og_image = "missing"; }
       else { statuses.og_image = "good"; }
 
-      // Keywords
-      if (!entry.keywords) { score -= 10; issues.push("No keywords"); statuses.keywords = "missing"; }
-      else if (entry.keywords.split(",").length < 3) { score -= 5; issues.push("Few keywords"); statuses.keywords = "warning"; }
+      // Keywords — 15 points at stake
+      if (!entry.keywords || entry.keywords.trim() === "") { score -= 15; issues.push("No keywords"); statuses.keywords = "missing"; }
+      else if (entry.keywords.split(",").filter((k: string) => k.trim()).length < 3) { score -= 5; issues.push("Few keywords (<3)"); statuses.keywords = "warning"; }
       else { statuses.keywords = "good"; }
 
       return { path, score: Math.max(0, score), issues, statuses };

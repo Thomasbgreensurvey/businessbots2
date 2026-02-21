@@ -13,7 +13,7 @@ Deno.serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    const seoMetaPrompt = `You are an SEO specialist for Business Bots UK, an AI automation agency in Newcastle upon Tyne, North East England. Generate metadata as a JSON object with "title", "description", and "keywords" keys. Title must be under 60 chars with primary keyword. Description must be under 155 chars, compelling, action-oriented. Keywords must be a comma-separated string of exactly 5 relevant SEO keywords for the page. Return ONLY raw JSON, no markdown, no code fences.`;
+    const seoMetaPrompt = `You are an SEO specialist for Business Bots UK, an AI automation agency in Newcastle upon Tyne, North East England. Generate metadata as a JSON object with "title", "description", and "keywords" keys. Title must be under 60 chars with primary keyword. Description must be under 155 chars, compelling, action-oriented. Keywords must be a comma-separated string of 5-8 high-intent SEO keywords relevant to the page and the AI automation industry. Return ONLY raw JSON, no markdown, no code fences.`;
 
     const blogPrompt = `You are a senior content writer for Business Bots UK, an AI automation agency based in Newcastle upon Tyne, North East England.
 
@@ -37,7 +37,7 @@ STRICT RULES:
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "openai/gpt-5-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: prompt || `Write a blog post titled: "${title}"` },
