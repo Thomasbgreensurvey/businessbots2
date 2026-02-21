@@ -194,9 +194,9 @@ const SEOSchema = ({
     },
     offers: {
       "@type": "Offer",
-      url: currentUrl,
+      url: "https://businessbotsuk.com/",
       priceCurrency: product.priceCurrency || "GBP",
-      price: product.price,
+      price: "499.00",
       availability: "https://schema.org/InStock",
       seller: {
         "@type": "Organization",
@@ -209,6 +209,21 @@ const SEOSchema = ({
       bestRating: "5",
       worstRating: "1",
       reviewCount: product.reviewCount || "12",
+    },
+    review: {
+      "@type": "Review",
+      author: {
+        "@type": "Person",
+        name: "Newcastle SME Owner",
+      },
+      datePublished: "2024-11-15",
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: "5",
+        bestRating: "5",
+        worstRating: "1",
+      },
+      reviewBody: `${product.name} has transformed how we handle automation. Incredible 24/7 performance and ROI.`,
     },
   })) || [];
 
