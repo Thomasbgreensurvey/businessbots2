@@ -1,11 +1,11 @@
-import sproutImg from "@/assets/agents/sprout.png";
+import sproutImg from "@/assets/agents/sprout-new.png";
 import lillyImg from "@/assets/agents/lilly.png";
-import banjoImg from "@/assets/agents/banjo.png";
-import timiImg from "@/assets/agents/timi.png";
-import likeImg from "@/assets/agents/like.png";
-import tobbyImg from "@/assets/agents/tobby.png";
-import nanoImg from "@/assets/agents/nano.png";
-import skootImg from "@/assets/agents/skoot.png";
+import banjoImg from "@/assets/agents/banjo-new.jpeg";
+import likeImg from "@/assets/agents/like-new.png";
+import zenImg from "@/assets/agents/zen-new.jpeg";
+import tobbyImg from "@/assets/agents/tobby-new.png";
+import nanoImg from "@/assets/agents/nano-new.jpeg";
+import skootImg from "@/assets/agents/skoot-new.png";
 
 export type GlowColor = "emerald" | "rose" | "indigo" | "cyan" | "amber" | "orange" | "teal" | "fuchsia";
 
@@ -130,7 +130,7 @@ export const agents: Agent[] = [
     heroSubtext: "Content that stops the scroll, grows your following, and turns engagement into sales. 24/7 social presence made easy.",
     description: "Assists with social media profile setup, optimisation, content creation, and scheduling to support a consistent and professional online presence.",
     extendedDescription: "Meet Like. The AI-powered social media manager that makes your brand unforgettable. Trained on viral content patterns, Like creates scroll-stopping posts and manages your community around the clock. Traditional social media management takes teams, but Like handles it all solo.",
-    image: timiImg,
+    image: likeImg,
     glowColor: "cyan",
     capabilities: [
       "Content creation",
@@ -160,7 +160,7 @@ export const agents: Agent[] = [
     heroSubtext: "Qualified leads delivered to your CRM daily. Stop chasing, start closing with AI-powered prospecting.",
     description: "Supports lead capture through forms, funnels, and call-to-action optimisation across websites and campaigns.",
     extendedDescription: "Meet Zen. The AI-powered lead hunter that fills your pipeline with qualified prospects. Trained on successful sales patterns, Zen finds and enriches leads that actually convert. Traditional prospecting takes days, but Zen delivers qualified leads in minutes.",
-    image: likeImg,
+    image: zenImg,
     glowColor: "amber",
     capabilities: [
       "Prospect discovery",
