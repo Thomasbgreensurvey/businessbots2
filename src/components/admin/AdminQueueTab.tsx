@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Wand2, Rocket, Loader2, Bot, Clock, CheckCircle, Send, Webhook } from "lucide-react";
+import { Plus, Wand2, Rocket, Loader2, Bot, Clock, CheckCircle, Send, Webhook, Zap } from "lucide-react";
 import { toast } from "sonner";
 
 const AGENTS = ["Sprout", "Lilly", "Banjo", "Like", "Zen", "Tobby", "Nano", "Skoot"];
@@ -25,6 +25,7 @@ const AdminQueueTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType
   const [newAgent, setNewAgent] = useState("Sprout");
   const [generating, setGenerating] = useState<string | null>(null);
   const [publishing, setPublishing] = useState<string | null>(null);
+  const [testingCron, setTestingCron] = useState(false);
 
   useEffect(() => { fetchQueue(); }, []);
 
@@ -113,19 +114,44 @@ const AdminQueueTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType
     }
   };
 
+  const handleTestCron = async () => {
+    setTestingCron(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("sovereign-blog-engine", {
+        body: { action: "dry_run" },
+      });
+      if (error) throw error;
+      const checks = (data as any)?.checks;
+      const allOk = checks?.db_topic?.ok && checks?.ai_reachable?.ok && checks?.telegram_ok?.ok;
+      if (allOk) {
+        toast.success("Triple-Lock passed! Check Telegram for confirmation.");
+      } else {
+        toast.warning("Some checks failed — see Telegram or console for details.");
+      }
+      onAuditLog("dry_run_test", "system", "", checks);
+    } catch (e: any) {
+      toast.error(`Dry run failed: ${e.message}`);
+    }
+    setTestingCron(false);
+  };
+
   return (
     <div className="space-y-6">
-      {/* Webhook Setup */}
-      <div className="rounded-xl border border-purple-500/20 bg-purple-500/5 p-4 flex items-center justify-between">
-        <div>
-          <h3 className="text-xs font-bold text-purple-400 uppercase tracking-wider flex items-center gap-2">
-            <Webhook className="w-3.5 h-3.5" /> Telegram Remote Control
-          </h3>
-          <p className="text-white/40 text-xs mt-1">One-time setup: connect inline button callbacks to this engine.</p>
+      {/* System Controls */}
+      <div className="rounded-xl border border-purple-500/20 bg-purple-500/5 p-4 space-y-3">
+        <h3 className="text-xs font-bold text-purple-400 uppercase tracking-wider flex items-center gap-2">
+          <Webhook className="w-3.5 h-3.5" /> System Controls
+        </h3>
+        <p className="text-white/40 text-xs">Webhook setup & engine diagnostics.</p>
+        <div className="flex gap-2 flex-wrap">
+          <Button onClick={handleSetWebhook} size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs">
+            <Webhook className="w-3.5 h-3.5 mr-1" /> Set Webhook
+          </Button>
+          <Button onClick={handleTestCron} size="sm" disabled={testingCron} className="bg-cyan-600 hover:bg-cyan-700 text-white text-xs">
+            {testingCron ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Zap className="w-3.5 h-3.5 mr-1" />}
+            Test Cron (Dry Run)
+          </Button>
         </div>
-        <Button onClick={handleSetWebhook} size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs">
-          Set Webhook
-        </Button>
       </div>
 
       {/* Add Topic */}
