@@ -307,27 +307,45 @@ SEO focus: Include natural keyword variations for "${queueItem.topic}" throughou
       const qData = await qRes.json();
       checks.db_topic = qData?.length > 0 ? { ok: true, topic: qData[0].topic, agent: qData[0].featured_agent } : { ok: false, reason: "No queued topics" };
 
-      // 2. AI API reachable? (tiny request)
-      try {
-        const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "openai/gpt-5-nano",
-            messages: [{ role: "user", content: "Reply with only: OK" }],
-            max_tokens: 5,
-          }),
-        });
-        checks.ai_reachable = aiRes.ok ? { ok: true, status: aiRes.status } : { ok: false, status: aiRes.status };
-        await aiRes.text();
-      } catch (e) {
-        checks.ai_reachable = { ok: false, error: String(e) };
+      // 2. AI API reachable? (tiny request with fallback models)
+      const hasKey = !!LOVABLE_API_KEY;
+      if (!hasKey) {
+        checks.ai_reachable = { ok: false, error: "LOVABLE_API_KEY is not set in environment" };
+      } else {
+        const models = ["google/gemini-2.5-flash-lite", "openai/gpt-5-nano"];
+        let aiOk = false;
+        for (const model of models) {
+          try {
+            const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                model,
+                messages: [{ role: "user", content: "Reply with only: OK" }],
+                max_tokens: 5,
+              }),
+            });
+            const bodyText = await aiRes.text();
+            if (aiRes.ok) {
+              checks.ai_reachable = { ok: true, status: aiRes.status, model };
+              aiOk = true;
+              break;
+            } else {
+              checks.ai_reachable = { ok: false, status: aiRes.status, model, error: bodyText.slice(0, 300) };
+            }
+          } catch (e) {
+            checks.ai_reachable = { ok: false, model, error: String(e) };
+          }
+        }
       }
 
       // 3. Telegram bot can send?
       try {
+        const aiStatus = checks.ai_reachable.ok
+          ? `✅ Reachable (${checks.ai_reachable.model})`
+          : `⚠️ Down — ${checks.ai_reachable.status || ""} ${checks.ai_reachable.error?.slice(0, 100) || ""}`;
         const tRes = await sendTelegramWithButtons(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID,
-          `🔧 *Triple-Lock Test — ${new Date().toISOString()}*\n\n✅ DB Topic: ${checks.db_topic.ok ? checks.db_topic.topic : "⚠️ None queued"}\n✅ AI Gateway: ${checks.ai_reachable.ok ? "Reachable" : "⚠️ Down"}\n✅ Telegram: Connected\n\n_Sovereign Engine is operational._`,
+          `🔧 *Triple-Lock Test — ${new Date().toISOString()}*\n\n${checks.db_topic.ok ? "✅" : "⚠️"} DB Topic: ${checks.db_topic.ok ? checks.db_topic.topic : "None queued"}\n${checks.ai_reachable.ok ? "✅" : "⚠️"} AI Gateway: ${aiStatus}\n✅ Telegram: Connected\n\n_${checks.ai_reachable.ok && checks.db_topic.ok ? "Sovereign Engine is operational." : "Some checks need attention."}_`,
           [[{ text: "🏠 Open Admin", url: "https://businessbotsuk.com/admin" }]]
         );
         checks.telegram_ok = tRes.ok ? { ok: true } : { ok: false, status: tRes.status };
