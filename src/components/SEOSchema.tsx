@@ -63,11 +63,14 @@ const SEOSchema = ({
       metaDesc.setAttribute("content", pageDescription);
     }
 
-    // Update canonical
+    // Update canonical — ensure self-referencing canonical on every page
     let canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical) {
-      canonical.setAttribute("href", currentUrl);
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
     }
+    canonical.setAttribute("href", currentUrl);
 
     // Update OG tags
     const ogTitle = document.querySelector('meta[property="og:title"]');
