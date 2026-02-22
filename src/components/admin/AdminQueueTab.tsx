@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Wand2, Rocket, Loader2, Bot, Clock, CheckCircle, Send, Webhook, Zap } from "lucide-react";
+import { Plus, Wand2, Rocket, Loader2, Bot, Clock, CheckCircle, Send, Webhook, Zap, BarChart3, Layers, FileCheck, TrendingUp, Activity } from "lucide-react";
 import { toast } from "sonner";
 
 const AGENTS = ["Sprout", "Lilly", "Banjo", "Like", "Zen", "Tobby", "Nano", "Skoot"];
@@ -18,6 +18,14 @@ interface QueueItem {
   result_post_id: string | null;
 }
 
+interface DashboardStats {
+  totalPublished: number;
+  inQueue: number;
+  draftsReady: number;
+  monthlyMomentum: number;
+  successRate: number;
+}
+
 const AdminQueueTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType: string, entityId: string, details?: object) => void }) => {
   const [items, setItems] = useState<QueueItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,8 +34,26 @@ const AdminQueueTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType
   const [generating, setGenerating] = useState<string | null>(null);
   const [publishing, setPublishing] = useState<string | null>(null);
   const [testingCron, setTestingCron] = useState(false);
+  const [stats, setStats] = useState<DashboardStats>({ totalPublished: 0, inQueue: 0, draftsReady: 0, monthlyMomentum: 0, successRate: 0 });
 
-  useEffect(() => { fetchQueue(); }, []);
+  useEffect(() => { fetchQueue(); fetchStats(); }, []);
+
+  const fetchStats = async () => {
+    const [pubRes, queueRes] = await Promise.all([
+      supabase.from("blog_posts").select("id, published_at", { count: "exact" }).eq("status", "published"),
+      supabase.from("content_queue" as any).select("*"),
+    ]);
+    const published = pubRes.count ?? 0;
+    const queueItems = (queueRes.data as any as QueueItem[]) || [];
+    const inQueue = queueItems.filter(i => i.status === "queued").length;
+    const draftsReady = queueItems.filter(i => i.status === "completed").length;
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+    const monthly = (pubRes.data || []).filter((p: any) => p.published_at && p.published_at >= thirtyDaysAgo).length;
+    const total = queueItems.length;
+    const completed = queueItems.filter(i => i.status === "completed").length + published;
+    const successRate = total + published > 0 ? Math.round((completed / (total + published)) * 100) : 0;
+    setStats({ totalPublished: published, inQueue, draftsReady, monthlyMomentum: monthly, successRate });
+  };
 
   const fetchQueue = async () => {
     setLoading(true);
@@ -39,6 +65,8 @@ const AdminQueueTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType
     setLoading(false);
   };
 
+  const refreshAll = () => { fetchQueue(); fetchStats(); };
+
   const handleAddTopic = async () => {
     if (!newTopic.trim()) { toast.error("Enter a topic"); return; }
     try {
@@ -49,7 +77,7 @@ const AdminQueueTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType
       onAuditLog("queue_topic", "content_queue", "", { topic: newTopic, agent: newAgent });
       toast.success("Topic queued");
       setNewTopic("");
-      fetchQueue();
+      refreshAll();
     } catch (e: any) {
       toast.error(`Failed: ${e.message}`);
     }
@@ -64,7 +92,7 @@ const AdminQueueTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType
       if (error) throw error;
       onAuditLog("generate_blog", "content_queue", item.id, { topic: item.topic, agent: item.featured_agent });
       toast.success(`Draft generated for "${item.topic}"`);
-      fetchQueue();
+      refreshAll();
     } catch (e: any) {
       toast.error(`Generation failed: ${e.message}`);
     }
@@ -94,7 +122,7 @@ const AdminQueueTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType
 
       onAuditLog("publish_and_ping", "blog_post", item.result_post_id || "", { topic: item.topic, slug });
       toast.success(`Published & indexed: /blog/${slug}`);
-      fetchQueue();
+      refreshAll();
     } catch (e: any) {
       toast.error(`Publish failed: ${e.message}`);
     }
@@ -133,10 +161,30 @@ const AdminQueueTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType
       toast.error(`Dry run failed: ${e.message}`);
     }
     setTestingCron(false);
+    fetchStats();
   };
 
   return (
     <div className="space-y-6">
+      {/* Performance Dashboard */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        {[
+          { label: "Total Published", value: stats.totalPublished, icon: BarChart3, color: "text-emerald-400" },
+          { label: "In Queue", value: stats.inQueue, icon: Layers, color: "text-amber-400" },
+          { label: "Drafts Ready", value: stats.draftsReady, icon: FileCheck, color: "text-cyan-400" },
+          { label: "30-Day Momentum", value: stats.monthlyMomentum, icon: TrendingUp, color: "text-purple-400" },
+          { label: "Success Rate", value: `${stats.successRate}%`, icon: Activity, color: "text-emerald-400" },
+        ].map((s) => (
+          <div key={s.label} className="rounded-xl border border-white/10 bg-white/5 p-4 flex flex-col gap-1.5">
+            <div className="flex items-center gap-1.5">
+              <s.icon className={`w-3.5 h-3.5 ${s.color}`} />
+              <span className="text-white/40 text-[10px] uppercase tracking-wider font-medium">{s.label}</span>
+            </div>
+            <span className="text-white text-2xl font-bold tracking-tight">{s.value}</span>
+          </div>
+        ))}
+      </div>
+
       {/* System Controls */}
       <div className="rounded-xl border border-purple-500/20 bg-purple-500/5 p-4 space-y-3">
         <h3 className="text-xs font-bold text-purple-400 uppercase tracking-wider flex items-center gap-2">
