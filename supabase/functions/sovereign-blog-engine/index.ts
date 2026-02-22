@@ -298,7 +298,49 @@ SEO focus: Include natural keyword variations for "${queueItem.topic}" throughou
       });
     }
 
-    return new Response(JSON.stringify({ error: "Unknown action. Use: add_to_queue, generate, publish, telegram_callback, set_webhook" }), {
+    // ─── ACTION: dry_run (Triple-Lock Integrity Check) ───
+    if (action === "dry_run") {
+      const checks: Record<string, any> = { db_topic: false, ai_reachable: false, telegram_ok: false };
+
+      // 1. Can pick a topic from the queue?
+      const qRes = await fetch(`${SUPABASE_URL}/rest/v1/content_queue?status=eq.queued&order=created_at.asc&limit=1`, { headers: sbHeaders });
+      const qData = await qRes.json();
+      checks.db_topic = qData?.length > 0 ? { ok: true, topic: qData[0].topic, agent: qData[0].featured_agent } : { ok: false, reason: "No queued topics" };
+
+      // 2. AI API reachable? (tiny request)
+      try {
+        const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "openai/gpt-5-nano",
+            messages: [{ role: "user", content: "Reply with only: OK" }],
+            max_tokens: 5,
+          }),
+        });
+        checks.ai_reachable = aiRes.ok ? { ok: true, status: aiRes.status } : { ok: false, status: aiRes.status };
+        await aiRes.text();
+      } catch (e) {
+        checks.ai_reachable = { ok: false, error: String(e) };
+      }
+
+      // 3. Telegram bot can send?
+      try {
+        const tRes = await sendTelegramWithButtons(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID,
+          `🔧 *Triple-Lock Test — ${new Date().toISOString()}*\n\n✅ DB Topic: ${checks.db_topic.ok ? checks.db_topic.topic : "⚠️ None queued"}\n✅ AI Gateway: ${checks.ai_reachable.ok ? "Reachable" : "⚠️ Down"}\n✅ Telegram: Connected\n\n_Sovereign Engine is operational._`,
+          [[{ text: "🏠 Open Admin", url: "https://businessbotsuk.com/admin" }]]
+        );
+        checks.telegram_ok = tRes.ok ? { ok: true } : { ok: false, status: tRes.status };
+      } catch (e) {
+        checks.telegram_ok = { ok: false, error: String(e) };
+      }
+
+      return new Response(JSON.stringify({ success: true, checks }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(JSON.stringify({ error: "Unknown action" }), {
       status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
