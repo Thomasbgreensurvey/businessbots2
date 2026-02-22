@@ -5,15 +5,16 @@ const corsHeaders = {
 
 const AGENTS = ["Sprout", "Lilly", "Banjo", "Like", "Zen", "Tobby", "Nano", "Skoot"];
 const AGENT_IMAGES: Record<string, string> = {
-  Sprout: "/agents/sprout-new.png",
-  Lilly: "/agents/lilly.png",
-  Banjo: "/agents/banjo-new.png",
-  Like: "/agents/like-new.png",
-  Zen: "/agents/zen-new.png",
-  Tobby: "/agents/tobby-new.png",
-  Nano: "/agents/nano-new.png",
-  Skoot: "/agents/skoot-new.png",
+  Sprout: "/sprout-ai.png",
+  Lilly: "/lilly-ai.png",
+  Banjo: "/banjo-ai.png",
+  Like: "/like-ai.png",
+  Zen: "/zen-ai.png",
+  Tobby: "/tobby-ai.png",
+  Nano: "/nano-ai.png",
+  Skoot: "/skoot-ai.png",
 };
+const DEFAULT_IMAGE = "/brand-logo.png";
 
 const PREVIEW_SECRET = "sov-exec-preview-2026";
 
@@ -179,7 +180,7 @@ Deno.serve(async (req) => {
       }
 
       const agentName = queueItem.featured_agent || "Sprout";
-      const agentImage = AGENT_IMAGES[agentName] || AGENT_IMAGES["Sprout"];
+      const agentImage = AGENT_IMAGES[agentName] || DEFAULT_IMAGE;
 
       const systemPrompt = `You are a senior content strategist for Business Bots UK, an AI automation agency headquartered in Newcastle upon Tyne, North East England.
 
