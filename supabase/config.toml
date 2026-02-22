@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.generate-blog-content]
 verify_jwt = false
+
+[functions.sovereign-blog-engine]
+verify_jwt = false
