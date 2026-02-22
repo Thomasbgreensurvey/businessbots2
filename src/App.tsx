@@ -24,6 +24,7 @@ import Call from "./pages/Call";
 import Connect from "./pages/Connect";
 import SEOAudit from "./pages/SEOAudit";
 import Admin from "./pages/Admin";
+import PreviewArticle from "./pages/PreviewArticle";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,7 @@ const App = () => {
             <Route path="/connect" element={<Connect />} />
             <Route path="/seo-audit" element={<SEOAudit />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/preview/:slug" element={<PreviewArticle />} />
             {/* Redirects for old/indexed URLs to prevent 404s */}
             <Route path="/product-help" element={<Navigate to="/help-centre" replace />} />
             <Route path="/product-help/*" element={<Navigate to="/help-centre" replace />} />
