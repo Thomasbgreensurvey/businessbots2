@@ -193,6 +193,44 @@ export type Database = {
         }
         Relationships: []
       }
+      content_queue: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          featured_agent: string
+          id: string
+          result_post_id: string | null
+          status: string
+          topic: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          featured_agent?: string
+          id?: string
+          result_post_id?: string | null
+          status?: string
+          topic: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          featured_agent?: string
+          id?: string
+          result_post_id?: string | null
+          status?: string
+          topic?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_queue_result_post_id_fkey"
+            columns: ["result_post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       demo_bookings: {
         Row: {
           company: string | null

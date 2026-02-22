@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Lock, ArrowLeft, Radar, Shield, Eye, FileText, TrendingUp, Activity } from "lucide-react";
+import { Lock, ArrowLeft, Radar, Shield, Eye, FileText, TrendingUp, Activity, ListTodo } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import AdminSearchForceTab from "@/components/admin/AdminSearchForceTab";
@@ -9,8 +9,10 @@ import AdminIntelligenceTab from "@/components/admin/AdminIntelligenceTab";
 import AdminBlogTab from "@/components/admin/AdminBlogTab";
 import AdminPerformanceTab from "@/components/admin/AdminPerformanceTab";
 import AdminAuditTab from "@/components/admin/AdminAuditTab";
+import AdminQueueTab from "@/components/admin/AdminQueueTab";
 
 const TABS = [
+  { key: "queue", label: "Queue", icon: ListTodo },
   { key: "search", label: "Search Force", icon: Radar },
   { key: "health", label: "Content Health", icon: Shield },
   { key: "intel", label: "Intelligence", icon: Eye },
@@ -26,7 +28,7 @@ const Admin = () => {
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabKey>("search");
+  const [activeTab, setActiveTab] = useState<TabKey>("queue");
 
   const logAudit = async (action: string, entityType: string, entityId: string, details?: object) => {
     await supabase.from("audit_logs").insert([{
@@ -102,6 +104,7 @@ const Admin = () => {
 
         {/* Content */}
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6 max-w-[100vw] overflow-x-hidden">
+          {activeTab === "queue" && <AdminQueueTab onAuditLog={logAudit} />}
           {activeTab === "search" && <AdminSearchForceTab onAuditLog={logAudit} />}
           {activeTab === "health" && <AdminContentHealthTab onAuditLog={logAudit} />}
           {activeTab === "intel" && <AdminIntelligenceTab />}
