@@ -32,10 +32,7 @@ async function sendTelegramWithButtons(token: string, chatId: string, text: stri
       reply_markup: { inline_keyboard: buttons },
     }),
   });
-  if (!res.ok) {
-    const t = await res.text();
-    console.error("Telegram error:", t);
-  }
+  if (!res.ok) console.error("Telegram error:", await res.text());
   return res;
 }
 
@@ -54,6 +51,38 @@ async function editTelegramMessage(token: string, chatId: string, messageId: num
   return res;
 }
 
+async function answerCallbackQuery(token: string, callbackQueryId: string, text?: string) {
+  await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ callback_query_id: callbackQueryId, text: text || "Processing..." }),
+  });
+}
+
+// Publish a post by ID: set published, ping search engines, return slug+title
+async function publishPost(postId: string, sbUrl: string, sbHeaders: Record<string, string>, serviceRoleKey: string) {
+  await fetch(`${sbUrl}/rest/v1/blog_posts?id=eq.${postId}`, {
+    method: "PATCH",
+    headers: sbHeaders,
+    body: JSON.stringify({ status: "published", published_at: new Date().toISOString() }),
+  });
+
+  const pRes = await fetch(`${sbUrl}/rest/v1/blog_posts?id=eq.${postId}&select=slug,title`, { headers: sbHeaders });
+  const pData = await pRes.json();
+  const slug = pData?.[0]?.slug;
+  const title = pData?.[0]?.title || "Untitled";
+
+  // Ping search engines
+  const fnUrl = `${sbUrl}/functions/v1/ping-search-engines`;
+  const fnHeaders = { Authorization: `Bearer ${serviceRoleKey}`, "Content-Type": "application/json" };
+  await Promise.all([
+    fetch(fnUrl, { method: "POST", headers: fnHeaders, body: JSON.stringify({ action: "google_index_urls", urls: [`/blog/${slug}`] }) }),
+    fetch(fnUrl, { method: "POST", headers: fnHeaders, body: JSON.stringify({ action: "indexnow", urls: [`/blog/${slug}`] }) }),
+  ]);
+
+  return { slug, title };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -61,13 +90,11 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { action, topic, featured_agent, queue_id, callback_chat_id, callback_message_id, post_id: callbackPostId } = body;
-
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const TELEGRAM_BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN");
-    const TELEGRAM_CHAT_ID = Deno.env.get("TELEGRAM_CHAT_ID");
+    const TELEGRAM_BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN")!;
+    const TELEGRAM_CHAT_ID = Deno.env.get("TELEGRAM_CHAT_ID")!;
 
     const sbHeaders = {
       apikey: SUPABASE_SERVICE_ROLE_KEY,
@@ -76,7 +103,49 @@ Deno.serve(async (req) => {
       Prefer: "return=representation",
     };
 
-    // ACTION: add_to_queue
+    // ─── TELEGRAM WEBHOOK UPDATE (callback_query from inline button) ───
+    if (body.callback_query) {
+      const cq = body.callback_query;
+      const data = cq.data as string; // e.g. "publish:<post_id>"
+      const chatId = String(cq.message?.chat?.id);
+      const messageId = cq.message?.message_id;
+
+      // Acknowledge immediately so Telegram stops the spinner
+      await answerCallbackQuery(TELEGRAM_BOT_TOKEN, cq.id, "🚀 Publishing...");
+
+      // Security: verify chat ID
+      if (chatId !== TELEGRAM_CHAT_ID) {
+        return new Response("OK", { headers: corsHeaders });
+      }
+
+      if (data.startsWith("publish:")) {
+        const postId = data.replace("publish:", "");
+        const { slug, title } = await publishPost(postId, SUPABASE_URL, sbHeaders, SUPABASE_SERVICE_ROLE_KEY);
+
+        const successMsg = `✅ *SUCCESS: Post is Live!*\n\n📰 *${title}*\n🔗 https://businessbotsuk.com/blog/${slug}\n\n🔍 Google & Bing have been notified.`;
+        await editTelegramMessage(TELEGRAM_BOT_TOKEN, chatId, messageId, successMsg);
+      }
+
+      return new Response("OK", { headers: corsHeaders });
+    }
+
+    const { action, topic, featured_agent, queue_id, callback_chat_id, callback_message_id, post_id: callbackPostId } = body;
+
+    // ─── ACTION: set_webhook ───
+    if (action === "set_webhook") {
+      const webhookUrl = `${SUPABASE_URL}/functions/v1/sovereign-blog-engine`;
+      const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: webhookUrl, allowed_updates: ["callback_query"] }),
+      });
+      const data = await res.json();
+      return new Response(JSON.stringify({ success: true, telegram: data }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ─── ACTION: add_to_queue ───
     if (action === "add_to_queue") {
       const agent = featured_agent || AGENTS[Math.floor(Math.random() * AGENTS.length)];
       const res = await fetch(`${SUPABASE_URL}/rest/v1/content_queue`, {
@@ -90,7 +159,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // ACTION: generate
+    // ─── ACTION: generate ───
     if (action === "generate") {
       if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
@@ -135,44 +204,24 @@ SEO focus: Include natural keyword variations for "${queueItem.topic}" throughou
 
       const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
+        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "openai/gpt-5",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
+          messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
         }),
       });
 
       if (!aiRes.ok) {
-        if (aiRes.status === 429) {
-          return new Response(JSON.stringify({ error: "Rate limited. Try again shortly." }), {
-            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
-        if (aiRes.status === 402) {
-          return new Response(JSON.stringify({ error: "AI credits exhausted." }), {
-            status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
-        const t = await aiRes.text();
-        throw new Error(`AI gateway error ${aiRes.status}: ${t}`);
+        if (aiRes.status === 429) return new Response(JSON.stringify({ error: "Rate limited." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        if (aiRes.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        throw new Error(`AI gateway error ${aiRes.status}: ${await aiRes.text()}`);
       }
 
-      const aiData = await aiRes.json();
-      const contentHtml = aiData.choices?.[0]?.message?.content || "";
+      const contentHtml = (await aiRes.json()).choices?.[0]?.message?.content || "";
 
-      // Generate SEO metadata
       const seoRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
+        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "openai/gpt-5",
           messages: [
@@ -184,165 +233,71 @@ SEO focus: Include natural keyword variations for "${queueItem.topic}" throughou
 
       let seoMeta = { title: queueItem.topic, description: "", keywords: "" };
       if (seoRes.ok) {
-        const seoData = await seoRes.json();
-        const seoContent = seoData.choices?.[0]?.message?.content || "";
-        try {
-          const cleaned = seoContent.replace(/```json\n?|\n?```/g, "").trim();
-          seoMeta = { ...seoMeta, ...JSON.parse(cleaned) };
-        } catch { /* use defaults */ }
-      } else {
-        await seoRes.text();
-      }
+        try { seoMeta = { ...seoMeta, ...JSON.parse((await seoRes.json()).choices?.[0]?.message?.content?.replace(/```json\n?|\n?```/g, "").trim()) }; } catch { /* defaults */ }
+      } else { await seoRes.text(); }
 
       const slug = slugify(queueItem.topic);
       const excerpt = seoMeta.description || queueItem.topic;
 
-      // Insert blog post as draft
       const postRes = await fetch(`${SUPABASE_URL}/rest/v1/blog_posts`, {
-        method: "POST",
-        headers: sbHeaders,
-        body: JSON.stringify({
-          title: queueItem.topic,
-          slug,
-          content: contentHtml,
-          excerpt,
-          featured_image: agentImage,
-          status: "draft",
-        }),
+        method: "POST", headers: sbHeaders,
+        body: JSON.stringify({ title: queueItem.topic, slug, content: contentHtml, excerpt, featured_image: agentImage, status: "draft" }),
       });
-      const postData = await postRes.json();
-      const postId = postData?.[0]?.id;
+      const postId = (await postRes.json())?.[0]?.id;
 
-      // Upsert SEO metadata
       await fetch(`${SUPABASE_URL}/rest/v1/seo_metadata`, {
         method: "POST",
         headers: { ...sbHeaders, Prefer: "resolution=merge-duplicates,return=representation" },
-        body: JSON.stringify({
-          page_path: `/blog/${slug}`,
-          title: seoMeta.title,
-          description: seoMeta.description,
-          keywords: seoMeta.keywords,
-          og_image: "https://businessbotsuk.com/og-image.png",
-        }),
+        body: JSON.stringify({ page_path: `/blog/${slug}`, title: seoMeta.title, description: seoMeta.description, keywords: seoMeta.keywords, og_image: "https://businessbotsuk.com/og-image.png" }),
       });
 
-      // Update queue item
       await fetch(`${SUPABASE_URL}/rest/v1/content_queue?id=eq.${queueItem.id}`, {
-        method: "PATCH",
-        headers: sbHeaders,
-        body: JSON.stringify({
-          status: "completed",
-          completed_at: new Date().toISOString(),
-          result_post_id: postId,
-        }),
+        method: "PATCH", headers: sbHeaders,
+        body: JSON.stringify({ status: "completed", completed_at: new Date().toISOString(), result_post_id: postId }),
       });
 
-      // Telegram notification with inline keyboard buttons
+      // Telegram with inline keyboard
       if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
         const previewUrl = `https://businessbotsuk.com/preview/${slug}?token=${PREVIEW_SECRET}`;
         const msg = `🚀 *New AI Draft Ready:* ${queueItem.topic}\n\n🤖 *Agent:* ${agentName}\n📊 *SEO Score:* 100/100\n\n📝 Tap below to preview or publish instantly.`;
-
-        const buttons = [
+        await sendTelegramWithButtons(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, msg, [
           [{ text: "📖 View Mobile Draft", url: previewUrl }],
           [{ text: "🚀 Publish & Ping", callback_data: `publish:${postId}` }],
-        ];
-
-        await sendTelegramWithButtons(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, msg, buttons);
+        ]);
       }
 
-      return new Response(JSON.stringify({
-        success: true,
-        post_id: postId,
-        slug,
-        agent: agentName,
-        seo: seoMeta,
-      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
-
-    // ACTION: telegram_callback — handle "Publish & Ping" from Telegram
-    if (action === "telegram_callback") {
-      if (!callbackPostId) throw new Error("post_id required for telegram_callback");
-      
-      // Verify the chat ID matches
-      if (String(callback_chat_id) !== TELEGRAM_CHAT_ID) {
-        return new Response(JSON.stringify({ error: "Unauthorized chat" }), {
-          status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-
-      // Publish the post
-      await fetch(`${SUPABASE_URL}/rest/v1/blog_posts?id=eq.${callbackPostId}`, {
-        method: "PATCH",
-        headers: sbHeaders,
-        body: JSON.stringify({ status: "published", published_at: new Date().toISOString() }),
+      return new Response(JSON.stringify({ success: true, post_id: postId, slug, agent: agentName, seo: seoMeta }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
-
-      // Get slug
-      const pRes = await fetch(`${SUPABASE_URL}/rest/v1/blog_posts?id=eq.${callbackPostId}&select=slug,title`, { headers: sbHeaders });
-      const pData = await pRes.json();
-      const slug = pData?.[0]?.slug;
-      const title = pData?.[0]?.title || "Untitled";
-
-      // Trigger search engine pings
-      const fnUrl = `${SUPABASE_URL}/functions/v1/ping-search-engines`;
-      const fnHeaders = {
-        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-        "Content-Type": "application/json",
-      };
-
-      await Promise.all([
-        fetch(fnUrl, {
-          method: "POST",
-          headers: fnHeaders,
-          body: JSON.stringify({ action: "google_index_urls", urls: [`/blog/${slug}`] }),
-        }),
-        fetch(fnUrl, {
-          method: "POST",
-          headers: fnHeaders,
-          body: JSON.stringify({ action: "indexnow", urls: [`/blog/${slug}`] }),
-        }),
-      ]);
-
-      // Edit the Telegram message to confirm
-      if (TELEGRAM_BOT_TOKEN && callback_message_id) {
-        const successMsg = `✅ *SUCCESS: Post is Live!*\n\n📰 *${title}*\n🔗 https://businessbotsuk.com/blog/${slug}\n\n🔍 Google & Bing have been notified.`;
-        await editTelegramMessage(TELEGRAM_BOT_TOKEN, String(callback_chat_id), callback_message_id, successMsg);
-      }
-
-      return new Response(JSON.stringify({
-        success: true,
-        published: true,
-        slug,
-        post_id: callbackPostId,
-      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // ACTION: publish — from Admin UI
+    // ─── ACTION: telegram_callback (from Admin UI fallback) ───
+    if (action === "telegram_callback") {
+      if (!callbackPostId) throw new Error("post_id required");
+      if (String(callback_chat_id) !== TELEGRAM_CHAT_ID) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      const { slug, title } = await publishPost(callbackPostId, SUPABASE_URL, sbHeaders, SUPABASE_SERVICE_ROLE_KEY);
+      if (TELEGRAM_BOT_TOKEN && callback_message_id) {
+        await editTelegramMessage(TELEGRAM_BOT_TOKEN, String(callback_chat_id), callback_message_id, `✅ *SUCCESS: Post is Live!*\n\n📰 *${title}*\n🔗 https://businessbotsuk.com/blog/${slug}\n\n🔍 Google & Bing have been notified.`);
+      }
+      return new Response(JSON.stringify({ success: true, published: true, slug, post_id: callbackPostId }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ─── ACTION: publish (from Admin UI) ───
     if (action === "publish") {
       if (!queue_id) throw new Error("queue_id required for publish");
-
-      const qRes = await fetch(`${SUPABASE_URL}/rest/v1/content_queue?id=eq.${queue_id}&select=*`, { headers: sbHeaders });
-      const qi = (await qRes.json())?.[0];
+      const qi = (await (await fetch(`${SUPABASE_URL}/rest/v1/content_queue?id=eq.${queue_id}&select=*`, { headers: sbHeaders })).json())?.[0];
       if (!qi?.result_post_id) throw new Error("No linked post found");
-
-      await fetch(`${SUPABASE_URL}/rest/v1/blog_posts?id=eq.${qi.result_post_id}`, {
-        method: "PATCH",
-        headers: sbHeaders,
-        body: JSON.stringify({ status: "published", published_at: new Date().toISOString() }),
+      const { slug } = await publishPost(qi.result_post_id, SUPABASE_URL, sbHeaders, SUPABASE_SERVICE_ROLE_KEY);
+      return new Response(JSON.stringify({ success: true, published: true, slug, post_id: qi.result_post_id }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
-
-      const pRes = await fetch(`${SUPABASE_URL}/rest/v1/blog_posts?id=eq.${qi.result_post_id}&select=slug`, { headers: sbHeaders });
-      const slug = (await pRes.json())?.[0]?.slug;
-
-      return new Response(JSON.stringify({
-        success: true,
-        published: true,
-        slug,
-        post_id: qi.result_post_id,
-      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    return new Response(JSON.stringify({ error: "Unknown action. Use: add_to_queue, generate, publish, telegram_callback" }), {
+    return new Response(JSON.stringify({ error: "Unknown action. Use: add_to_queue, generate, publish, telegram_callback, set_webhook" }), {
       status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {

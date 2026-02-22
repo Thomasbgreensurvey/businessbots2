@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Wand2, Rocket, Loader2, Bot, Clock, CheckCircle, Send } from "lucide-react";
+import { Plus, Wand2, Rocket, Loader2, Bot, Clock, CheckCircle, Send, Webhook } from "lucide-react";
 import { toast } from "sonner";
 
 const AGENTS = ["Sprout", "Lilly", "Banjo", "Like", "Zen", "Tobby", "Nano", "Skoot"];
@@ -100,8 +100,34 @@ const AdminQueueTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType
     setPublishing(null);
   };
 
+  const handleSetWebhook = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke("sovereign-blog-engine", {
+        body: { action: "set_webhook" },
+      });
+      if (error) throw error;
+      toast.success("Telegram webhook set successfully!");
+      onAuditLog("set_telegram_webhook", "system", "", data);
+    } catch (e: any) {
+      toast.error(`Webhook setup failed: ${e.message}`);
+    }
+  };
+
   return (
     <div className="space-y-6">
+      {/* Webhook Setup */}
+      <div className="rounded-xl border border-purple-500/20 bg-purple-500/5 p-4 flex items-center justify-between">
+        <div>
+          <h3 className="text-xs font-bold text-purple-400 uppercase tracking-wider flex items-center gap-2">
+            <Webhook className="w-3.5 h-3.5" /> Telegram Remote Control
+          </h3>
+          <p className="text-white/40 text-xs mt-1">One-time setup: connect inline button callbacks to this engine.</p>
+        </div>
+        <Button onClick={handleSetWebhook} size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs">
+          Set Webhook
+        </Button>
+      </div>
+
       {/* Add Topic */}
       <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 space-y-3">
         <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
