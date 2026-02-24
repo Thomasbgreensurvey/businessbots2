@@ -80,6 +80,29 @@
   }
 }
 
+/* Force all blog article text white on dark bg — overrides inline gray classes from AI-generated HTML */
+.blog-dark-override h1,
+.blog-dark-override h2,
+.blog-dark-override h3,
+.blog-dark-override h4,
+.blog-dark-override h5,
+.blog-dark-override h6,
+.blog-dark-override p,
+.blog-dark-override li,
+.blog-dark-override td,
+.blog-dark-override th,
+.blog-dark-override span,
+.blog-dark-override blockquote,
+.blog-dark-override strong,
+.blog-dark-override em,
+.blog-dark-override div {
+  color: white !important;
+}
+
+.blog-dark-override a {
+  color: #60a5fa !important;
+}
+
 @layer utilities {
   /* Agent gradient backgrounds - warm, vibrant */
   .bg-agent-emerald {
