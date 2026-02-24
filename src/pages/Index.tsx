@@ -595,7 +595,7 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="rounded-3xl overflow-hidden relative"
+            className="rounded-3xl overflow-hidden"
           >
             <OptimizedImage 
               src={botsPair} 
@@ -604,8 +604,6 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
               width={896}
               height={504}
             />
-            {/* Bottom-right corner mask to hide watermark */}
-            <div className="absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-tl from-black via-black/80 to-transparent pointer-events-none" />
           </motion.div>
           
           {/* CTA after image */}
