@@ -212,7 +212,7 @@ const GetStarted = () => {
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#4B5FD1] focus:ring-2 focus:ring-[#4B5FD1]/20 transition-all"
-                placeholder="+44 191 673 3290"
+                placeholder="+44 800 654 6949"
               />
             </div>
 
