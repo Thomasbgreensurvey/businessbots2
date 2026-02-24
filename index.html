@@ -100,25 +100,8 @@
     <meta name="application-name" content="Business Bots UK" />
     <meta name="format-detection" content="telephone=yes" />
     
-    <!-- Preload critical agent images for faster LCP -->
+    <!-- Preload only the first hero agent image for faster LCP -->
     <link rel="preload" as="image" href="/src/assets/agents/sprout-new.png" fetchpriority="high" />
-    <link rel="preload" as="image" href="/src/assets/agents/lilly.png" fetchpriority="high" />
-    <link rel="preload" as="image" href="/src/assets/agents/like-new.png" fetchpriority="high" />
-    <link rel="preload" as="image" href="/src/assets/agents/banjo-new.png" fetchpriority="high" />
-    <link rel="preload" as="image" href="/src/assets/agents/zen-new.png" />
-    <link rel="preload" as="image" href="/src/assets/agents/tobby-new.png" />
-    <link rel="preload" as="image" href="/src/assets/agents/nano-new.png" />
-    <link rel="preload" as="image" href="/src/assets/agents/skoot-new.png" />
-    
-    <!-- Preload secondary agent images -->
-    <link rel="preload" as="image" href="/src/assets/agents/sprout-tablet.png" />
-    <link rel="preload" as="image" href="/src/assets/agents/like-phone.jpeg" />
-    <link rel="preload" as="image" href="/src/assets/agents/tobby-hand.jpeg" />
-    <link rel="preload" as="image" href="/src/assets/agents/zen-phone.jpeg" />
-    <link rel="preload" as="image" href="/src/assets/agents/nano-headset.png" />
-    <link rel="preload" as="image" href="/src/assets/agents/lilly-headset.jpeg" />
-    <link rel="preload" as="image" href="/src/assets/agents/banjo-sweater.jpeg" />
-    <link rel="preload" as="image" href="/src/assets/agents/skoot-tablet.jpeg" />
     
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -127,7 +110,8 @@
     <link rel="preconnect" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Permanent+Marker&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Permanent+Marker&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Permanent+Marker&display=swap" rel="stylesheet" /></noscript>
     
     <!-- Hreflang Tags for International SEO -->
     <link rel="alternate" hreflang="en-GB" href="https://businessbotsuk.com/" />
