@@ -170,7 +170,7 @@ const BlogArticle = () => {
         <div className="max-w-3xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div
-              className="prose prose-lg prose-invert max-w-none prose-headings:text-white prose-p:text-gray-300 prose-p:leading-relaxed prose-a:text-blue-400 prose-strong:text-white prose-li:text-gray-300"
+              className="prose prose-lg prose-invert max-w-none prose-headings:text-white prose-p:text-white prose-p:leading-relaxed prose-a:text-blue-400 prose-strong:text-white prose-li:text-white prose-blockquote:text-white prose-td:text-white prose-th:text-white"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </motion.div>
