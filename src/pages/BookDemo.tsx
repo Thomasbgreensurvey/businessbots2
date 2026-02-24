@@ -372,7 +372,7 @@ const BookDemo = () => {
                     type="tel"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="+44 191 673 3290"
+                    placeholder="+44 800 654 6949"
                     className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-[#4B5FD1] focus:ring-[#4B5FD1]"
                   />
                 </div>
