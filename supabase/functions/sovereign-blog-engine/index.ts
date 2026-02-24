@@ -127,6 +127,7 @@ STRICT RULES:
 - Feature the AI employee "${agentName}" as the hero of the piece — reference their capabilities naturally.
 - Reference other Business Bots UK agents (Sprout, Lilly, Banjo, Timi, Like, Tobby, Nano, Skoot) where relevant.
 - Do NOT include a CTA at the end — it will be appended automatically.
+- ABSOLUTELY NO <img> tags anywhere in the output. The featured image is handled separately. Never generate image URLs or placeholder images.
 - No AI-isms: never use "game-changer", "revolutionize", "leverage", "delve", "In today's fast-paced world".`;
 }
 
@@ -168,6 +169,8 @@ Beta Keywords to weave in: ${BETA_KEYWORDS.join(", ")}`;
   }
 
   let contentHtml = (await aiRes.json()).choices?.[0]?.message?.content || "";
+  // Strip any <img> tags the AI may have hallucinated — featured image is handled separately
+  contentHtml = contentHtml.replace(/<img[^>]*>/gi, "");
   // Append the mandatory Next Steps CTA block
   contentHtml += `\n${NEXT_STEPS_CTA}`;
 
