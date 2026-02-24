@@ -106,7 +106,7 @@ const Blog = () => {
           transition={{ delay: 0.3 }}
           className="max-w-4xl mx-auto"
         >
-          <div className="rounded-2xl overflow-hidden shadow-xl">
+          <div className="rounded-2xl overflow-hidden shadow-xl relative">
             <OptimizedImage 
               src={blogStudio}
               alt="Business Bots UK studio with AI assistants"
@@ -114,6 +114,8 @@ const Blog = () => {
               width={896}
               height={504}
             />
+            {/* Bottom-right corner mask to hide watermark */}
+            <div className="absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-tl from-black via-black/80 to-transparent pointer-events-none" />
           </div>
         </motion.div>
       </section>
