@@ -25,15 +25,26 @@ const BRAND_PHRASES = [
 ];
 const BETA_KEYWORDS = [
   "AI marketing for my business",
-  "automated AI lead generation",
-  "AI strategy for UK SMEs",
+  "AI automation Newcastle",
+  "UK SME AI strategy",
 ];
-const NEXT_STEPS_CTA = `<div class="mt-12 p-8 bg-gradient-to-r from-emerald-50 to-cyan-50 rounded-2xl border border-emerald-200">
-  <h3 class="text-2xl font-bold text-gray-900 mb-4">🚀 Next Steps</h3>
-  <p class="text-lg text-gray-700 leading-relaxed mb-4">Ready to transform your business with intelligent AI automation? Our team of AI employees is standing by to supercharge your lead generation, customer service, and marketing operations.</p>
-  <p class="text-lg text-gray-700 leading-relaxed"><strong><a href="https://businessbotsuk.com" class="text-emerald-600 hover:text-emerald-700 underline">Visit BusinessBotsUK.com to automate your lead flow today.</a></strong></p>
+const FREEPHONE = "0800 654 6949";
+const CONTACT_CTA = `<div class="mt-12 p-8 bg-gradient-to-r from-emerald-50 to-cyan-50 rounded-2xl border border-emerald-200">
+  <h3 class="text-2xl font-bold text-gray-900 mb-4">📞 Contact the Experts</h3>
+  <p class="text-lg text-gray-700 leading-relaxed mb-4">Ready to transform your business with AI? Call Business Bots UK on our freephone number: <strong><a href="tel:08006546949" class="text-emerald-600 hover:text-emerald-700 underline">${FREEPHONE}</a></strong> or visit <strong><a href="https://businessbotsuk.com" class="text-emerald-600 hover:text-emerald-700 underline">BusinessBotsUK.com</a></strong>.</p>
   <p class="mt-4"><a href="/book-demo" class="inline-block bg-emerald-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-emerald-700 transition-colors">Book Your Free Demo →</a></p>
 </div>`;
+// Quick Facts box — injected at the TOP of every post
+function buildQuickFactsBox(topic: string, agentName: string): string {
+  return `<div class="mb-10 p-6 bg-blue-50 rounded-2xl border border-blue-200">
+  <h3 class="text-xl font-bold text-gray-900 mb-3">📋 Quick Facts</h3>
+  <ul class="text-gray-700 text-lg leading-relaxed space-y-2">
+    <li>📞 <strong>Freephone:</strong> <a href="tel:08006546949" class="text-blue-600 hover:text-blue-700 underline">${FREEPHONE}</a></li>
+    <li>🌐 <strong>Website:</strong> <a href="https://businessbotsuk.com" class="text-blue-600 hover:text-blue-700 underline">BusinessBotsUK.com</a> — AI Solutions for Businesses</li>
+    <li>🤖 <strong>Featured AI Employee:</strong> ${agentName}</li>
+  </ul>
+</div>`;
+}
 
 function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -118,6 +129,10 @@ SEO BETA KEYWORDS — MANDATORY:
   ${BETA_KEYWORDS.map(k => `• "${k}"`).join("\n  ")}
 - Use variations and long-tail forms of these keywords for semantic depth.
 
+CONTACT INTEGRATION — MANDATORY:
+- Mention the freephone number ${FREEPHONE} at least once naturally within the article body (not just in the CTA).
+- Reference BusinessBotsUK.com as the go-to resource for AI automation.
+
 STRICT RULES:
 - Return ONLY raw HTML with Tailwind CSS classes. Zero markdown (no ###, ---, >, **, \`\`\`).
 - Write ${wordCount} words minimum of rich, authoritative prose.
@@ -171,8 +186,10 @@ Beta Keywords to weave in: ${BETA_KEYWORDS.join(", ")}`;
   let contentHtml = (await aiRes.json()).choices?.[0]?.message?.content || "";
   // Strip any <img> tags the AI may have hallucinated — featured image is handled separately
   contentHtml = contentHtml.replace(/<img[^>]*>/gi, "");
-  // Append the mandatory Next Steps CTA block
-  contentHtml += `\n${NEXT_STEPS_CTA}`;
+  // Prepend Quick Facts box for AI crawlers (GEO layer)
+  contentHtml = buildQuickFactsBox(queueItem.topic, agentName) + "\n" + contentHtml;
+  // Append the mandatory Contact the Experts CTA block
+  contentHtml += `\n${CONTACT_CTA}`;
 
   // SEO metadata
   const seoRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
