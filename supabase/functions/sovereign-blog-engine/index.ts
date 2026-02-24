@@ -198,7 +198,7 @@ Beta Keywords to weave in: ${BETA_KEYWORDS.join(", ")}`;
     body: JSON.stringify({
       model: "google/gemini-2.5-flash",
       messages: [
-        { role: "system", content: `You are an SEO specialist for Business Bots UK. Generate metadata as JSON with "title", "description", "keywords". Title <60 chars with primary keyword. Description <155 chars, compelling. Keywords: 5-8 comma-separated, include "${BETA_KEYWORDS[0]}" and "${BETA_KEYWORDS[1]}". Return ONLY raw JSON, no markdown.` },
+        { role: "system", content: `You are an SEO specialist for Business Bots UK. Generate metadata as JSON with "title", "description", "keywords". Title <60 chars with primary keyword. Description <155 chars, compelling — MUST include the freephone number 0800 654 6949. Keywords: 5-8 comma-separated, include "${BETA_KEYWORDS[0]}" and "${BETA_KEYWORDS[1]}". Return ONLY raw JSON, no markdown.` },
         { role: "user", content: `Generate SEO metadata for a blog post titled: "${queueItem.topic}" about AI automation for UK businesses.` },
       ],
     }),
