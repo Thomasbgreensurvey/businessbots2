@@ -103,6 +103,37 @@
   color: #60a5fa !important;
 }
 
+/* Override light-bg CTA boxes baked into AI-generated blog HTML */
+.blog-dark-override [class*="bg-gradient"],
+.blog-dark-override [class*="bg-emerald"],
+.blog-dark-override [class*="bg-cyan"],
+.blog-dark-override [class*="bg-blue"],
+.blog-dark-override [class*="bg-amber"],
+.blog-dark-override [class*="bg-gray-5"],
+.blog-dark-override [class*="bg-gray-1"],
+.blog-dark-override [class*="bg-white"],
+.blog-dark-override [class*="from-emerald"],
+.blog-dark-override [class*="from-cyan"],
+.blog-dark-override [class*="from-blue"],
+.blog-dark-override [class*="from-amber"] {
+  background: hsl(0 0% 10%) !important;
+  border-color: hsl(0 0% 20%) !important;
+}
+
+.blog-dark-override [class*="text-emerald"],
+.blog-dark-override [class*="text-cyan"],
+.blog-dark-override [class*="text-blue-6"],
+.blog-dark-override [class*="text-blue-7"],
+.blog-dark-override [class*="text-gray-9"],
+.blog-dark-override [class*="text-gray-8"] {
+  color: #60a5fa !important;
+}
+
+.blog-dark-override [class*="bg-emerald-6"] {
+  background: #3b82f6 !important;
+  color: white !important;
+}
+
 @layer utilities {
   /* Agent gradient backgrounds - warm, vibrant */
   .bg-agent-emerald {
