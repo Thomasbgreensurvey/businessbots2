@@ -18,6 +18,23 @@ const DEFAULT_IMAGE = "/brand-logo.png";
 
 const PREVIEW_SECRET = "sov-exec-preview-2026";
 
+// ─── BRAND SQUEEZE CONSTANTS ───
+const BRAND_PHRASES = [
+  "Business Bots UK - AI solutions for businesses",
+  "BusinessBotsUK.com - AI Solutions",
+];
+const BETA_KEYWORDS = [
+  "AI marketing for my business",
+  "automated AI lead generation",
+  "AI strategy for UK SMEs",
+];
+const NEXT_STEPS_CTA = `<div class="mt-12 p-8 bg-gradient-to-r from-emerald-50 to-cyan-50 rounded-2xl border border-emerald-200">
+  <h3 class="text-2xl font-bold text-gray-900 mb-4">🚀 Next Steps</h3>
+  <p class="text-lg text-gray-700 leading-relaxed mb-4">Ready to transform your business with intelligent AI automation? Our team of AI employees is standing by to supercharge your lead generation, customer service, and marketing operations.</p>
+  <p class="text-lg text-gray-700 leading-relaxed"><strong><a href="https://businessbotsuk.com" class="text-emerald-600 hover:text-emerald-700 underline">Visit BusinessBotsUK.com to automate your lead flow today.</a></strong></p>
+  <p class="mt-4"><a href="/book-demo" class="inline-block bg-emerald-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-emerald-700 transition-colors">Book Your Free Demo →</a></p>
+</div>`;
+
 function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
@@ -84,6 +101,127 @@ async function publishPost(postId: string, sbUrl: string, sbHeaders: Record<stri
   return { slug, title };
 }
 
+// ─── Build the brand-infused system prompt ───
+function buildSystemPrompt(agentName: string, wordCount: number = 1500): string {
+  return `You are a senior content strategist for Business Bots UK, an AI automation agency headquartered in Newcastle upon Tyne, North East England.
+
+VOICE: Premium Newcastle Consultant — authoritative, warm, commercially sharp. You sound like a trusted advisor who's closed seven-figure deals over a flat white at the Quayside.
+
+BRAND SQUEEZE — MANDATORY:
+- You MUST naturally integrate EACH of the following phrases at least TWICE in the article:
+  1. "${BRAND_PHRASES[0]}"
+  2. "${BRAND_PHRASES[1]}"
+- Weave them into headings, body paragraphs, and the conclusion so they read naturally — not forced.
+
+SEO BETA KEYWORDS — MANDATORY:
+- Naturally integrate these high-intent keywords throughout the article:
+  ${BETA_KEYWORDS.map(k => `• "${k}"`).join("\n  ")}
+- Use variations and long-tail forms of these keywords for semantic depth.
+
+STRICT RULES:
+- Return ONLY raw HTML with Tailwind CSS classes. Zero markdown (no ###, ---, >, **, \`\`\`).
+- Write ${wordCount} words minimum of rich, authoritative prose.
+- Use <h2>, <h3>, <p>, <ul>, <ol>, <li>, <blockquote>, <strong>, <em> tags.
+- Apply Tailwind: text-gray-700, text-lg, leading-relaxed, mb-6, font-bold, text-2xl, text-xl, etc.
+- Naturally weave in Newcastle landmarks: Quayside, Team Valley Trading Estate, Cobalt Park, Newcastle Helix, The Catalyst, Baltic Quarter.
+- Feature the AI employee "${agentName}" as the hero of the piece — reference their capabilities naturally.
+- Reference other Business Bots UK agents (Sprout, Lilly, Banjo, Timi, Like, Tobby, Nano, Skoot) where relevant.
+- Do NOT include a CTA at the end — it will be appended automatically.
+- No AI-isms: never use "game-changer", "revolutionize", "leverage", "delve", "In today's fast-paced world".`;
+}
+
+// ─── Generate a blog post (shared logic) ───
+async function generateBlogPost(
+  queueItem: any,
+  LOVABLE_API_KEY: string,
+  SUPABASE_URL: string,
+  sbHeaders: Record<string, string>,
+  TELEGRAM_BOT_TOKEN: string,
+  TELEGRAM_CHAT_ID: string,
+  wordCount: number = 1500,
+) {
+  const agentName = queueItem.featured_agent || "Sprout";
+  const agentImage = AGENT_IMAGES[agentName] || DEFAULT_IMAGE;
+
+  const systemPrompt = buildSystemPrompt(agentName, wordCount);
+
+  const userPrompt = `Write an authoritative ${wordCount}-word blog post on the topic: "${queueItem.topic}"
+
+Featured AI Employee: ${agentName}
+Target audience: UK SMEs and enterprise decision-makers considering AI automation.
+SEO focus: Include natural keyword variations for "${queueItem.topic}" throughout.
+Beta Keywords to weave in: ${BETA_KEYWORDS.join(", ")}`;
+
+  const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "google/gemini-2.5-flash",
+      messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
+    }),
+  });
+
+  if (!aiRes.ok) {
+    if (aiRes.status === 429) throw new Error("Rate limited — try again shortly.");
+    if (aiRes.status === 402) throw new Error("AI credits exhausted.");
+    throw new Error(`AI gateway error ${aiRes.status}: ${(await aiRes.text()).slice(0, 200)}`);
+  }
+
+  let contentHtml = (await aiRes.json()).choices?.[0]?.message?.content || "";
+  // Append the mandatory Next Steps CTA block
+  contentHtml += `\n${NEXT_STEPS_CTA}`;
+
+  // SEO metadata
+  const seoRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "google/gemini-2.5-flash",
+      messages: [
+        { role: "system", content: `You are an SEO specialist for Business Bots UK. Generate metadata as JSON with "title", "description", "keywords". Title <60 chars with primary keyword. Description <155 chars, compelling. Keywords: 5-8 comma-separated, include "${BETA_KEYWORDS[0]}" and "${BETA_KEYWORDS[1]}". Return ONLY raw JSON, no markdown.` },
+        { role: "user", content: `Generate SEO metadata for a blog post titled: "${queueItem.topic}" about AI automation for UK businesses.` },
+      ],
+    }),
+  });
+
+  let seoMeta = { title: queueItem.topic, description: "", keywords: BETA_KEYWORDS.join(", ") };
+  if (seoRes.ok) {
+    try { seoMeta = { ...seoMeta, ...JSON.parse((await seoRes.json()).choices?.[0]?.message?.content?.replace(/```json\n?|\n?```/g, "").trim()) }; } catch { /* defaults */ }
+  } else { await seoRes.text(); }
+
+  const slug = slugify(queueItem.topic);
+  const excerpt = seoMeta.description || queueItem.topic;
+
+  const postRes = await fetch(`${SUPABASE_URL}/rest/v1/blog_posts`, {
+    method: "POST", headers: sbHeaders,
+    body: JSON.stringify({ title: queueItem.topic, slug, content: contentHtml, excerpt, featured_image: agentImage, status: "draft" }),
+  });
+  const postId = (await postRes.json())?.[0]?.id;
+
+  await fetch(`${SUPABASE_URL}/rest/v1/seo_metadata`, {
+    method: "POST",
+    headers: { ...sbHeaders, Prefer: "resolution=merge-duplicates,return=representation" },
+    body: JSON.stringify({ page_path: `/blog/${slug}`, title: seoMeta.title, description: seoMeta.description, keywords: seoMeta.keywords, og_image: "https://businessbotsuk.com/og-image.png" }),
+  });
+
+  await fetch(`${SUPABASE_URL}/rest/v1/content_queue?id=eq.${queueItem.id}`, {
+    method: "PATCH", headers: sbHeaders,
+    body: JSON.stringify({ status: "completed", completed_at: new Date().toISOString(), result_post_id: postId }),
+  });
+
+  // Telegram notification
+  if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
+    const previewUrl = `https://businessbotsuk.com/preview/${slug}?token=${PREVIEW_SECRET}`;
+    const msg = `🚀 *New AI Draft Ready:* ${queueItem.topic}\n\n🤖 *Agent:* ${agentName}\n📊 *SEO Score:* 100/100\n🏷️ *Brand Squeeze:* ✅ Active\n📈 *Beta Keywords:* ${BETA_KEYWORDS.length} injected\n\n📝 Tap below to preview or publish instantly.`;
+    await sendTelegramWithButtons(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, msg, [
+      [{ text: "📖 View Mobile Draft", url: previewUrl }],
+      [{ text: "🚀 Publish & Ping", callback_data: `publish:${postId}` }],
+    ]);
+  }
+
+  return { post_id: postId, slug, agent: agentName, seo: seoMeta };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -107,14 +245,12 @@ Deno.serve(async (req) => {
     // ─── TELEGRAM WEBHOOK UPDATE (callback_query from inline button) ───
     if (body.callback_query) {
       const cq = body.callback_query;
-      const data = cq.data as string; // e.g. "publish:<post_id>"
+      const data = cq.data as string;
       const chatId = String(cq.message?.chat?.id);
       const messageId = cq.message?.message_id;
 
-      // Acknowledge immediately so Telegram stops the spinner
       await answerCallbackQuery(TELEGRAM_BOT_TOKEN, cq.id, "🚀 Publishing...");
 
-      // Security: verify chat ID
       if (chatId !== TELEGRAM_CHAT_ID) {
         return new Response("OK", { headers: corsHeaders });
       }
@@ -123,7 +259,7 @@ Deno.serve(async (req) => {
         const postId = data.replace("publish:", "");
         const { slug, title } = await publishPost(postId, SUPABASE_URL, sbHeaders, SUPABASE_SERVICE_ROLE_KEY);
 
-        const successMsg = `✅ *SUCCESS: Post is Live!*\n\n📰 *${title}*\n🔗 https://businessbotsuk.com/blog/${slug}\n\n🔍 Google & Bing have been notified.`;
+        const successMsg = `✅ *SUCCESS: Post is Live!*\n\n📰 *${title}*\n🔗 https://businessbotsuk.com/blog/${slug}\n\n🔍 Google & Bing have been notified.\n🏷️ Brand Squeeze: Active`;
         await editTelegramMessage(TELEGRAM_BOT_TOKEN, chatId, messageId, successMsg);
       }
 
@@ -179,95 +315,33 @@ Deno.serve(async (req) => {
         });
       }
 
-      const agentName = queueItem.featured_agent || "Sprout";
-      const agentImage = AGENT_IMAGES[agentName] || DEFAULT_IMAGE;
-
-      const systemPrompt = `You are a senior content strategist for Business Bots UK, an AI automation agency headquartered in Newcastle upon Tyne, North East England.
-
-VOICE: Premium Newcastle Consultant — authoritative, warm, commercially sharp. You sound like a trusted advisor who's closed seven-figure deals over a flat white at the Quayside.
-
-STRICT RULES:
-- Return ONLY raw HTML with Tailwind CSS classes. Zero markdown (no ###, ---, >, **, \`\`\`).
-- Write 1,500 words minimum of rich, authoritative prose.
-- Use <h2>, <h3>, <p>, <ul>, <ol>, <li>, <blockquote>, <strong>, <em> tags.
-- Apply Tailwind: text-gray-700, text-lg, leading-relaxed, mb-6, font-bold, text-2xl, text-xl, etc.
-- Naturally weave in Newcastle landmarks: Quayside, Team Valley Trading Estate, Cobalt Park, Newcastle Helix, The Catalyst, Baltic Quarter.
-- Feature the AI employee "${agentName}" as the hero of the piece — reference their capabilities naturally.
-- Reference other Business Bots UK agents (Sprout, Lilly, Banjo, Timi, Like, Tobby, Nano, Skoot) where relevant.
-- End with a compelling CTA linking to /book-demo.
-- No AI-isms: never use "game-changer", "revolutionize", "leverage", "delve", "In today's fast-paced world".`;
-
-      const userPrompt = `Write an authoritative 1,500-word blog post on the topic: "${queueItem.topic}"
-
-Featured AI Employee: ${agentName}
-Target audience: UK SMEs and enterprise decision-makers considering AI automation.
-SEO focus: Include natural keyword variations for "${queueItem.topic}" throughout.`;
-
-      const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "openai/gpt-5",
-          messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
-        }),
+      const result = await generateBlogPost(queueItem, LOVABLE_API_KEY, SUPABASE_URL, sbHeaders, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, 1500);
+      return new Response(JSON.stringify({ success: true, ...result }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
 
-      if (!aiRes.ok) {
-        if (aiRes.status === 429) return new Response(JSON.stringify({ error: "Rate limited." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        if (aiRes.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        throw new Error(`AI gateway error ${aiRes.status}: ${await aiRes.text()}`);
+    // ─── ACTION: force_heartbeat (Quick 1,000-word branded post) ───
+    if (action === "force_heartbeat") {
+      if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+
+      // Pick a random queued topic or use a default heartbeat topic
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/content_queue?status=eq.queued&order=created_at.asc&limit=1`, { headers: sbHeaders });
+      let queueItem = (await res.json())?.[0];
+
+      if (!queueItem) {
+        // Auto-create a heartbeat topic
+        const heartbeatTopic = "Why UK SMEs Are Choosing AI Employees for Lead Generation in 2026";
+        const agent = AGENTS[Math.floor(Math.random() * AGENTS.length)];
+        const createRes = await fetch(`${SUPABASE_URL}/rest/v1/content_queue`, {
+          method: "POST", headers: sbHeaders,
+          body: JSON.stringify({ topic: heartbeatTopic, featured_agent: agent, status: "queued" }),
+        });
+        queueItem = (await createRes.json())?.[0];
       }
 
-      const contentHtml = (await aiRes.json()).choices?.[0]?.message?.content || "";
-
-      const seoRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "openai/gpt-5",
-          messages: [
-            { role: "system", content: `You are an SEO specialist for Business Bots UK. Generate metadata as JSON with "title", "description", "keywords". Title <60 chars with primary keyword. Description <155 chars, compelling. Keywords: 5-8 comma-separated. Return ONLY raw JSON, no markdown.` },
-            { role: "user", content: `Generate SEO metadata for a blog post titled: "${queueItem.topic}" about AI automation for UK businesses.` },
-          ],
-        }),
-      });
-
-      let seoMeta = { title: queueItem.topic, description: "", keywords: "" };
-      if (seoRes.ok) {
-        try { seoMeta = { ...seoMeta, ...JSON.parse((await seoRes.json()).choices?.[0]?.message?.content?.replace(/```json\n?|\n?```/g, "").trim()) }; } catch { /* defaults */ }
-      } else { await seoRes.text(); }
-
-      const slug = slugify(queueItem.topic);
-      const excerpt = seoMeta.description || queueItem.topic;
-
-      const postRes = await fetch(`${SUPABASE_URL}/rest/v1/blog_posts`, {
-        method: "POST", headers: sbHeaders,
-        body: JSON.stringify({ title: queueItem.topic, slug, content: contentHtml, excerpt, featured_image: agentImage, status: "draft" }),
-      });
-      const postId = (await postRes.json())?.[0]?.id;
-
-      await fetch(`${SUPABASE_URL}/rest/v1/seo_metadata`, {
-        method: "POST",
-        headers: { ...sbHeaders, Prefer: "resolution=merge-duplicates,return=representation" },
-        body: JSON.stringify({ page_path: `/blog/${slug}`, title: seoMeta.title, description: seoMeta.description, keywords: seoMeta.keywords, og_image: "https://businessbotsuk.com/og-image.png" }),
-      });
-
-      await fetch(`${SUPABASE_URL}/rest/v1/content_queue?id=eq.${queueItem.id}`, {
-        method: "PATCH", headers: sbHeaders,
-        body: JSON.stringify({ status: "completed", completed_at: new Date().toISOString(), result_post_id: postId }),
-      });
-
-      // Telegram with inline keyboard
-      if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
-        const previewUrl = `https://businessbotsuk.com/preview/${slug}?token=${PREVIEW_SECRET}`;
-        const msg = `🚀 *New AI Draft Ready:* ${queueItem.topic}\n\n🤖 *Agent:* ${agentName}\n📊 *SEO Score:* 100/100\n\n📝 Tap below to preview or publish instantly.`;
-        await sendTelegramWithButtons(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, msg, [
-          [{ text: "📖 View Mobile Draft", url: previewUrl }],
-          [{ text: "🚀 Publish & Ping", callback_data: `publish:${postId}` }],
-        ]);
-      }
-
-      return new Response(JSON.stringify({ success: true, post_id: postId, slug, agent: agentName, seo: seoMeta }), {
+      const result = await generateBlogPost(queueItem, LOVABLE_API_KEY, SUPABASE_URL, sbHeaders, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, 1000);
+      return new Response(JSON.stringify({ success: true, heartbeat: true, ...result }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -302,33 +376,25 @@ SEO focus: Include natural keyword variations for "${queueItem.topic}" throughou
     if (action === "dry_run") {
       const checks: Record<string, any> = { db_topic: false, ai_reachable: false, telegram_ok: false };
 
-      // 1. Can pick a topic from the queue?
       const qRes = await fetch(`${SUPABASE_URL}/rest/v1/content_queue?status=eq.queued&order=created_at.asc&limit=1`, { headers: sbHeaders });
       const qData = await qRes.json();
       checks.db_topic = qData?.length > 0 ? { ok: true, topic: qData[0].topic, agent: qData[0].featured_agent } : { ok: false, reason: "No queued topics" };
 
-      // 2. AI API reachable? (tiny request with fallback models)
       const hasKey = !!LOVABLE_API_KEY;
       if (!hasKey) {
         checks.ai_reachable = { ok: false, error: "LOVABLE_API_KEY is not set in environment" };
       } else {
         const models = ["google/gemini-2.5-flash-lite", "openai/gpt-5-nano"];
-        let aiOk = false;
         for (const model of models) {
           try {
             const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
               method: "POST",
               headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-              body: JSON.stringify({
-                model,
-                messages: [{ role: "user", content: "Reply with only: OK" }],
-                max_tokens: 5,
-              }),
+              body: JSON.stringify({ model, messages: [{ role: "user", content: "Reply with only: OK" }], max_tokens: 5 }),
             });
             const bodyText = await aiRes.text();
             if (aiRes.ok) {
               checks.ai_reachable = { ok: true, status: aiRes.status, model };
-              aiOk = true;
               break;
             } else {
               checks.ai_reachable = { ok: false, status: aiRes.status, model, error: bodyText.slice(0, 300) };
@@ -339,13 +405,12 @@ SEO focus: Include natural keyword variations for "${queueItem.topic}" throughou
         }
       }
 
-      // 3. Telegram bot can send?
       try {
         const aiStatus = checks.ai_reachable.ok
           ? `✅ Reachable (${checks.ai_reachable.model})`
           : `⚠️ Down — ${checks.ai_reachable.status || ""} ${checks.ai_reachable.error?.slice(0, 100) || ""}`;
         const tRes = await sendTelegramWithButtons(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID,
-          `🔧 *Triple-Lock Test — ${new Date().toISOString()}*\n\n${checks.db_topic.ok ? "✅" : "⚠️"} DB Topic: ${checks.db_topic.ok ? checks.db_topic.topic : "None queued"}\n${checks.ai_reachable.ok ? "✅" : "⚠️"} AI Gateway: ${aiStatus}\n✅ Telegram: Connected\n\n_${checks.ai_reachable.ok && checks.db_topic.ok ? "Sovereign Engine is operational." : "Some checks need attention."}_`,
+          `🔧 *Triple-Lock Test — ${new Date().toISOString()}*\n\n${checks.db_topic.ok ? "✅" : "⚠️"} DB Topic: ${checks.db_topic.ok ? checks.db_topic.topic : "None queued"}\n${checks.ai_reachable.ok ? "✅" : "⚠️"} AI Gateway: ${aiStatus}\n✅ Telegram: Connected\n⏰ Schedule: Every 6 hours\n🏷️ Brand Squeeze: Active\n\n_${checks.ai_reachable.ok && checks.db_topic.ok ? "Sovereign Engine is operational." : "Some checks need attention."}_`,
           [[{ text: "🏠 Open Admin", url: "https://businessbotsuk.com/admin" }]]
         );
         checks.telegram_ok = tRes.ok ? { ok: true } : { ok: false, status: tRes.status };

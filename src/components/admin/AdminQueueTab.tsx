@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Wand2, Rocket, Loader2, Bot, Clock, CheckCircle, Send, Webhook, Zap, BarChart3, Layers, FileCheck, TrendingUp, Activity } from "lucide-react";
+import { Plus, Wand2, Rocket, Loader2, Bot, Clock, CheckCircle, Send, Webhook, Zap, BarChart3, Layers, FileCheck, TrendingUp, Activity, Heart } from "lucide-react";
 import { toast } from "sonner";
 
 const AGENTS = ["Sprout", "Lilly", "Banjo", "Like", "Zen", "Tobby", "Nano", "Skoot"];
@@ -34,6 +34,7 @@ const AdminQueueTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType
   const [generating, setGenerating] = useState<string | null>(null);
   const [publishing, setPublishing] = useState<string | null>(null);
   const [testingCron, setTestingCron] = useState(false);
+  const [forcingHeartbeat, setForcingHeartbeat] = useState(false);
   const [stats, setStats] = useState<DashboardStats>({ totalPublished: 0, inQueue: 0, draftsReady: 0, monthlyMomentum: 0, successRate: 0 });
 
   useEffect(() => { fetchQueue(); fetchStats(); }, []);
@@ -164,6 +165,22 @@ const AdminQueueTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType
     fetchStats();
   };
 
+  const handleForceHeartbeat = async () => {
+    setForcingHeartbeat(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("sovereign-blog-engine", {
+        body: { action: "force_heartbeat" },
+      });
+      if (error) throw error;
+      onAuditLog("force_heartbeat", "system", "", data);
+      toast.success(`🚀 Heartbeat post generated! Agent: ${(data as any)?.agent}. Check Telegram.`);
+      refreshAll();
+    } catch (e: any) {
+      toast.error(`Heartbeat failed: ${e.message}`);
+    }
+    setForcingHeartbeat(false);
+  };
+
   return (
     <div className="space-y-6">
       {/* Performance Dashboard */}
@@ -198,6 +215,10 @@ const AdminQueueTab = ({ onAuditLog }: { onAuditLog: (action: string, entityType
           <Button onClick={handleTestCron} size="sm" disabled={testingCron} className="bg-cyan-600 hover:bg-cyan-700 text-white text-xs">
             {testingCron ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Zap className="w-3.5 h-3.5 mr-1" />}
             Test Cron (Dry Run)
+          </Button>
+          <Button onClick={handleForceHeartbeat} size="sm" disabled={forcingHeartbeat} className="bg-rose-600 hover:bg-rose-700 text-white text-xs">
+            {forcingHeartbeat ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Heart className="w-3.5 h-3.5 mr-1" />}
+            🚀 Force Heartbeat Now
           </Button>
         </div>
       </div>
