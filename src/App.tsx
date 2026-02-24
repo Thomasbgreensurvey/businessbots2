@@ -25,6 +25,8 @@ import Connect from "./pages/Connect";
 import SEOAudit from "./pages/SEOAudit";
 import Admin from "./pages/Admin";
 import PreviewArticle from "./pages/PreviewArticle";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +68,8 @@ const App = () => {
             <Route path="/seo-audit" element={<SEOAudit />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/preview/:slug" element={<PreviewArticle />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<Terms />} />
             {/* Redirects for old/indexed URLs to prevent 404s */}
             <Route path="/product-help" element={<Navigate to="/help-centre" replace />} />
             <Route path="/product-help/*" element={<Navigate to="/help-centre" replace />} />
