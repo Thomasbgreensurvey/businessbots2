@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { preloadAgentImages } from "@/data/agents";
+
 import Chatbot from "@/components/Chatbot";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -28,9 +28,6 @@ import PreviewArticle from "./pages/PreviewArticle";
 
 const queryClient = new QueryClient();
 
-// Preload agent images immediately
-preloadAgentImages();
-
 const App = () => {
   useEffect(() => {
     // 301-equivalent: redirect .lovable.app subdomain to live domain
@@ -38,7 +35,6 @@ const App = () => {
       window.location.replace("https://businessbotsuk.com" + window.location.pathname + window.location.search);
       return;
     }
-    preloadAgentImages();
   }, []);
 
   return (

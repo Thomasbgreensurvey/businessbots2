@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { agents, Agent } from "@/data/agents";
+import { agents, Agent, preloadAgentImages } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
 import { SideNav } from "@/components/SideNav";
 import { Menu, Clock, Globe, Zap, Brain, FolderOpen, MessageCircle, ChevronLeft, ChevronRight, Phone, Calendar, CreditCard } from "lucide-react";
@@ -19,6 +19,12 @@ import SEOSchema from "@/components/SEOSchema";
 const Index = () => {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isNavOpen, setIsNavOpen] = useState(false);
+
+  // Defer-load remaining agent images after initial paint
+  useEffect(() => {
+    const timer = setTimeout(() => preloadAgentImages(), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background overflow-hidden">
