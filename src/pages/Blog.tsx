@@ -44,35 +44,35 @@ const Blog = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen bg-black overflow-x-hidden">
       {/* Header */}
       <motion.header 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100"
+        className="sticky top-0 z-40 bg-black/95 backdrop-blur-md border-b border-white/10"
       >
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <motion.button
             whileHover={{ x: -3 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="font-medium">Back</span>
           </motion.button>
-          <h1 className="text-xl font-bold text-gray-900">Blog</h1>
+          <h1 className="text-xl font-bold text-white">Blog</h1>
           <div className="w-16" />
         </div>
       </motion.header>
 
       {/* Hero */}
-      <section className="py-16 md:py-24 px-4 bg-white">
+      <section className="py-16 md:py-24 px-4 bg-black">
         <div className="max-w-4xl mx-auto text-center">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-block px-4 py-2 rounded-full text-sm font-medium mb-6 bg-gray-100 text-gray-700"
+            className="inline-block px-4 py-2 rounded-full text-sm font-medium mb-6 bg-white/10 text-gray-300"
           >
             Latest Insights
           </motion.span>
@@ -80,7 +80,7 @@ const Blog = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6"
           >
             Business Bots{" "}
             <span className="font-dancing-script italic" style={{ color: SKOOL_BLUE }}>
@@ -91,7 +91,7 @@ const Blog = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto"
+            className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto"
           >
             Insights, tips, and stories about AI employees and business automation
           </motion.p>
@@ -120,7 +120,7 @@ const Blog = () => {
 
       {/* Divider */}
       <div className="max-w-5xl mx-auto px-4">
-        <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+        <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
       </div>
 
       {/* Blog Posts */}
@@ -146,7 +146,7 @@ const Blog = () => {
                   whileHover={{ y: -4 }}
                   whileTap={{ scale: 0.99 }}
                   onClick={() => handlePostClick(post.slug)}
-                  className="group p-6 md:p-8 rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-300 cursor-pointer bg-white"
+                  className="group p-6 md:p-8 rounded-2xl border border-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-white/5 transition-all duration-300 cursor-pointer bg-white/5"
                 >
                   <div className="flex flex-wrap items-center gap-3 mb-4">
                     {(post as any).blog_categories?.name && (
@@ -158,16 +158,16 @@ const Blog = () => {
                       </span>
                     )}
                     {post.published_at && (
-                      <span className="text-gray-400 text-sm">
+                      <span className="text-gray-500 text-sm">
                         {format(new Date(post.published_at), "MMM d, yyyy")}
                       </span>
                     )}
                   </div>
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-[#4B5FD1] transition-colors">
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-3 group-hover:text-[#4B5FD1] transition-colors">
                     {post.title}
                   </h3>
                   {post.excerpt && (
-                    <p className="text-gray-600 mb-4 leading-relaxed">{post.excerpt}</p>
+                    <p className="text-gray-400 mb-4 leading-relaxed">{post.excerpt}</p>
                   )}
                   <span className="font-medium transition-colors" style={{ color: SKOOL_BLUE }}>
                     Read article →
@@ -180,10 +180,10 @@ const Blog = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 border-t border-gray-100">
+      <footer className="py-12 px-4 border-t border-white/10">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-500 text-sm">
-            © 2024 Business Bots UK. All rights reserved.
+            © {new Date().getFullYear()} Business Bots UK. All rights reserved.
           </p>
         </div>
       </footer>
