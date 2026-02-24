@@ -106,11 +106,11 @@ const HomePage = ({ onSelectAgent, onOpenNav }: HomePageProps) => {
           <div className="flex items-center gap-2 md:gap-4">
             {/* Phone Number */}
             <a 
-              href="tel:01916733290"
+              href="tel:08006546949"
               className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:border-white/30 transition-all duration-300"
             >
               <Phone className="w-4 h-4 text-emerald-400" />
-              <span className="text-white font-medium text-xs md:text-sm tracking-wide">0191 673 3290</span>
+              <span className="text-white font-medium text-xs md:text-sm tracking-wide">0800 654 6949</span>
             </a>
             <button 
               onClick={() => {

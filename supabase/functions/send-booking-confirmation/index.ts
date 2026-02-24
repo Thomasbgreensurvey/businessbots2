@@ -73,14 +73,14 @@ const handler = async (req: Request): Promise<Response> => {
               
               <p>One of our team members will reach out shortly to confirm the meeting details and send you a calendar invite.</p>
               
-              <p>If you have any questions in the meantime, feel free to reply to this email or call us at <strong>0191 673 3290</strong>.</p>
+              <p>If you have any questions in the meantime, feel free to reply to this email or call us free on <strong>0800 654 6949</strong>.</p>
               
               <p>We look forward to speaking with you!</p>
               
               <p>Best regards,<br>The Business Bots UK Team</p>
             </div>
             <div class="footer">
-              <p>Business Bots UK | ai@businessbotsuk.com | 0191 673 3290</p>
+              <p>Business Bots UK | ai@businessbotsuk.com | 0800 654 6949</p>
             </div>
           </div>
         </body>

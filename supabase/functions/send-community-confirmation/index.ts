@@ -71,13 +71,13 @@ const handler = async (req: Request): Promise<Response> => {
               
               <p>Click the button above to access our Skool community and start your AI journey today!</p>
               
-              <p>Questions? Reply to this email or call us at <strong>0191 673 3290</strong>.</p>
+              <p>Questions? Reply to this email or call us free on <strong>0800 654 6949</strong>.</p>
               
               <p>Let's transform your future together!</p>
               <p>The Business Bots UK Team</p>
             </div>
             <div class="footer">
-              <p>Business Bots UK | ai@businessbotsuk.com | 0191 673 3290</p>
+              <p>Business Bots UK | ai@businessbotsuk.com | 0800 654 6949</p>
             </div>
           </div>
         </body>

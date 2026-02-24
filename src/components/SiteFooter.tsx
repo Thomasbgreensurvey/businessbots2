@@ -140,8 +140,8 @@ const SiteFooter = () => {
               </p>
               <p className="text-white/50 text-xs mt-1">
                 <strong className="text-white/70">Phone:</strong>{" "}
-                <a href="tel:01916733290" className="hover:text-white transition-colors">
-                  0191 673 3290
+                <a href="tel:08006546949" className="hover:text-white transition-colors">
+                  0800 654 6949
                 </a>{" "}
                 |{" "}
                 <strong className="text-white/70">Email:</strong>{" "}

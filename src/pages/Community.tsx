@@ -665,7 +665,7 @@ const Community = () => {
             © {new Date().getFullYear()} Business Bots UK. All rights reserved.
           </p>
           <p className="text-sm mt-2">
-            ai@businessbotsuk.com | 0191 673 3290
+            ai@businessbotsuk.com | 0800 654 6949
           </p>
         </div>
       </footer>

@@ -171,7 +171,7 @@ const Contact = () => {
           className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-3xl mx-auto mb-8"
         >
           <a
-            href="tel:01916733290"
+            href="tel:08006546949"
             className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors w-full sm:w-auto"
           >
             <div 
@@ -182,7 +182,7 @@ const Contact = () => {
             </div>
             <div className="text-left">
               <p className="text-sm text-gray-500">Call us</p>
-              <p className="font-semibold text-gray-900">0191 673 3290</p>
+              <p className="font-semibold text-gray-900">0800 654 6949</p>
             </div>
           </a>
 
