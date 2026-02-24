@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Radar, RotateCw, Globe, Zap, FileSearch, Loader2, CheckCircle, XCircle, ShieldCheck, ChevronDown } from "lucide-react";
+import { Radar, RotateCw, Globe, Zap, FileSearch, Loader2, CheckCircle, XCircle, ShieldCheck, ChevronDown, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 interface PingResult {
@@ -120,6 +120,38 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
     setActionLoading(null);
   };
 
+  const forceGlobalReIndex = async () => {
+    setActionLoading("global-reindex");
+    try {
+      // Gather ALL published blog slugs
+      const { data: posts } = await supabase.from("blog_posts").select("slug").eq("status", "published");
+      const blogUrls = (posts || []).map((p: any) => `/blog/${p.slug}`);
+      const allUrls = [...SITE_PAGES, ...blogUrls];
+
+      // Fire IndexNow for all URLs
+      const { error: indexError } = await supabase.functions.invoke("ping-search-engines", {
+        body: { action: "indexnow", urls: allUrls },
+      });
+      if (indexError) throw indexError;
+
+      // Also ping Google for the homepage
+      const { error: googleError } = await supabase.functions.invoke("ping-search-engines", {
+        body: { action: "ping_sitemap" },
+      });
+      if (googleError) throw googleError;
+
+      await onAuditLog("global_reindex", "seo", "all_urls", { urlCount: allUrls.length, timestamp: new Date().toISOString() });
+      toast.success(`♻️ Global Re-Index Complete`, {
+        description: `${allUrls.length} URLs submitted to Google & Bing/IndexNow`,
+        duration: 8000,
+      });
+      fetchHistory();
+    } catch (e: any) {
+      toast.error(`Global re-index failed: ${e.message}`);
+    }
+    setActionLoading(null);
+  };
+
   const optimiseContent = async () => {
     setActionLoading("optimise");
     try {
@@ -171,12 +203,13 @@ const AdminSearchForceTab = ({ onAuditLog }: { onAuditLog: (action: string, enti
   return (
     <div className="space-y-6">
       {/* Master Buttons */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         {[
           { key: "scan", label: "Run Full SEO Scan", icon: FileSearch, action: runSEOScan, color: "from-emerald-600 to-emerald-800" },
           { key: "sitemap", label: "Rebuild Sitemap", icon: RotateCw, action: rebuildSitemap, color: "from-blue-600 to-blue-800" },
           { key: "ping", label: "Ping Search Engines", icon: Globe, action: pingEngines, color: "from-purple-600 to-purple-800" },
           { key: "optimise", label: "Optimise All Content", icon: Zap, action: optimiseContent, color: "from-amber-600 to-amber-800" },
+          { key: "global-reindex", label: "♻️ Force Global Re-Index", icon: RefreshCw, action: forceGlobalReIndex, color: "from-red-600 to-red-800" },
         ].map(({ key, label, icon: Icon, action, color }) => (
           <button
             key={key}
