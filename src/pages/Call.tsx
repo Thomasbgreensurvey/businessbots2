@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 
-const PHONE_NUMBER = "01916733290";
-const PHONE_DISPLAY = "0191 673 3290";
+const PHONE_NUMBER = "08006546949";
+const PHONE_DISPLAY = "0800 654 6949";
 
 const Call = () => {
   const [isMobile, setIsMobile] = useState(true);

@@ -311,11 +311,11 @@ const Terms = () => {
                 ai@businessbotsuk.com
               </a>
               <a 
-                href="tel:01916733290"
+                href="tel:08006546949"
                 className="flex items-center gap-3 text-gray-700 hover:text-gray-900 transition-colors"
               >
                 <Phone className="w-5 h-5" style={{ color: SKOOL_BLUE }} />
-                0191 673 3290
+                0800 654 6949
               </a>
             </div>
             <p className="text-gray-600 leading-relaxed mt-4">

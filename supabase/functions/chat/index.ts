@@ -42,7 +42,7 @@ Business Bots UK provides AI Employees - specialized AI agents designed to handl
 - Most businesses up and running in 24 hours
 
 ## Contact
-- Phone: 0191 673 3290
+- Phone: 0800 654 6949 (Freephone)
 - Email: ai@businessbotsuk.com
 
 ## Your Behavior Guidelines
@@ -52,7 +52,7 @@ Business Bots UK provides AI Employees - specialized AI agents designed to handl
 - Encourage visitors to explore the AI Employees, try the 14-day free trial, or join the free community
 - If they ask about pricing, recommend starting with the 14-day free trial
 - Keep responses brief (2-3 sentences max unless they ask for details)
-- If you don't know something, suggest they contact ai@businessbotsuk.com or call 0191 673 3290`;
+- If you don't know something, suggest they contact ai@businessbotsuk.com or call 0800 654 6949`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {

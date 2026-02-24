@@ -70,12 +70,12 @@ const handler = async (req: Request): Promise<Response> => {
               
               <p>Our team will be in touch within 24 hours to discuss your needs and get you set up with the perfect solution.</p>
               
-              <p>If you have any questions in the meantime, feel free to call us at <strong>0191 673 3290</strong>.</p>
+              <p>If you have any questions in the meantime, feel free to call us free on <strong>0800 654 6949</strong>.</p>
               
               <p>Best regards,<br>The Business Bots UK Team</p>
             </div>
             <div class="footer">
-              <p>Business Bots UK | ai@businessbotsuk.com | 0191 673 3290</p>
+              <p>Business Bots UK | ai@businessbotsuk.com | 0800 654 6949</p>
             </div>
           </div>
         </body>

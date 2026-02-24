@@ -66,12 +66,12 @@ const handler = async (req: Request): Promise<Response> => {
                 <p style="color: #666; font-size: 14px; margin-bottom: 0;"><strong>Best time to contact:</strong> ${bestTimeToContact}</p>
               </div>
               
-              <p>We typically respond within 24 hours. If your matter is urgent, please don't hesitate to call us at <strong>0191 673 3290</strong>.</p>
+              <p>We typically respond within 24 hours. If your matter is urgent, please don't hesitate to call us free on <strong>0800 654 6949</strong>.</p>
               
               <p>Best regards,<br>The Business Bots UK Team</p>
             </div>
             <div class="footer">
-              <p>Business Bots UK | ai@businessbotsuk.com | 0191 673 3290</p>
+              <p>Business Bots UK | ai@businessbotsuk.com | 0800 654 6949</p>
             </div>
           </div>
         </body>

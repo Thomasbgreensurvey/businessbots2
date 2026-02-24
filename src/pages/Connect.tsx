@@ -3,7 +3,7 @@ import { Phone, Mail, Calendar, GraduationCap, Globe, ExternalLink } from "lucid
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 
-const PHONE_NUMBER = "01916733290";
+const PHONE_NUMBER = "08006546949";
 
 const links = [
   {
