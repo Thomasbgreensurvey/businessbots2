@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Lock, ArrowLeft, Radar, Shield, Eye, FileText, TrendingUp, Activity, ListTodo } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -27,8 +27,10 @@ const Admin = () => {
   const navigate = useNavigate();
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
+  const [checking, setChecking] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("queue");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const logAudit = async (action: string, entityType: string, entityId: string, details?: object) => {
     await supabase.from("audit_logs").insert([{
@@ -37,24 +39,28 @@ const Admin = () => {
     }]);
   };
 
-  const handleDigit = (digit: string) => {
-    if (pin.length >= 4) return;
-    const newPin = pin + digit;
-    setPin(newPin);
+  const handleSubmit = async () => {
+    if (!pin || checking) return;
+    setChecking(true);
     setError(false);
-    if (newPin.length === 4) {
-      if (newPin === "1234") {
+    try {
+      const res = await supabase.functions.invoke("verify-admin-pin", {
+        body: { pin },
+      });
+      if (res.data?.success) {
         setAuthenticated(true);
         logAudit("login_success", "admin", "pin");
       } else {
         setError(true);
         logAudit("login_fail", "admin", "pin");
-        setTimeout(() => { setPin(""); setError(false); }, 800);
+        setTimeout(() => { setPin(""); setError(false); }, 1200);
       }
+    } catch {
+      setError(true);
+      setTimeout(() => { setPin(""); setError(false); }, 1200);
     }
+    setChecking(false);
   };
-
-  const handleDelete = () => { setPin((prev) => prev.slice(0, -1)); setError(false); };
 
   if (authenticated) {
     return (
@@ -83,7 +89,7 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* Tabs — sticky on mobile */}
+        {/* Tabs */}
         <div className="border-b border-white/5 px-4 sm:px-6 bg-slate-950/95 backdrop-blur-sm sticky top-0 z-30">
           <div className="max-w-[1600px] mx-auto flex gap-0.5 overflow-x-auto scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
             {TABS.map(({ key, label, icon: Icon }) => (
@@ -116,7 +122,7 @@ const Admin = () => {
     );
   }
 
-  // PIN Screen — slate-950 with emerald accents
+  // PIN Screen — secure text input, no digit hints
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center">
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-8">
@@ -125,29 +131,39 @@ const Admin = () => {
         </div>
         <div className="text-center">
           <h1 className="text-white/60 text-xs font-bold tracking-[0.3em] uppercase">Intelligence Access</h1>
-          <p className="text-white/20 text-[10px] mt-1 uppercase tracking-wider">Enter PIN</p>
+          <p className="text-white/20 text-[10px] mt-1 uppercase tracking-wider">Enter Access Code</p>
         </div>
 
-        <div className="flex gap-3">
-          {[0, 1, 2, 3].map((i) => (
-            <motion.div key={i} animate={error ? { x: [0, -6, 6, -6, 6, 0] } : {}} transition={{ duration: 0.4 }}
-              className={`w-3.5 h-3.5 rounded-full border-2 transition-colors ${
-                error ? "border-red-500 bg-red-500" : i < pin.length ? "border-emerald-400 bg-emerald-400" : "border-white/15 bg-transparent"
-              }`}
-            />
-          ))}
-        </div>
+        <motion.div
+          animate={error ? { x: [0, -6, 6, -6, 6, 0] } : {}}
+          transition={{ duration: 0.4 }}
+          className="w-64"
+        >
+          <input
+            ref={inputRef}
+            type="password"
+            value={pin}
+            onChange={(e) => { setPin(e.target.value); setError(false); }}
+            onKeyDown={(e) => { if (e.key === "Enter") handleSubmit(); }}
+            placeholder="••••••••"
+            autoFocus
+            className={`w-full text-center text-lg tracking-[0.3em] bg-white/[0.03] border ${
+              error ? "border-red-500" : "border-white/10 focus:border-emerald-400/50"
+            } rounded-xl px-4 py-3 text-white placeholder-white/15 outline-none transition-colors`}
+          />
+        </motion.div>
 
-        <div className="grid grid-cols-3 gap-3">
-          {["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "←"].map((key) =>
-            key === "" ? <div key="empty" /> : (
-              <button key={key} onClick={() => (key === "←" ? handleDelete() : handleDigit(key))}
-                className="w-14 h-14 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 text-white text-lg font-medium transition-all flex items-center justify-center active:scale-95">
-                {key}
-              </button>
-            )
-          )}
-        </div>
+        {error && (
+          <p className="text-red-400/60 text-[10px] uppercase tracking-wider">Access denied</p>
+        )}
+
+        <button
+          onClick={handleSubmit}
+          disabled={!pin || checking}
+          className="px-8 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400/60 text-xs uppercase tracking-wider hover:bg-emerald-500/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          {checking ? "Verifying..." : "Authenticate"}
+        </button>
 
         <button onClick={() => navigate("/")} className="text-white/15 text-[10px] hover:text-white/30 transition-colors mt-4 uppercase tracking-wider">
           Back to site
