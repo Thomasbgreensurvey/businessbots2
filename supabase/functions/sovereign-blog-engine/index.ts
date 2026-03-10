@@ -330,9 +330,36 @@ Deno.serve(async (req) => {
       }
 
       if (!queueItem) {
-        return new Response(JSON.stringify({ error: "No queued topics found" }), {
-          status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        // Auto-generate a topic when queue is empty (keeps the cron productive)
+        const autoTopics = [
+          "How AI Chatbots Are Helping Newcastle Businesses Capture More Leads in 2026",
+          "The Complete Guide to AI Automation for North East SMEs",
+          "Why Gateshead Companies Are Replacing Manual Follow-Ups with AI Employees",
+          "AI-Powered Customer Support: How Sunderland Businesses Save 40 Hours a Week",
+          "From Quayside to Global: How AI Marketing Transforms North East Startups",
+          "The Future of Recruitment in Newcastle: AI Screening That Actually Works",
+          "How Team Valley Businesses Use AI to Dominate Local Search Rankings",
+          "Smart Email Campaigns: Why AI Outperforms Manual Marketing for UK SMEs",
+          "The ROI of AI Employees: Real Numbers from North East Business Owners",
+          "Why Every Newcastle Trades Business Needs an AI Booking Assistant",
+          "AI Lead Qualification: How Durham Firms Close 3x More Deals",
+          "The North East AI Revolution: What Smart Business Owners Know That Others Don't",
+          "How AI Automation Helps Northumberland Tourism Businesses Handle Peak Season",
+          "Social Media on Autopilot: How AI Manages Your Brand While You Sleep",
+          "The Ultimate AI Strategy for North East Property Management Companies",
+        ];
+        const randomTopic = autoTopics[Math.floor(Math.random() * autoTopics.length)];
+        const agent = AGENTS[Math.floor(Math.random() * AGENTS.length)];
+        const createRes = await fetch(`${SUPABASE_URL}/rest/v1/content_queue`, {
+          method: "POST", headers: sbHeaders,
+          body: JSON.stringify({ topic: randomTopic, featured_agent: agent, status: "queued" }),
         });
+        queueItem = (await createRes.json())?.[0];
+        if (!queueItem) {
+          return new Response(JSON.stringify({ error: "Failed to auto-create topic" }), {
+            status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
       }
 
       const result = await generateBlogPost(queueItem, LOVABLE_API_KEY, SUPABASE_URL, sbHeaders, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, 1500);
