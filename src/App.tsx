@@ -27,6 +27,7 @@ import Admin from "./pages/Admin";
 import PreviewArticle from "./pages/PreviewArticle";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
+import AutopilotSEO from "./pages/AutopilotSEO";
 
 const queryClient = new QueryClient();
 
