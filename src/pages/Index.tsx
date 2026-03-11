@@ -19,6 +19,16 @@ import SEOSchema from "@/components/SEOSchema";
 const Index = () => {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Intercept Zen clicks to route to Autopilot SEO
+  const handleSelectAgent = useCallback((agent: Agent) => {
+    if (agent.id === "zen") {
+      navigate("/autopilot-seo");
+      return;
+    }
+    setSelectedAgent(agent);
+  }, [navigate]);
 
   // Defer-load remaining agent images after initial paint
   useEffect(() => {
