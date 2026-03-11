@@ -584,10 +584,11 @@ const AutopilotSEO = () => {
                     {/* Cover Image — dynamic from keyword */}
                     <div className="relative h-48 overflow-hidden">
                       <img
-                        src={`https://source.unsplash.com/800x400/?${blog.unsplashQuery}`}
+                        src={`https://loremflickr.com/800/400/${blog.unsplashQuery}`}
                         alt={blog.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
+                        onError={(e) => handleImageError(e, blog.title)}
                       />
                       <div className="absolute top-3 right-3">
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-white border-2" style={{ color: BRAND_EMERALD_DARK, borderColor: "#A7F3D0" }}>
