@@ -58,30 +58,47 @@ serve(async (req) => {
     const metaDesc = extract(/<meta\s+name=["']description["']\s+content=["']([\s\S]*?)["']/i)
       || extract(/<meta\s+content=["']([\s\S]*?)["']\s+name=["']description["']/i);
 
-    // Grab all h1 and h2
+    // Grab all h1, h2, h3
     const headings: string[] = [];
-    const hRe = /<h[12][^>]*>([\s\S]*?)<\/h[12]>/gi;
+    const hRe = /<h[123][^>]*>([\s\S]*?)<\/h[123]>/gi;
     let hMatch;
-    while ((hMatch = hRe.exec(html)) !== null && headings.length < 10) {
+    while ((hMatch = hRe.exec(html)) !== null && headings.length < 15) {
       const clean = hMatch[1].replace(/<[^>]*>/g, "").trim();
       if (clean) headings.push(clean);
     }
 
-    // Grab visible body text (rough)
+    // Extract meta keywords if present
+    const metaKeywords = extract(/<meta\s+name=["']keywords["']\s+content=["']([\s\S]*?)["']/i);
+
+    // Extract link text for additional context
+    const linkTexts: string[] = [];
+    const linkRe = /<a[^>]*>([\s\S]*?)<\/a>/gi;
+    let linkMatch;
+    while ((linkMatch = linkRe.exec(html)) !== null && linkTexts.length < 20) {
+      const clean = linkMatch[1].replace(/<[^>]*>/g, "").trim();
+      if (clean && clean.length > 3 && clean.length < 60) linkTexts.push(clean);
+    }
+
+    // Grab visible body text — increased to 4000 chars for deeper analysis
     const bodyText = html
       .replace(/<script[\s\S]*?<\/script>/gi, "")
       .replace(/<style[\s\S]*?<\/style>/gi, "")
+      .replace(/<nav[\s\S]*?<\/nav>/gi, "")
+      .replace(/<footer[\s\S]*?<\/footer>/gi, "")
       .replace(/<[^>]+>/g, " ")
       .replace(/\s+/g, " ")
       .trim()
-      .slice(0, 2000);
+      .slice(0, 4000);
 
     const scrapedContext = [
+      `URL: ${targetUrl}`,
       `Page Title: ${title}`,
       `Meta Description: ${metaDesc}`,
+      metaKeywords ? `Meta Keywords: ${metaKeywords}` : "",
       `Headings: ${headings.join(" | ")}`,
-      `Body excerpt: ${bodyText.slice(0, 800)}`,
-    ].join("\n");
+      `Navigation/Link Text: ${linkTexts.slice(0, 15).join(" | ")}`,
+      `Body excerpt: ${bodyText.slice(0, 2000)}`,
+    ].filter(Boolean).join("\n");
 
     console.log("Scraped context length:", scrapedContext.length);
 
@@ -97,22 +114,29 @@ serve(async (req) => {
     const systemPrompt = `You are an expert SEO analyst. You will receive scraped data from a website. Analyse it and return a JSON object with EXACTLY this structure (no markdown, no code fences, just raw JSON):
 
 {
-  "industry": "string - the business industry/niche",
+  "industry": "string - the business industry/niche based on ACTUAL page content",
   "seoScore": number (0-100),
-  "summary": "string - 1-2 sentence SEO summary of the site",
-  "keywordsFound": number,
-  "opportunitiesFound": number,
+  "summary": "string - 1-2 sentence SEO summary specifically about THIS website's content and positioning",
+  "keywordsFound": number (must match the length of the keywords array below),
+  "opportunitiesFound": number (must match the length of the keywords array below),
   "keywords": [
     {
       "keyword": "string",
       "volume": number (estimated monthly search volume),
       "opportunity": number (0-100 percentage),
-      "competition": "Low" | "Medium" | "High"
+      "competition": "Low" | "Medium" | "High",
+      "imageQuery": "string - a 2-3 word Unsplash search query for a photo related to this specific keyword"
     }
   ]
 }
 
-Return EXACTLY 5 keyword objects. Base everything on the REAL content of the website - do not invent unrelated keywords. The keywords should be high-intent, commercially relevant terms this business should target. Be realistic with volumes.`;
+CRITICAL RULES:
+1. Return between 4 and 8 keyword objects depending on how rich the site content is. A simple one-page site gets 4; a content-rich site gets 7-8.
+2. EVERY keyword MUST be directly derived from the ACTUAL content, products, services, or topics found on the website. Do NOT invent unrelated keywords.
+3. DYNAMIC ENTROPY: Every keyword MUST have a DIFFERENT opportunity score AND a DIFFERENT volume number. Never repeat the same values. Spread volumes realistically from hundreds to tens of thousands.
+4. The "imageQuery" for each keyword must describe a REAL photo related to that keyword (e.g., for "running shoes" use "running shoes closeup", for "travel agent" use "travel booking office"). Never use generic tech/AI imagery unless the site is actually about AI.
+5. The industry, summary, and keywords must ALL reflect the SAME business. If the site sells shoes, everything must be about shoes.
+6. The seoScore should reflect actual SEO quality signals: does it have a good title, meta description, headings structure, content depth?`;
 
     const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -157,7 +181,11 @@ Return EXACTLY 5 keyword objects. Base everything on the REAL content of the web
       });
     }
 
-    console.log("Analysis complete for:", targetUrl, "Industry:", analysis.industry);
+    // Ensure counts match actual arrays
+    analysis.keywordsFound = analysis.keywords?.length || 0;
+    analysis.opportunitiesFound = analysis.keywords?.length || 0;
+
+    console.log("Analysis complete for:", targetUrl, "Industry:", analysis.industry, "Keywords:", analysis.keywordsFound);
 
     return new Response(
       JSON.stringify({ success: true, data: analysis }),

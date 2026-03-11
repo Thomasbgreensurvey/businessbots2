@@ -1,21 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Search, Globe, Sparkles, Zap, CheckCircle2,
   BarChart3, TrendingUp, Tag, AlertCircle, Loader2,
-  Target, Activity, ArrowUpRight, FileText, Lock, Pencil, Eye
+  Target, Activity, ArrowUpRight, FileText, Lock, Pencil, Eye, Calendar
 } from "lucide-react";
 import OptimizedImage from "@/components/OptimizedImage";
 import zenImg from "@/assets/agents/zen-new.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+/* ── Brand color ── */
+const BRAND_BLUE = "#0066FF";
+const BRAND_BLUE_DARK = "#0052CC";
+const BRAND_BLUE_LIGHT = "#E6F0FF";
+const BRAND_BLUE_BORDER = "#99C2FF";
+const BRAND_EMERALD = "#10B981";
+const BRAND_EMERALD_DARK = "#059669";
+
 interface KeywordResult {
   keyword: string;
   volume: number;
   opportunity: number;
   competition: "Low" | "Medium" | "High";
+  imageQuery?: string;
 }
 
 interface ScanResult {
@@ -76,46 +85,34 @@ const initialCms = [
   { name: "Webflow", icon: WebflowIcon, color: "#4353FF", connected: false },
 ];
 
-const mockBlogs = [
-  {
-    title: "How AI Chatbots Are Transforming Customer Support in 2025",
-    excerpt: "Discover why 78% of businesses now use AI-powered customer service to reduce costs and boost satisfaction rates.",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=90",
-    seoScore: 96, words: 1450, keywords: 5,
-  },
-  {
-    title: "The Complete Guide to Marketing Automation for Small Businesses",
-    excerpt: "Learn how to set up automated email sequences, social media posting, and lead nurturing that works 24/7.",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=90",
-    seoScore: 92, words: 1280, keywords: 4,
-  },
-  {
-    title: "SEO in 2025: Why Content Quality Beats Keyword Stuffing",
-    excerpt: "Google's latest algorithm update rewards depth and expertise. Here's how to adapt your content strategy.",
-    image: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&q=90",
-    seoScore: 98, words: 1620, keywords: 6,
-  },
-  {
-    title: "5 Ways AI Employees Can Scale Your Agency Without Hiring",
-    excerpt: "From content creation to client reporting, AI employees handle repetitive tasks so your team can focus on strategy.",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=90",
-    seoScore: 94, words: 1350, keywords: 5,
-  },
-  {
-    title: "Local SEO Strategies That Actually Drive Foot Traffic",
-    excerpt: "Ranking in the map pack isn't enough. These advanced local tactics convert searchers into customers.",
-    image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=90",
-    seoScore: 91, words: 1180, keywords: 4,
-  },
-  {
-    title: "Why Every Business Needs an AI Content Engine in 2025",
-    excerpt: "Stop paying freelancers per article. An automated content pipeline delivers consistent, optimised posts daily.",
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=90",
-    seoScore: 95, words: 1520, keywords: 6,
-  },
+const deepShadow = "shadow-[0_20px_50px_rgba(0,0,0,0.1)]";
+
+/* ── Generate blog titles from keywords ── */
+const blogTitleTemplates = [
+  (kw: string) => `The Complete Guide to ${kw}: What You Need to Know in 2025`,
+  (kw: string) => `How ${kw} Can Transform Your Business Growth`,
+  (kw: string) => `${kw}: Top Strategies That Actually Drive Results`,
+  (kw: string) => `Why ${kw} Matters More Than Ever for Your Industry`,
+  (kw: string) => `${kw} Best Practices: Expert Tips for Maximum Impact`,
+  (kw: string) => `The Ultimate ${kw} Playbook for Small Businesses`,
+  (kw: string) => `Mastering ${kw}: A Data-Driven Approach for 2025`,
+  (kw: string) => `${kw} Explained: Everything Your Competitors Don't Want You to Know`,
 ];
 
-const deepShadow = "shadow-[0_20px_50px_rgba(0,0,0,0.1)]";
+const blogExcerptTemplates = [
+  (kw: string) => `Discover proven strategies for ${kw.toLowerCase()} that deliver measurable ROI and competitive advantages for your business.`,
+  (kw: string) => `Learn why ${kw.toLowerCase()} is critical for growth and how to implement it effectively with actionable insights.`,
+  (kw: string) => `Expert analysis of ${kw.toLowerCase()} trends, opportunities, and best practices to help you stay ahead of the curve.`,
+  (kw: string) => `A comprehensive breakdown of ${kw.toLowerCase()} strategies that top-performing businesses use to dominate their market.`,
+  (kw: string) => `Unlock the potential of ${kw.toLowerCase()} with data-backed techniques and real-world case studies from industry leaders.`,
+  (kw: string) => `Everything you need to know about ${kw.toLowerCase()} — from fundamentals to advanced tactics that drive revenue.`,
+];
+
+function generateScheduleDate(dayOffset: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + dayOffset);
+  return d.toLocaleDateString("en-GB", { month: "short", day: "numeric", year: "numeric" });
+}
 
 /* ── Circular Gauge Component ── */
 const SEOGauge = ({ score, size = 160 }: { score: number; size?: number }) => {
@@ -129,8 +126,8 @@ const SEOGauge = ({ score, size = 160 }: { score: number; size?: number }) => {
       <svg width={size} height={size} className="-rotate-90">
         <defs>
           <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#10B981" />
-            <stop offset="100%" stopColor="#0D9488" />
+            <stop offset="0%" stopColor={BRAND_BLUE} />
+            <stop offset="100%" stopColor={BRAND_EMERALD} />
           </linearGradient>
         </defs>
         <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#F1F5F9" strokeWidth={strokeWidth} />
@@ -161,14 +158,16 @@ const SEOGauge = ({ score, size = 160 }: { score: number; size?: number }) => {
 /* ── Solid Badge ── */
 const SolidBadge = ({ children, color = "blue" }: { children: React.ReactNode; color?: string }) => {
   const colors: Record<string, string> = {
-    blue: "bg-[#EFF6FF] text-[#2563EB] border-[#BFDBFE]",
+    blue: `bg-[${BRAND_BLUE_LIGHT}] text-[${BRAND_BLUE}] border-[${BRAND_BLUE_BORDER}]`,
     emerald: "bg-[#ECFDF5] text-[#059669] border-[#A7F3D0]",
     amber: "bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]",
     red: "bg-[#FEF2F2] text-[#DC2626] border-[#FECACA]",
     slate: "bg-[#F8FAFC] text-[#475569] border-[#E2E8F0]",
   };
   return (
-    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border ${colors[color] || colors.blue}`}>
+    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border ${colors[color] || colors.blue}`}
+      style={color === "blue" ? { backgroundColor: BRAND_BLUE_LIGHT, color: BRAND_BLUE, borderColor: BRAND_BLUE_BORDER } : {}}
+    >
       {children}
     </span>
   );
@@ -183,6 +182,31 @@ const AutopilotSEO = () => {
   const [showBlogs, setShowBlogs] = useState(false);
   const [socialChannels, setSocialChannels] = useState(initialSocial);
   const [cmsConnections, setCmsConnections] = useState(initialCms);
+
+  /* ── Generate blog cards from scan keywords ── */
+  const generatedBlogs = useMemo(() => {
+    if (!scanResult?.keywords?.length) return [];
+    const blogs = [];
+    // Generate up to 6 blogs by cycling through keywords
+    for (let i = 0; i < Math.min(6, scanResult.keywords.length * 2); i++) {
+      const kw = scanResult.keywords[i % scanResult.keywords.length];
+      const titleFn = blogTitleTemplates[i % blogTitleTemplates.length];
+      const excerptFn = blogExcerptTemplates[i % blogExcerptTemplates.length];
+      const imageQuery = kw.imageQuery || kw.keyword.split(" ").slice(0, 3).join(" ");
+      blogs.push({
+        title: titleFn(kw.keyword),
+        excerpt: excerptFn(kw.keyword),
+        image: `https://images.unsplash.com/photo-placeholder?w=800&q=90`,
+        unsplashQuery: encodeURIComponent(imageQuery),
+        seoScore: 88 + Math.floor(Math.random() * 10),
+        words: 1200 + Math.floor(Math.random() * 500),
+        keywords: Math.min(kw.keyword.split(" ").length + 2, 7),
+        scheduledDate: generateScheduleDate(i * 5 + 1),
+        sourceKeyword: kw.keyword,
+      });
+    }
+    return blogs;
+  }, [scanResult]);
 
   const handleScan = async () => {
     const trimmed = websiteUrl.trim();
@@ -241,22 +265,23 @@ const AutopilotSEO = () => {
               <ArrowLeft className="w-4 h-4 text-[#64748B]" />
             </motion.button>
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#4F46E5] flex items-center justify-center" style={{ boxShadow: "0 4px 14px rgba(37,99,235,0.35)" }}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: `linear-gradient(135deg, ${BRAND_BLUE}, ${BRAND_BLUE_DARK})`, boxShadow: `0 4px 14px ${BRAND_BLUE}59` }}>
                 <Zap className="w-4 h-4 text-white" />
               </div>
               <div>
                 <h1 className="text-sm font-bold text-[#0F172A] leading-tight">Autopilot SEO</h1>
-                <p className="text-[11px] text-[#94A3B8] leading-tight">Powered by Zen AI</p>
+                <p className="text-[11px] text-[#94A3B8] leading-tight">Powered by Zen SEO</p>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2.5">
             <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#ECFDF5] border border-[#A7F3D0]">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-              <span className="text-[11px] font-bold text-[#059669]">Engine Active</span>
+              <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: BRAND_EMERALD }} />
+              <span className="text-[11px] font-bold" style={{ color: BRAND_EMERALD_DARK }}>Engine Active</span>
             </div>
-            <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-[#BFDBFE] ring-offset-1">
-              <OptimizedImage src={zenImg} alt="Zen" className="w-full h-full object-cover" width={32} height={32} />
+            <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-[#99C2FF] ring-offset-1">
+              <OptimizedImage src={zenImg} alt="Zen SEO" className="w-full h-full object-cover" width={32} height={32} />
             </div>
           </div>
         </div>
@@ -271,13 +296,14 @@ const AutopilotSEO = () => {
           className={`bg-white rounded-2xl ${deepShadow} p-5 md:p-8`}
         >
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#3B82F6] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{ background: `linear-gradient(135deg, ${BRAND_BLUE}, ${BRAND_BLUE_DARK})` }}>
               <Search className="w-3.5 h-3.5 text-white" />
             </div>
             <h2 className="text-base font-bold text-[#0F172A]">Scan Your Website</h2>
           </div>
           <p className="text-sm text-[#64748B] mb-5 ml-9">
-            Enter your URL and Zen will crawl your site, analyse your content, and find SEO opportunities.
+            Enter your URL and Zen SEO will crawl your site, analyse your content, and find SEO opportunities.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">
@@ -289,7 +315,10 @@ const AutopilotSEO = () => {
                 onChange={(e) => setWebsiteUrl(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleScan()}
                 placeholder="https://yourwebsite.com"
-                className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-[#F8FAFC] border-2 border-[#E2E8F0] text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/30 focus:border-[#3B82F6] transition-all"
+                className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-[#F8FAFC] border-2 border-[#E2E8F0] text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:border-transparent transition-all"
+                style={{ "--tw-ring-color": `${BRAND_BLUE}4D` } as any}
+                onFocus={(e) => { e.target.style.borderColor = BRAND_BLUE; }}
+                onBlur={(e) => { e.target.style.borderColor = "#E2E8F0"; }}
               />
             </div>
             <motion.button
@@ -297,8 +326,11 @@ const AutopilotSEO = () => {
               whileTap={{ scale: 0.98 }}
               onClick={handleScan}
               disabled={scanState === "scanning" || scanState === "generating"}
-              className="px-7 py-3.5 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#4F46E5] text-white text-sm font-bold hover:from-[#1D4ED8] hover:to-[#4338CA] transition-all disabled:opacity-60 flex items-center justify-center gap-2 min-w-[160px]"
-              style={{ boxShadow: "0 8px 25px rgba(37,99,235,0.35)" }}
+              className="px-7 py-3.5 rounded-xl text-white text-sm font-bold transition-all disabled:opacity-60 flex items-center justify-center gap-2 min-w-[160px]"
+              style={{
+                background: `linear-gradient(135deg, ${BRAND_BLUE}, ${BRAND_BLUE_DARK})`,
+                boxShadow: `0 8px 25px ${BRAND_BLUE}59`,
+              }}
             >
               {scanState === "scanning" ? (
                 <><Loader2 className="w-4 h-4 animate-spin" /> Analysing...</>
@@ -312,17 +344,17 @@ const AutopilotSEO = () => {
           <AnimatePresence mode="wait">
             {scanState === "scanning" && (
               <motion.div key="scanning" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-6">
-                <div className="bg-[#EFF6FF] rounded-xl p-5 border-2 border-[#3B82F6]">
+                <div className="rounded-xl p-5 border-2" style={{ backgroundColor: BRAND_BLUE_LIGHT, borderColor: BRAND_BLUE }}>
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: BRAND_BLUE }}>
                       <Loader2 className="w-4 h-4 text-white animate-spin" />
                     </div>
-                    <span className="text-sm font-bold text-[#0F172A]">Zen is analysing your website...</span>
+                    <span className="text-sm font-bold text-[#0F172A]">Zen SEO is analysing your website...</span>
                   </div>
                   <div className="space-y-2.5 ml-11">
                     {["Fetching page content", "Extracting SEO signals", "Running AI analysis", "Generating keyword opportunities"].map((step, i) => (
                       <motion.div key={step} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.7 }} className="flex items-center gap-2.5 text-xs text-[#475569] font-medium">
-                        <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: i * 0.4 }} className="w-2 h-2 rounded-full bg-[#2563EB]" />
+                        <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: i * 0.4 }} className="w-2 h-2 rounded-full" style={{ backgroundColor: BRAND_BLUE }} />
                         {step}
                       </motion.div>
                     ))}
@@ -357,7 +389,7 @@ const AutopilotSEO = () => {
               className={`bg-white rounded-2xl ${deepShadow} p-5 md:p-8`}
             >
               <div className="flex items-center gap-2 mb-5">
-                <CheckCircle2 className="w-5 h-5 text-[#10B981]" />
+                <CheckCircle2 className="w-5 h-5" style={{ color: BRAND_EMERALD }} />
                 <h2 className="text-base font-bold text-[#0F172A]">Site Audit Summary</h2>
                 <SolidBadge color="emerald">Complete</SolidBadge>
               </div>
@@ -394,7 +426,7 @@ const AutopilotSEO = () => {
                     className="bg-[#0F172A] rounded-xl p-4 border-2 border-[#1E293B]"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-[#F59E0B] flex items-center justify-center shrink-0 mt-0.5">
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5" style={{ backgroundColor: BRAND_BLUE }}>
                         <Sparkles className="w-4 h-4 text-white" />
                       </div>
                       <div>
@@ -402,7 +434,7 @@ const AutopilotSEO = () => {
                           We found {scanResult.opportunitiesFound} high-intent keywords your competitors are missing.
                         </p>
                         <p className="text-xs text-[#94A3B8] mt-1">
-                          Zen identified untapped search terms with low competition and high commercial intent.
+                          Zen SEO identified untapped search terms with low competition and high commercial intent.
                         </p>
                       </div>
                     </div>
@@ -423,7 +455,8 @@ const AutopilotSEO = () => {
               transition={{ delay: 0.2 }}
             >
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7C3AED] to-[#9333EA] flex items-center justify-center">
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                  style={{ background: `linear-gradient(135deg, ${BRAND_BLUE}, ${BRAND_BLUE_DARK})` }}>
                   <Target className="w-3.5 h-3.5 text-white" />
                 </div>
                 <h2 className="text-base font-bold text-[#0F172A]">SEO Opportunity Engine</h2>
@@ -437,13 +470,16 @@ const AutopilotSEO = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.25 + index * 0.08 }}
-                    className={`bg-white rounded-xl ${deepShadow} p-4 hover:translate-y-[-2px] transition-all group border-2 border-transparent hover:border-[#3B82F6]`}
+                    className={`bg-white rounded-xl ${deepShadow} p-4 hover:translate-y-[-2px] transition-all group border-2 border-transparent`}
+                    style={{ ["--hover-border" as any]: BRAND_BLUE }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = BRAND_BLUE; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "transparent"; }}
                   >
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <Target className="w-3.5 h-3.5 text-[#2563EB]" />
-                          <h3 className="text-sm font-bold text-[#0F172A] group-hover:text-[#2563EB] transition-colors">{kw.keyword}</h3>
+                          <Target className="w-3.5 h-3.5" style={{ color: BRAND_BLUE }} />
+                          <h3 className="text-sm font-bold text-[#0F172A] group-hover:text-[#0066FF] transition-colors">{kw.keyword}</h3>
                         </div>
                       </div>
                       <SolidBadge color={getCompColor(kw.competition)}>{kw.competition}</SolidBadge>
@@ -456,9 +492,9 @@ const AutopilotSEO = () => {
                         <span className="font-extrabold text-[#0F172A]">{kw.volume.toLocaleString()}/mo</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <ArrowUpRight className="w-3 h-3 text-[#10B981]" />
+                        <ArrowUpRight className="w-3 h-3" style={{ color: BRAND_EMERALD }} />
                         <span className="text-[#64748B]">Opportunity:</span>
-                        <span className="font-extrabold text-[#059669]">{kw.opportunity}%</span>
+                        <span className="font-extrabold" style={{ color: BRAND_EMERALD_DARK }}>{kw.opportunity}%</span>
                       </div>
                     </div>
 
@@ -467,7 +503,8 @@ const AutopilotSEO = () => {
                         initial={{ width: 0 }}
                         animate={{ width: `${kw.opportunity}%` }}
                         transition={{ delay: 0.5 + index * 0.1, duration: 0.8, ease: "easeOut" }}
-                        className="h-full rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED]"
+                        className="h-full rounded-full"
+                        style={{ background: `linear-gradient(90deg, ${BRAND_BLUE}, ${BRAND_EMERALD})` }}
                       />
                     </div>
                   </motion.div>
@@ -490,14 +527,14 @@ const AutopilotSEO = () => {
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-                className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#2563EB] to-[#4F46E5] flex items-center justify-center mx-auto mb-5"
-                style={{ boxShadow: "0 8px 25px rgba(37,99,235,0.35)" }}
+                className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
+                style={{ background: `linear-gradient(135deg, ${BRAND_BLUE}, ${BRAND_BLUE_DARK})`, boxShadow: `0 8px 25px ${BRAND_BLUE}59` }}
               >
                 <Sparkles className="w-6 h-6 text-white" />
               </motion.div>
               <h3 className="text-lg font-bold text-[#0F172A] mb-2">Generating your 30-day Content Strategy...</h3>
               <p className="text-sm text-[#64748B] max-w-md mx-auto">
-                Zen is crafting optimised blog posts based on your keywords and competitor analysis.
+                Zen SEO is crafting optimised blog posts based on your keywords and competitor analysis.
               </p>
               <div className="flex justify-center gap-1.5 mt-5">
                 {[0, 1, 2].map((i) => (
@@ -505,7 +542,8 @@ const AutopilotSEO = () => {
                     key={i}
                     animate={{ scale: [1, 1.4, 1], opacity: [0.3, 1, 0.3] }}
                     transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.2 }}
-                    className="w-2.5 h-2.5 rounded-full bg-[#2563EB]"
+                    className="w-2.5 h-2.5 rounded-full"
+                    style={{ backgroundColor: BRAND_BLUE }}
                   />
                 ))}
               </div>
@@ -513,9 +551,9 @@ const AutopilotSEO = () => {
           )}
         </AnimatePresence>
 
-        {/* ─── Blog Atlas (Grid) ─── */}
+        {/* ─── Blog Atlas (Grid) — Dynamic from keywords ─── */}
         <AnimatePresence>
-          {showBlogs && (
+          {showBlogs && generatedBlogs.length > 0 && (
             <motion.section
               key="blogs"
               initial={{ opacity: 0, y: 30 }}
@@ -524,7 +562,8 @@ const AutopilotSEO = () => {
             >
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#10B981] to-[#0D9488] flex items-center justify-center">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                    style={{ background: `linear-gradient(135deg, ${BRAND_EMERALD}, ${BRAND_EMERALD_DARK})` }}>
                     <BarChart3 className="w-3.5 h-3.5 text-white" />
                   </div>
                   <h2 className="text-base font-bold text-[#0F172A]">Content Atlas</h2>
@@ -534,7 +573,7 @@ const AutopilotSEO = () => {
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {/* First 2 visible cards */}
-                {mockBlogs.slice(0, 2).map((blog, index) => (
+                {generatedBlogs.slice(0, 2).map((blog, index) => (
                   <motion.div
                     key={blog.title}
                     initial={{ opacity: 0, y: 20 }}
@@ -542,25 +581,37 @@ const AutopilotSEO = () => {
                     transition={{ delay: 0.15 + index * 0.1 }}
                     className={`bg-white rounded-2xl ${deepShadow} overflow-hidden group hover:translate-y-[-4px] transition-all duration-300`}
                   >
-                    {/* Cover Image */}
+                    {/* Cover Image — dynamic from keyword */}
                     <div className="relative h-48 overflow-hidden">
-                      <img src={blog.image} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                      <img
+                        src={`https://source.unsplash.com/800x400/?${blog.unsplashQuery}`}
+                        alt={blog.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
                       <div className="absolute top-3 right-3">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-white text-[#059669] border-2 border-[#A7F3D0]">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-white border-2" style={{ color: BRAND_EMERALD_DARK, borderColor: "#A7F3D0" }}>
                           <CheckCircle2 className="w-3 h-3" /> {blog.seoScore}%
                         </span>
                       </div>
                       <div className="absolute bottom-3 left-3">
                         <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#0F172A]/80 text-[10px] font-bold text-white">
-                          <Eye className="w-3 h-3" /> Live Preview
+                          <Calendar className="w-3 h-3" /> {blog.scheduledDate}
                         </span>
                       </div>
                     </div>
 
                     {/* Body */}
                     <div className="p-5">
-                      <h3 className="text-sm font-bold text-[#0F172A] leading-snug mb-2 line-clamp-2 group-hover:text-[#2563EB] transition-colors">{blog.title}</h3>
-                      <p className="text-xs text-[#64748B] leading-relaxed line-clamp-2 mb-4">{blog.excerpt}</p>
+                      <h3 className="text-sm font-bold text-[#0F172A] leading-snug mb-2 line-clamp-2 group-hover:text-[#0066FF] transition-colors">{blog.title}</h3>
+                      <p className="text-xs text-[#64748B] leading-relaxed line-clamp-2 mb-3">{blog.excerpt}</p>
+
+                      {/* Source keyword tag */}
+                      <div className="flex items-center gap-1.5 mb-3">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold" style={{ backgroundColor: BRAND_BLUE_LIGHT, color: BRAND_BLUE }}>
+                          <Target className="w-2.5 h-2.5" /> {blog.sourceKeyword}
+                        </span>
+                      </div>
 
                       {/* Stats */}
                       <div className="flex items-center gap-2 mb-4">
@@ -572,20 +623,23 @@ const AutopilotSEO = () => {
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full py-3 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#4F46E5] text-white text-xs font-bold hover:from-[#1D4ED8] hover:to-[#4338CA] transition-all"
-                        style={{ boxShadow: "0 6px 20px rgba(37,99,235,0.3)" }}
+                        className="w-full py-3 rounded-xl text-white text-xs font-bold transition-all"
+                        style={{
+                          background: `linear-gradient(135deg, ${BRAND_BLUE}, ${BRAND_BLUE_DARK})`,
+                          boxShadow: `0 6px 20px ${BRAND_BLUE}4D`,
+                        }}
                       >
                         Publish Now
                       </motion.button>
-                      <button className="w-full mt-2 py-2 text-[11px] font-bold text-[#2563EB] hover:text-[#1D4ED8] flex items-center justify-center gap-1 transition-colors">
-                        <Pencil className="w-3 h-3" /> Edit with Zen AI
+                      <button className="w-full mt-2 py-2 text-[11px] font-bold flex items-center justify-center gap-1 transition-colors" style={{ color: BRAND_BLUE }}>
+                        <Pencil className="w-3 h-3" /> Edit with Zen SEO
                       </button>
                     </div>
                   </motion.div>
                 ))}
 
                 {/* Blurred / Paywalled cards */}
-                {mockBlogs.slice(2).map((blog, index) => (
+                {generatedBlogs.slice(2).map((blog, index) => (
                   <motion.div
                     key={blog.title}
                     initial={{ opacity: 0, y: 20 }}
@@ -596,16 +650,16 @@ const AutopilotSEO = () => {
                     {/* Frosted background content */}
                     <div className="filter blur-[8px] saturate-150 pointer-events-none select-none">
                       <div className="h-48 overflow-hidden">
-                        <img src={blog.image} alt="" className="w-full h-full object-cover" loading="lazy" />
+                        <img src={`https://source.unsplash.com/800x400/?${blog.unsplashQuery}`} alt="" className="w-full h-full object-cover" loading="lazy" />
                       </div>
                       <div className="p-5">
                         <h3 className="text-sm font-bold text-[#0F172A] leading-snug mb-2 line-clamp-2">{blog.title}</h3>
                         <p className="text-xs text-[#64748B] line-clamp-2 mb-3">{blog.excerpt}</p>
                         <div className="flex gap-2 mb-3">
-                          <span className="px-2.5 py-1 rounded-full bg-[#EFF6FF] text-[#2563EB] text-[10px] font-bold border border-[#BFDBFE]">{blog.words} words</span>
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold border" style={{ backgroundColor: BRAND_BLUE_LIGHT, color: BRAND_BLUE, borderColor: BRAND_BLUE_BORDER }}>{blog.words} words</span>
                           <span className="px-2.5 py-1 rounded-full bg-[#ECFDF5] text-[#059669] text-[10px] font-bold border border-[#A7F3D0]">{blog.seoScore}% SEO</span>
                         </div>
-                        <div className="w-full py-3 rounded-xl bg-[#2563EB] text-white text-xs text-center font-bold">Publish Now</div>
+                        <div className="w-full py-3 rounded-xl text-white text-xs text-center font-bold" style={{ backgroundColor: BRAND_BLUE }}>Publish Now</div>
                       </div>
                     </div>
 
@@ -620,8 +674,11 @@ const AutopilotSEO = () => {
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => navigate("/get-started")}
-                        className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#4338CA] text-white text-[12px] font-bold"
-                        style={{ boxShadow: "0 8px 25px rgba(37,99,235,0.4)" }}
+                        className="px-6 py-2.5 rounded-xl text-white text-[12px] font-bold"
+                        style={{
+                          background: `linear-gradient(135deg, ${BRAND_BLUE}, ${BRAND_BLUE_DARK})`,
+                          boxShadow: `0 8px 25px ${BRAND_BLUE}66`,
+                        }}
                       >
                         Start Free Trial
                       </motion.button>
@@ -641,7 +698,8 @@ const AutopilotSEO = () => {
           className={`bg-white rounded-2xl ${deepShadow} p-5 md:p-8`}
         >
           <div className="flex items-center gap-2 mb-5">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#EC4899] to-[#F43F5E] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{ background: "linear-gradient(135deg, #1877F2, #0D5EC7)" }}>
               <Sparkles className="w-3.5 h-3.5 text-white" />
             </div>
             <h2 className="text-base font-bold text-[#0F172A]">Social Distribution</h2>
@@ -690,7 +748,8 @@ const AutopilotSEO = () => {
           className={`bg-white rounded-2xl ${deepShadow} p-5 md:p-8`}
         >
           <div className="flex items-center gap-2 mb-5">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7C3AED] to-[#9333EA] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{ background: "linear-gradient(135deg, #21759B, #1A5C7D)" }}>
               <Globe className="w-3.5 h-3.5 text-white" />
             </div>
             <h2 className="text-base font-bold text-[#0F172A]">CMS Auto-Publish</h2>
@@ -739,7 +798,7 @@ const AutopilotSEO = () => {
           className="bg-[#0F172A] rounded-2xl p-6 md:p-10 text-center relative overflow-hidden"
           style={{ boxShadow: "0 25px 60px rgba(15,23,42,0.4)" }}
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(37,99,235,0.15),transparent_60%)]" />
+          <div className="absolute inset-0" style={{ background: `radial-gradient(circle at 30% 50%, ${BRAND_BLUE}26, transparent 60%)` }} />
           <div className="relative z-10">
             <h3 className="text-xl md:text-2xl font-extrabold text-white mb-2">Ready to automate your SEO?</h3>
             <p className="text-[#94A3B8] text-sm mb-6 max-w-md mx-auto">
@@ -754,8 +813,11 @@ const AutopilotSEO = () => {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => navigate("/get-started")}
-                className="px-10 py-4 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#4338CA] text-white text-sm font-bold hover:from-[#1D4ED8] hover:to-[#3730A3] transition-all"
-                style={{ boxShadow: "0 10px 35px rgba(37,99,235,0.5)" }}
+                className="px-10 py-4 rounded-xl text-white text-sm font-bold transition-all"
+                style={{
+                  background: `linear-gradient(135deg, ${BRAND_BLUE}, ${BRAND_BLUE_DARK})`,
+                  boxShadow: `0 10px 35px ${BRAND_BLUE}80`,
+                }}
               >
                 Start Free Trial
               </motion.button>
