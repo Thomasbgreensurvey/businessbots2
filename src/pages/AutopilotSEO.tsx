@@ -697,30 +697,30 @@ const AutopilotSEO = () => {
           </div>
 
           <div className="grid grid-cols-3 gap-3">
-            {cmsConnections.map((cms) => {
+            {cmsConnections.map((cms, idx) => {
               const Icon = cms.icon;
               return (
                 <div
                   key={cms.name}
-                  className={`rounded-xl border-2 p-4 flex flex-col items-center gap-3 transition-all ${
-                    cms.connected
-                      ? "bg-white"
-                      : "bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#CBD5E1]"
-                  }`}
-                  style={cms.connected ? { borderColor: cms.color + "50", boxShadow: `0 8px 30px ${cms.color}15` } : {}}
+                  className="rounded-xl border-2 p-4 flex flex-col items-center gap-3 transition-all bg-white"
+                  style={{
+                    borderColor: cms.connected ? cms.color : "#E2E8F0",
+                    boxShadow: cms.connected ? `0 8px 30px ${cms.color}25` : "none",
+                  }}
                 >
                   <Icon />
                   <span className="text-xs font-bold text-[#0F172A]">{cms.name}</span>
-                  {/* iOS toggle */}
                   <button
-                    className={`relative w-12 h-[26px] rounded-full transition-colors ${
-                      cms.connected ? "" : "bg-[#E2E8F0]"
-                    }`}
-                    style={cms.connected ? { backgroundColor: cms.color } : {}}
+                    onClick={() => {
+                      setCmsConnections(prev => prev.map((c, i) => i === idx ? { ...c, connected: !c.connected } : c));
+                      toast.success(cms.connected ? `${cms.name} disconnected` : `${cms.name} connected`);
+                    }}
+                    className="relative w-12 h-[26px] rounded-full transition-colors cursor-pointer"
+                    style={{ backgroundColor: cms.connected ? cms.color : "#CBD5E1" }}
                   >
                     <motion.div
                       className="absolute top-[3px] w-5 h-5 rounded-full bg-white"
-                      style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}
+                      style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.2)" }}
                       animate={{ left: cms.connected ? 24 : 3 }}
                       transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     />
