@@ -60,7 +60,7 @@ const Index = () => {
               agent={selectedAgent}
               onBack={() => setSelectedAgent(null)}
               onOpenNav={() => setIsNavOpen(true)}
-              onSelectAgent={setSelectedAgent}
+              onSelectAgent={handleSelectAgent}
             />
           </motion.div>
         ) : (
