@@ -42,7 +42,7 @@ const Index = () => {
       <SideNav
         isOpen={isNavOpen}
         onClose={() => setIsNavOpen(false)}
-        onSelectAgent={setSelectedAgent}
+        onSelectAgent={handleSelectAgent}
         selectedAgentId={selectedAgent?.id}
       />
 
