@@ -71,7 +71,7 @@ const Index = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <HomePage onSelectAgent={setSelectedAgent} onOpenNav={() => setIsNavOpen(true)} />
+            <HomePage onSelectAgent={handleSelectAgent} onOpenNav={() => setIsNavOpen(true)} />
           </motion.div>
         )}
       </AnimatePresence>
