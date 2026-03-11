@@ -181,6 +181,8 @@ const AutopilotSEO = () => {
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [scanError, setScanError] = useState("");
   const [showBlogs, setShowBlogs] = useState(false);
+  const [socialChannels, setSocialChannels] = useState(initialSocial);
+  const [cmsConnections, setCmsConnections] = useState(initialCms);
 
   const handleScan = async () => {
     const trimmed = websiteUrl.trim();
