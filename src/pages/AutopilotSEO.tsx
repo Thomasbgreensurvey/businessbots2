@@ -114,26 +114,35 @@ function generateScheduleDate(dayOffset: number): string {
   return d.toLocaleDateString("en-GB", { month: "short", day: "numeric", year: "numeric" });
 }
 
+/* ── Image fallback handler ── */
+const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>, title: string) => {
+  const img = e.currentTarget;
+  const parent = img.parentElement;
+  if (parent) {
+    const initials = title.split(" ").slice(0, 2).map(w => w[0]?.toUpperCase() || "").join("");
+    const fallback = document.createElement("div");
+    fallback.className = "w-full h-full flex items-center justify-center text-white text-2xl font-extrabold";
+    fallback.style.background = `linear-gradient(135deg, ${BRAND_BLUE}, #4F46E5)`;
+    fallback.textContent = initials;
+    img.replaceWith(fallback);
+  }
+};
+
 /* ── Circular Gauge Component ── */
 const SEOGauge = ({ score, size = 160 }: { score: number; size?: number }) => {
-  const strokeWidth = 12;
+  const strokeWidth = 14;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const progress = (score / 100) * circumference;
+  const gaugeColor = score >= 80 ? BRAND_EMERALD : BRAND_BLUE;
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
-        <defs>
-          <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor={BRAND_BLUE} />
-            <stop offset="100%" stopColor={BRAND_EMERALD} />
-          </linearGradient>
-        </defs>
         <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#F1F5F9" strokeWidth={strokeWidth} />
         <motion.circle
           cx={size / 2} cy={size / 2} r={radius}
-          fill="none" stroke="url(#gaugeGrad)" strokeWidth={strokeWidth} strokeLinecap="round"
+          fill="none" stroke={gaugeColor} strokeWidth={strokeWidth} strokeLinecap="round"
           strokeDasharray={circumference}
           initial={{ strokeDashoffset: circumference }}
           animate={{ strokeDashoffset: circumference - progress }}
