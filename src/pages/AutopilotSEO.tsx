@@ -312,7 +312,7 @@ const AutopilotSEO = () => {
           <AnimatePresence mode="wait">
             {scanState === "scanning" && (
               <motion.div key="scanning" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-6">
-                <div className="bg-[#EFF6FF] rounded-xl p-5 border-2 border-[#BFDBFE]">
+                <div className="bg-[#EFF6FF] rounded-xl p-5 border-2 border-[#3B82F6]">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center">
                       <Loader2 className="w-4 h-4 text-white animate-spin" />
