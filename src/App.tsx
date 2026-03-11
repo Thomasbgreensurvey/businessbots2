@@ -67,6 +67,7 @@ const App = () => {
             <Route path="/preview/:slug" element={<PreviewArticle />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/autopilot-seo" element={<AutopilotSEO />} />
             {/* Redirects for old/indexed URLs to prevent 404s */}
             <Route path="/product-help" element={<Navigate to="/help-centre" replace />} />
             <Route path="/product-help/*" element={<Navigate to="/help-centre" replace />} />
