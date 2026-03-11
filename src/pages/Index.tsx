@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { agents, Agent, preloadAgentImages } from "@/data/agents";
 import { AgentProfile } from "@/components/AgentProfile";
