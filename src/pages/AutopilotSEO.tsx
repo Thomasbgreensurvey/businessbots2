@@ -648,30 +648,30 @@ const AutopilotSEO = () => {
           </div>
 
           <div className="grid grid-cols-3 gap-3">
-            {socialChannels.map((ch) => {
+            {socialChannels.map((ch, idx) => {
               const Icon = ch.icon;
               return (
                 <div
                   key={ch.name}
-                  className={`rounded-xl border-2 p-4 flex flex-col items-center gap-3 transition-all ${
-                    ch.connected
-                      ? `bg-white border-[${ch.color}]/30`
-                      : "bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#CBD5E1]"
-                  }`}
-                  style={ch.connected ? { borderColor: ch.color + "50", boxShadow: `0 8px 30px ${ch.color}15` } : {}}
+                  className="rounded-xl border-2 p-4 flex flex-col items-center gap-3 transition-all bg-white"
+                  style={{
+                    borderColor: ch.connected ? ch.color : "#E2E8F0",
+                    boxShadow: ch.connected ? `0 8px 30px ${ch.color}25` : "none",
+                  }}
                 >
                   <Icon />
                   <span className="text-xs font-bold text-[#0F172A]">{ch.name}</span>
-                  {/* iOS toggle */}
                   <button
-                    className={`relative w-12 h-[26px] rounded-full transition-colors ${
-                      ch.connected ? "" : "bg-[#E2E8F0]"
-                    }`}
-                    style={ch.connected ? { backgroundColor: ch.color } : {}}
+                    onClick={() => {
+                      setSocialChannels(prev => prev.map((s, i) => i === idx ? { ...s, connected: !s.connected } : s));
+                      toast.success(ch.connected ? `${ch.name} disconnected` : `${ch.name} connected`);
+                    }}
+                    className="relative w-12 h-[26px] rounded-full transition-colors cursor-pointer"
+                    style={{ backgroundColor: ch.connected ? ch.color : "#CBD5E1" }}
                   >
                     <motion.div
                       className="absolute top-[3px] w-5 h-5 rounded-full bg-white"
-                      style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}
+                      style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.2)" }}
                       animate={{ left: ch.connected ? 24 : 3 }}
                       transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     />
