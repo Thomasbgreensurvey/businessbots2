@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { agents, Agent, preloadAgentImages } from "@/data/agents";
@@ -19,6 +19,16 @@ import SEOSchema from "@/components/SEOSchema";
 const Index = () => {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Intercept Zen clicks to route to Autopilot SEO
+  const handleSelectAgent = useCallback((agent: Agent) => {
+    if (agent.id === "zen") {
+      navigate("/autopilot-seo");
+      return;
+    }
+    setSelectedAgent(agent);
+  }, [navigate]);
 
   // Defer-load remaining agent images after initial paint
   useEffect(() => {
@@ -32,7 +42,7 @@ const Index = () => {
       <SideNav
         isOpen={isNavOpen}
         onClose={() => setIsNavOpen(false)}
-        onSelectAgent={setSelectedAgent}
+        onSelectAgent={handleSelectAgent}
         selectedAgentId={selectedAgent?.id}
       />
 
@@ -50,7 +60,7 @@ const Index = () => {
               agent={selectedAgent}
               onBack={() => setSelectedAgent(null)}
               onOpenNav={() => setIsNavOpen(true)}
-              onSelectAgent={setSelectedAgent}
+              onSelectAgent={handleSelectAgent}
             />
           </motion.div>
         ) : (
@@ -61,7 +71,7 @@ const Index = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <HomePage onSelectAgent={setSelectedAgent} onOpenNav={() => setIsNavOpen(true)} />
+            <HomePage onSelectAgent={handleSelectAgent} onOpenNav={() => setIsNavOpen(true)} />
           </motion.div>
         )}
       </AnimatePresence>
