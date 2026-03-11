@@ -391,7 +391,7 @@ const AutopilotSEO = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
-                    className="bg-[#FFFBEB] rounded-xl p-4 border-2 border-[#FDE68A]"
+                    className="bg-[#0F172A] rounded-xl p-4 border-2 border-[#1E293B]"
                   >
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 rounded-lg bg-[#F59E0B] flex items-center justify-center shrink-0 mt-0.5">
