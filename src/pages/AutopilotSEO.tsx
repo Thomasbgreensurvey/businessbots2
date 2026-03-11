@@ -64,13 +64,13 @@ const WebflowIcon = () => (
   </svg>
 );
 
-const socialChannels = [
+const initialSocial = [
   { name: "Facebook", icon: FacebookIcon, color: "#1877F2", connected: true },
   { name: "WhatsApp", icon: WhatsAppIcon, color: "#25D366", connected: false },
   { name: "Telegram", icon: TelegramIcon, color: "#26A5E4", connected: false },
 ];
 
-const cmsConnections = [
+const initialCms = [
   { name: "WordPress", icon: WordPressIcon, color: "#21759B", connected: true },
   { name: "Shopify", icon: ShopifyIcon, color: "#96BF48", connected: false },
   { name: "Webflow", icon: WebflowIcon, color: "#4353FF", connected: false },
