@@ -398,10 +398,10 @@ const AutopilotSEO = () => {
                         <Sparkles className="w-4 h-4 text-white" />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-[#0F172A]">
+                        <p className="text-sm font-bold text-white">
                           We found {scanResult.opportunitiesFound} high-intent keywords your competitors are missing.
                         </p>
-                        <p className="text-xs text-[#64748B] mt-1">
+                        <p className="text-xs text-[#94A3B8] mt-1">
                           Zen identified untapped search terms with low competition and high commercial intent.
                         </p>
                       </div>
