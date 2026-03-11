@@ -280,7 +280,7 @@ const AutopilotSEO = () => {
               <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: BRAND_EMERALD }} />
               <span className="text-[11px] font-bold" style={{ color: BRAND_EMERALD_DARK }}>Engine Active</span>
             </div>
-            <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-offset-1" style={{ ringColor: BRAND_BLUE_BORDER }}>
+            <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-[#99C2FF] ring-offset-1">
               <OptimizedImage src={zenImg} alt="Zen SEO" className="w-full h-full object-cover" width={32} height={32} />
             </div>
           </div>
