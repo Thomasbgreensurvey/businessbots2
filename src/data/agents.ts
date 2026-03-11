@@ -152,33 +152,33 @@ export const agents: Agent[] = [
   },
   {
     id: "zen",
-    name: "Zen",
-    role: "Lead Generation Expert",
-    shortRole: "Lead Gen",
-    tagline: "Your Pipeline Partner on AI",
-    heroHeadline: "Fill Your Pipeline Overnight",
-    heroSubtext: "Qualified leads delivered to your CRM daily. Stop chasing, start closing with AI-powered prospecting.",
-    description: "Supports lead capture through forms, funnels, and call-to-action optimisation across websites and campaigns.",
-    extendedDescription: "Meet Zen. The AI-powered lead hunter that fills your pipeline with qualified prospects. Trained on successful sales patterns, Zen finds and enriches leads that actually convert. Traditional prospecting takes days, but Zen delivers qualified leads in minutes.",
+    name: "Zen SEO",
+    role: "Autopilot SEO Expert",
+    shortRole: "SEO",
+    tagline: "Your SEO Engine on Autopilot",
+    heroHeadline: "Automate Your SEO Growth",
+    heroSubtext: "1 fully optimised blog post every 24 hours. AI-powered keyword targeting, content creation, and auto-publishing.",
+    description: "AI-powered SEO automation that scans your website, identifies keyword opportunities, and generates optimised content daily.",
+    extendedDescription: "Meet Zen SEO. The AI-powered SEO engine that puts your content strategy on autopilot. Zen SEO scans your website, analyses competitors, and generates fully optimised blog posts every 24 hours — complete with AI images and keyword targeting. Traditional SEO takes months, but Zen SEO delivers results in days.",
     image: zenImg,
     glowColor: "amber",
     capabilities: [
-      "Prospect discovery",
-      "Data enrichment",
-      "CRM integration",
-      "Lead scoring",
-      "Contact verification"
+      "Website SEO scanning",
+      "Keyword opportunity detection",
+      "AI blog generation",
+      "Auto-publishing to CMS",
+      "Competitor analysis"
     ],
     useCases: [
-      "Zen, find 50 decision-makers at SaaS companies.",
-      "Zen, enrich these contacts with LinkedIn data.",
-      "Zen, score these leads by buying intent.",
-      "Zen, verify these email addresses."
+      "Zen SEO, scan my website for SEO opportunities.",
+      "Zen SEO, generate a blog post targeting these keywords.",
+      "Zen SEO, publish today's optimised article to WordPress.",
+      "Zen SEO, show me my 30-day content strategy."
     ],
-    expertise: ["Prospecting", "Data Enrichment", "Lead Scoring", "Research", "CRM Integration"],
-    surprisingFact: "Can find and verify 500 qualified leads in under an hour.",
-    hiddenTalent: "Identifying buying signals that humans often miss in company data.",
-    hobbies: ["🔎 Hunting prospects", "📊 Enriching data", "✅ Verifying contacts", "🎯 Scoring leads"]
+    expertise: ["SEO Strategy", "Content Generation", "Keyword Research", "Auto-Publishing", "Site Auditing"],
+    surprisingFact: "Can generate and publish a fully optimised 1,500-word blog post in under 3 minutes.",
+    hiddenTalent: "Finding high-intent keywords that competitors haven't targeted yet.",
+    hobbies: ["🔍 Scanning websites", "📝 Writing blogs", "📊 Tracking rankings", "🚀 Publishing content"]
   },
   {
     id: "tobby",

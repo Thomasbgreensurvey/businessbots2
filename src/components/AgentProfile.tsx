@@ -171,8 +171,20 @@ export const AgentProfile = ({ agent, onBack, onOpenNav, onSelectAgent }: AgentP
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="relative z-20 -mt-4 mb-8 flex justify-center"
+        className="relative z-20 -mt-4 mb-8 flex flex-col items-center gap-4"
       >
+        {agent.id === "zen" && (
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate("/autopilot-seo")}
+            className="flex items-center gap-2 px-12 py-5 rounded-full font-bold text-white text-xl shadow-2xl"
+            style={{ background: "linear-gradient(135deg, #2563EB 0%, #4338CA 100%)", boxShadow: "0 10px 40px rgba(37,99,235,0.4)" }}
+          >
+            <Sparkles className="w-6 h-6" />
+            Try Zen SEO
+          </motion.button>
+        )}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.98 }}
