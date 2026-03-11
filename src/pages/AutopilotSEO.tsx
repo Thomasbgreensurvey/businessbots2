@@ -64,13 +64,13 @@ const WebflowIcon = () => (
   </svg>
 );
 
-const socialChannels = [
+const initialSocial = [
   { name: "Facebook", icon: FacebookIcon, color: "#1877F2", connected: true },
   { name: "WhatsApp", icon: WhatsAppIcon, color: "#25D366", connected: false },
   { name: "Telegram", icon: TelegramIcon, color: "#26A5E4", connected: false },
 ];
 
-const cmsConnections = [
+const initialCms = [
   { name: "WordPress", icon: WordPressIcon, color: "#21759B", connected: true },
   { name: "Shopify", icon: ShopifyIcon, color: "#96BF48", connected: false },
   { name: "Webflow", icon: WebflowIcon, color: "#4353FF", connected: false },
@@ -181,6 +181,8 @@ const AutopilotSEO = () => {
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [scanError, setScanError] = useState("");
   const [showBlogs, setShowBlogs] = useState(false);
+  const [socialChannels, setSocialChannels] = useState(initialSocial);
+  const [cmsConnections, setCmsConnections] = useState(initialCms);
 
   const handleScan = async () => {
     const trimmed = websiteUrl.trim();
@@ -310,7 +312,7 @@ const AutopilotSEO = () => {
           <AnimatePresence mode="wait">
             {scanState === "scanning" && (
               <motion.div key="scanning" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-6">
-                <div className="bg-[#EFF6FF] rounded-xl p-5 border-2 border-[#BFDBFE]">
+                <div className="bg-[#EFF6FF] rounded-xl p-5 border-2 border-[#3B82F6]">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center">
                       <Loader2 className="w-4 h-4 text-white animate-spin" />
@@ -389,17 +391,17 @@ const AutopilotSEO = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
-                    className="bg-[#FFFBEB] rounded-xl p-4 border-2 border-[#FDE68A]"
+                    className="bg-[#0F172A] rounded-xl p-4 border-2 border-[#1E293B]"
                   >
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 rounded-lg bg-[#F59E0B] flex items-center justify-center shrink-0 mt-0.5">
                         <Sparkles className="w-4 h-4 text-white" />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-[#0F172A]">
+                        <p className="text-sm font-bold text-white">
                           We found {scanResult.opportunitiesFound} high-intent keywords your competitors are missing.
                         </p>
-                        <p className="text-xs text-[#64748B] mt-1">
+                        <p className="text-xs text-[#94A3B8] mt-1">
                           Zen identified untapped search terms with low competition and high commercial intent.
                         </p>
                       </div>
@@ -646,30 +648,30 @@ const AutopilotSEO = () => {
           </div>
 
           <div className="grid grid-cols-3 gap-3">
-            {socialChannels.map((ch) => {
+            {socialChannels.map((ch, idx) => {
               const Icon = ch.icon;
               return (
                 <div
                   key={ch.name}
-                  className={`rounded-xl border-2 p-4 flex flex-col items-center gap-3 transition-all ${
-                    ch.connected
-                      ? `bg-white border-[${ch.color}]/30`
-                      : "bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#CBD5E1]"
-                  }`}
-                  style={ch.connected ? { borderColor: ch.color + "50", boxShadow: `0 8px 30px ${ch.color}15` } : {}}
+                  className="rounded-xl border-2 p-4 flex flex-col items-center gap-3 transition-all bg-white"
+                  style={{
+                    borderColor: ch.connected ? ch.color : "#E2E8F0",
+                    boxShadow: ch.connected ? `0 8px 30px ${ch.color}25` : "none",
+                  }}
                 >
                   <Icon />
                   <span className="text-xs font-bold text-[#0F172A]">{ch.name}</span>
-                  {/* iOS toggle */}
                   <button
-                    className={`relative w-12 h-[26px] rounded-full transition-colors ${
-                      ch.connected ? "" : "bg-[#E2E8F0]"
-                    }`}
-                    style={ch.connected ? { backgroundColor: ch.color } : {}}
+                    onClick={() => {
+                      setSocialChannels(prev => prev.map((s, i) => i === idx ? { ...s, connected: !s.connected } : s));
+                      toast.success(ch.connected ? `${ch.name} disconnected` : `${ch.name} connected`);
+                    }}
+                    className="relative w-12 h-[26px] rounded-full transition-colors cursor-pointer"
+                    style={{ backgroundColor: ch.connected ? ch.color : "#CBD5E1" }}
                   >
                     <motion.div
                       className="absolute top-[3px] w-5 h-5 rounded-full bg-white"
-                      style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}
+                      style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.2)" }}
                       animate={{ left: ch.connected ? 24 : 3 }}
                       transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     />
@@ -695,30 +697,30 @@ const AutopilotSEO = () => {
           </div>
 
           <div className="grid grid-cols-3 gap-3">
-            {cmsConnections.map((cms) => {
+            {cmsConnections.map((cms, idx) => {
               const Icon = cms.icon;
               return (
                 <div
                   key={cms.name}
-                  className={`rounded-xl border-2 p-4 flex flex-col items-center gap-3 transition-all ${
-                    cms.connected
-                      ? "bg-white"
-                      : "bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#CBD5E1]"
-                  }`}
-                  style={cms.connected ? { borderColor: cms.color + "50", boxShadow: `0 8px 30px ${cms.color}15` } : {}}
+                  className="rounded-xl border-2 p-4 flex flex-col items-center gap-3 transition-all bg-white"
+                  style={{
+                    borderColor: cms.connected ? cms.color : "#E2E8F0",
+                    boxShadow: cms.connected ? `0 8px 30px ${cms.color}25` : "none",
+                  }}
                 >
                   <Icon />
                   <span className="text-xs font-bold text-[#0F172A]">{cms.name}</span>
-                  {/* iOS toggle */}
                   <button
-                    className={`relative w-12 h-[26px] rounded-full transition-colors ${
-                      cms.connected ? "" : "bg-[#E2E8F0]"
-                    }`}
-                    style={cms.connected ? { backgroundColor: cms.color } : {}}
+                    onClick={() => {
+                      setCmsConnections(prev => prev.map((c, i) => i === idx ? { ...c, connected: !c.connected } : c));
+                      toast.success(cms.connected ? `${cms.name} disconnected` : `${cms.name} connected`);
+                    }}
+                    className="relative w-12 h-[26px] rounded-full transition-colors cursor-pointer"
+                    style={{ backgroundColor: cms.connected ? cms.color : "#CBD5E1" }}
                   >
                     <motion.div
                       className="absolute top-[3px] w-5 h-5 rounded-full bg-white"
-                      style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}
+                      style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.2)" }}
                       animate={{ left: cms.connected ? 24 : 3 }}
                       transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     />
