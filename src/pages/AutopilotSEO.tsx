@@ -283,6 +283,36 @@ const AutopilotSEO = () => {
   const [showBlogs, setShowBlogs] = useState(false);
   const [socialChannels, setSocialChannels] = useState(initialSocial);
   const [cmsConnections, setCmsConnections] = useState(initialCms);
+  const [isPaid, setIsPaid] = useState(false);
+  const [forceRunning, setForceRunning] = useState(false);
+
+  /* ── Fetch paid status ── */
+  useEffect(() => {
+    const checkPaidStatus = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const { data } = await supabase
+        .from("profiles")
+        .select("is_paid")
+        .eq("id", session.user.id)
+        .single();
+      if (data) setIsPaid(data.is_paid ?? false);
+    };
+    checkPaidStatus();
+  }, []);
+
+  const handleForceRun = async () => {
+    setForceRunning(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("daily-seo-engine");
+      if (error) throw error;
+      toast.success(`Engine completed: ${data?.processed || 0} users processed`);
+    } catch (err: any) {
+      toast.error("Engine run failed", { description: err.message });
+    } finally {
+      setForceRunning(false);
+    }
+  };
 
   /* ── Generate blog cards from scan keywords ── */
   const generatedBlogs = useMemo(() => {
