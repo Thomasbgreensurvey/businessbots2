@@ -232,13 +232,13 @@ const SEOGauge = ({ score, size = 160 }: { score: number; size?: number }) => {
   );
 };
 
-/* ── Solid Badge (all inline styles to guarantee solid rendering) ── */
+/* ── Solid Badge — high-contrast, fully opaque ── */
 const badgeStyles: Record<string, { bg: string; text: string; border: string }> = {
-  blue: { bg: BRAND_BLUE_LIGHT, text: BRAND_BLUE, border: BRAND_BLUE_BORDER },
-  emerald: { bg: "#ECFDF5", text: "#059669", border: "#A7F3D0" },
-  amber: { bg: "#FFFBEB", text: "#D97706", border: "#FDE68A" },
-  red: { bg: "#FEF2F2", text: "#DC2626", border: "#FECACA" },
-  slate: { bg: "#F8FAFC", text: "#475569", border: "#E2E8F0" },
+  blue: { bg: "#DBEAFE", text: "#1D4ED8", border: "#60A5FA" },
+  emerald: { bg: "#D1FAE5", text: "#047857", border: "#34D399" },
+  amber: { bg: "#FEF3C7", text: "#B45309", border: "#FBBF24" },
+  red: { bg: "#FEE2E2", text: "#B91C1C", border: "#F87171" },
+  slate: { bg: "#E2E8F0", text: "#334155", border: "#94A3B8" },
 };
 
 const SolidBadge = ({ children, color = "blue" }: { children: React.ReactNode; color?: string }) => {
@@ -246,7 +246,7 @@ const SolidBadge = ({ children, color = "blue" }: { children: React.ReactNode; c
   return (
     <span
       className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold"
-      style={{ backgroundColor: s.bg, color: s.text, borderWidth: "1px", borderStyle: "solid", borderColor: s.border }}
+      style={{ backgroundColor: s.bg, color: s.text, borderWidth: "2px", borderStyle: "solid", borderColor: s.border }}
     >
       {children}
     </span>
@@ -661,7 +661,7 @@ const AutopilotSEO = () => {
                     <div className="relative h-48 overflow-hidden rounded-t-2xl bg-slate-200">
                       <BlogImage keyword={blog.sourceKeyword} industry={scanResult?.industry || ""} index={index} className="w-full h-48 object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-500" />
                       <div className="absolute top-3 right-3">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-white border-2" style={{ color: BRAND_EMERALD_DARK, borderColor: "#A7F3D0" }}>
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold" style={{ backgroundColor: "#D1FAE5", color: "#047857", borderWidth: "2px", borderStyle: "solid", borderColor: "#34D399" }}>
                           <CheckCircle2 className="w-3 h-3" /> {blog.seoScore}%
                         </span>
                       </div>
