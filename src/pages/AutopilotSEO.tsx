@@ -209,8 +209,8 @@ const AutopilotSEO = () => {
       const kw = scanResult.keywords[i % scanResult.keywords.length];
       const titleFn = blogTitleTemplates[i % blogTitleTemplates.length];
       const excerptFn = blogExcerptTemplates[i % blogExcerptTemplates.length];
-      const imagePrompt = kw.imageQuery || kw.keyword;
-      const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt + " professional high quality editorial photography")}?width=800&height=400&nologo=true`;
+      const imageQuery = encodeURIComponent(kw.imageQuery || kw.keyword);
+      const aiImageUrl = `https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&h=400&fit=crop&q=80`;
       blogs.push({
         title: titleFn(kw.keyword),
         excerpt: excerptFn(kw.keyword),
