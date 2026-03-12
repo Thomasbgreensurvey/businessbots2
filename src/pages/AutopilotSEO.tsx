@@ -960,7 +960,7 @@ const AutopilotSEO = () => {
             </div>
             <h2 className="text-base font-bold text-[#0F172A]">Auto-Publish Connections</h2>
           </div>
-          <AutoPublishConnections />
+          <AutoPublishConnections isPaid={isPaid} />
         </motion.section>
 
         {/* ─── Social Distribution Channels ─── */}
