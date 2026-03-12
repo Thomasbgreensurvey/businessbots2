@@ -201,12 +201,12 @@ const AutopilotSEO = () => {
       const kw = scanResult.keywords[i % scanResult.keywords.length];
       const titleFn = blogTitleTemplates[i % blogTitleTemplates.length];
       const excerptFn = blogExcerptTemplates[i % blogExcerptTemplates.length];
-      const imageQuery = kw.imageQuery || kw.keyword.split(" ").slice(0, 3).join(" ");
+      const imagePrompt = kw.imageQuery || kw.keyword;
+      const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt + " professional high quality editorial photography")}?width=800&height=400&nologo=true`;
       blogs.push({
         title: titleFn(kw.keyword),
         excerpt: excerptFn(kw.keyword),
-        image: `https://images.unsplash.com/photo-placeholder?w=800&q=90`,
-        unsplashQuery: encodeURIComponent(imageQuery),
+        image: aiImageUrl,
         seoScore: 88 + Math.floor(Math.random() * 10),
         words: 1200 + Math.floor(Math.random() * 500),
         keywords: Math.min(kw.keyword.split(" ").length + 2, 7),
