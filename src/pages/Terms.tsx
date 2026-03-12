@@ -152,6 +152,40 @@ const Terms = () => {
             </ul>
           </div>
 
+          {/* Subscription Billing via Stripe */}
+          <div className="bg-gray-50 rounded-2xl p-6 md:p-8 mb-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Subscription Billing</h3>
+            <p className="text-gray-600 leading-relaxed mb-4">
+              Paid subscriptions (including Autopilot SEO at £199/month) are processed securely via Stripe. By subscribing, you agree to:
+            </p>
+            <ul className="list-disc pl-6 text-gray-600 space-y-2">
+              <li>Recurring monthly charges to your provided payment method</li>
+              <li>Stripe's <a href="https://stripe.com/legal" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: SKOOL_BLUE }}>Terms of Service</a> and <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: SKOOL_BLUE }}>Privacy Policy</a></li>
+              <li>Automatic renewal unless cancelled before the next billing date</li>
+              <li>Price changes communicated at least 30 days in advance</li>
+            </ul>
+            <p className="text-gray-600 leading-relaxed mt-4">
+              We do not store your full credit card details. All payment information is handled directly by Stripe's PCI-compliant infrastructure.
+            </p>
+          </div>
+
+          {/* Limitation of Liability for AI-Generated Content */}
+          <div className="bg-gray-50 rounded-2xl p-6 md:p-8 mb-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">AI-Generated Content Disclaimer</h3>
+            <p className="text-gray-600 leading-relaxed mb-4">
+              Our Autopilot SEO and blog engine services use artificial intelligence to generate content. You acknowledge and agree that:
+            </p>
+            <ul className="list-disc pl-6 text-gray-600 space-y-2">
+              <li>AI-generated content is produced algorithmically and may contain inaccuracies, errors, or outdated information</li>
+              <li>You are solely responsible for reviewing, approving, and publishing any AI-generated content to your own channels (including Facebook Pages and Google Business Profiles)</li>
+              <li>We are not liable for any consequences arising from AI-generated content published to your accounts, including but not limited to reputational damage, regulatory penalties, or loss of business</li>
+              <li>Content auto-published via connected OAuth accounts is done at your explicit instruction and enablement</li>
+            </ul>
+            <p className="text-gray-600 leading-relaxed mt-4">
+              We recommend reviewing auto-published content regularly to ensure it meets your brand standards and compliance requirements.
+            </p>
+          </div>
+
           {/* Cancellation and Refunds */}
           <div className="bg-gray-50 rounded-2xl p-6 md:p-8 mb-8">
             <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-3">
