@@ -403,6 +403,26 @@ const AutopilotSEO = () => {
             </div>
           </div>
           <div className="flex items-center gap-2.5">
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={handleForceRun}
+              disabled={forceRunning}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-colors"
+              style={{
+                backgroundColor: forceRunning ? "#F1F5F9" : "#FFF7ED",
+                borderColor: forceRunning ? "#E2E8F0" : "#FDBA74",
+                cursor: forceRunning ? "wait" : "pointer",
+              }}
+            >
+              {forceRunning ? (
+                <Loader2 className="w-3 h-3 animate-spin text-[#94A3B8]" />
+              ) : (
+                <Zap className="w-3 h-3 text-[#F97316]" />
+              )}
+              <span className="text-[11px] font-bold" style={{ color: forceRunning ? "#94A3B8" : "#EA580C" }}>
+                {forceRunning ? "Running..." : "Run Engine Now"}
+              </span>
+            </motion.button>
             <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#ECFDF5] border border-[#A7F3D0]">
               <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: BRAND_EMERALD }} />
               <span className="text-[11px] font-bold" style={{ color: BRAND_EMERALD_DARK }}>Engine Active</span>
