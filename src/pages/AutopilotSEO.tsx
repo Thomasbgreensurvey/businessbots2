@@ -295,7 +295,7 @@ const AutopilotSEO = () => {
         .from("profiles")
         .select("is_paid")
         .eq("id", session.user.id)
-        .single();
+        .single() as { data: { is_paid?: boolean } | null };
       if (data) setIsPaid(data.is_paid ?? false);
     };
     checkPaidStatus();
