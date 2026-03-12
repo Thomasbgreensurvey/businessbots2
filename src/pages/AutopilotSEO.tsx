@@ -691,12 +691,12 @@ const AutopilotSEO = () => {
                           <tr key={i} className="hover:bg-[#FAFBFC] transition-colors">
                             <td className="py-3 px-4 text-xs font-bold text-[#0F172A]">{item.metric}</td>
                             <td className="py-3 px-4">
-                              <span className="inline-flex px-2 py-0.5 rounded text-[11px] font-bold" style={{ backgroundColor: "#E2E8F0", color: "#334155" }}>
+                              <span className="inline-flex px-2.5 py-1 rounded text-[11px] font-bold" style={{ backgroundColor: "#0F172A", color: "#FFFFFF" }}>
                                 {item.value}
                               </span>
                             </td>
                             <td className="py-3 px-4">
-                              <span className="inline-flex px-2 py-0.5 rounded text-[11px] font-bold" style={{ backgroundColor: "#D1FAE5", color: "#047857" }}>
+                              <span className="inline-flex px-2.5 py-1 rounded text-[11px] font-bold" style={{ backgroundColor: BRAND_BLUE, color: "#FFFFFF" }}>
                                 {item.optimal}
                               </span>
                             </td>
