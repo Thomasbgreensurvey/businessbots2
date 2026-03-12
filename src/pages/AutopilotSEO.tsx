@@ -610,6 +610,140 @@ const AutopilotSEO = () => {
           )}
         </AnimatePresence>
 
+        {/* ─── Deep Audit Results ─── */}
+        <AnimatePresence>
+          {scanResult && (scanResult.technicalHealth?.length || scanResult.contentMetrics?.length || scanResult.topicClusters?.length) && (
+            <motion.section
+              key="deep-audit"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <div className="flex items-center gap-2 mb-5">
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                  style={{ background: `linear-gradient(135deg, ${BRAND_BLUE}, ${BRAND_BLUE_DARK})` }}>
+                  <Activity className="w-3.5 h-3.5 text-white" />
+                </div>
+                <h2 className="text-lg font-bold text-[#0F172A]">Deep Audit Results</h2>
+              </div>
+
+              <div className="grid lg:grid-cols-3 gap-5">
+
+                {/* Table 1: On-Page Health */}
+                {scanResult.technicalHealth && scanResult.technicalHealth.length > 0 && (
+                  <div className="bg-white rounded-2xl overflow-hidden" style={{ boxShadow: "0 8px 30px rgb(0,0,0,0.04)" }}>
+                    <div className="px-4 py-3 border-b-2 border-[#F1F5F9]">
+                      <h3 className="text-sm font-bold text-[#0F172A]">On-Page Health</h3>
+                    </div>
+                    <table className="w-full text-sm text-left">
+                      <thead>
+                        <tr className="bg-[#F8FAFC]">
+                          <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Status</th>
+                          <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Element</th>
+                          <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Recommendation</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[#F1F5F9]">
+                        {scanResult.technicalHealth.map((item, i) => (
+                          <tr key={i} className="hover:bg-[#FAFBFC] transition-colors">
+                            <td className="py-3 px-4">
+                              {item.status === "Pass" && (
+                                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full" style={{ backgroundColor: "#D1FAE5" }}>
+                                  <CheckCircle2 className="w-3.5 h-3.5" style={{ color: "#10B981" }} />
+                                </span>
+                              )}
+                              {item.status === "Warning" && (
+                                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full" style={{ backgroundColor: "#FEF3C7" }}>
+                                  <AlertCircle className="w-3.5 h-3.5" style={{ color: "#F59E0B" }} />
+                                </span>
+                              )}
+                              {item.status === "Fail" && (
+                                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full" style={{ backgroundColor: "#FEE2E2" }}>
+                                  <AlertCircle className="w-3.5 h-3.5" style={{ color: "#EF4444" }} />
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-3 px-4 text-xs font-bold text-[#0F172A]">{item.element}</td>
+                            <td className="py-3 px-4 text-xs text-[#475569] leading-relaxed">{item.recommendation}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* Table 2: Content Analysis */}
+                {scanResult.contentMetrics && scanResult.contentMetrics.length > 0 && (
+                  <div className="bg-white rounded-2xl overflow-hidden" style={{ boxShadow: "0 8px 30px rgb(0,0,0,0.04)" }}>
+                    <div className="px-4 py-3 border-b-2 border-[#F1F5F9]">
+                      <h3 className="text-sm font-bold text-[#0F172A]">Content Analysis</h3>
+                    </div>
+                    <table className="w-full text-sm text-left">
+                      <thead>
+                        <tr className="bg-[#F8FAFC]">
+                          <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Metric</th>
+                          <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Current</th>
+                          <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Optimal</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[#F1F5F9]">
+                        {scanResult.contentMetrics.map((item, i) => (
+                          <tr key={i} className="hover:bg-[#FAFBFC] transition-colors">
+                            <td className="py-3 px-4 text-xs font-bold text-[#0F172A]">{item.metric}</td>
+                            <td className="py-3 px-4">
+                              <span className="inline-flex px-2 py-0.5 rounded text-[11px] font-bold" style={{ backgroundColor: "#E2E8F0", color: "#334155" }}>
+                                {item.value}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className="inline-flex px-2 py-0.5 rounded text-[11px] font-bold" style={{ backgroundColor: "#D1FAE5", color: "#047857" }}>
+                                {item.optimal}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* Table 3: Topic Clusters */}
+                {scanResult.topicClusters && scanResult.topicClusters.length > 0 && (
+                  <div className="bg-white rounded-2xl overflow-hidden" style={{ boxShadow: "0 8px 30px rgb(0,0,0,0.04)" }}>
+                    <div className="px-4 py-3 border-b-2 border-[#F1F5F9]">
+                      <h3 className="text-sm font-bold text-[#0F172A]">Topic Clusters</h3>
+                    </div>
+                    <table className="w-full text-sm text-left">
+                      <thead>
+                        <tr className="bg-[#F8FAFC]">
+                          <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Cluster</th>
+                          <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">Relevance</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[#F1F5F9]">
+                        {scanResult.topicClusters.map((item, i) => (
+                          <tr key={i} className="hover:bg-[#FAFBFC] transition-colors">
+                            <td className="py-3 px-4 text-xs font-bold text-[#0F172A]">{item.clusterName}</td>
+                            <td className="py-3 px-4">
+                              <div className="flex items-center gap-2">
+                                <div className="flex-1 h-2 rounded-full bg-[#F1F5F9] overflow-hidden">
+                                  <div className="h-full rounded-full" style={{ width: `${item.relevanceScore}%`, backgroundColor: BRAND_BLUE }} />
+                                </div>
+                                <span className="text-[11px] font-extrabold text-[#0F172A] w-8 text-right">{item.relevanceScore}%</span>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+              </div>
+            </motion.section>
+          )}
+        </AnimatePresence>
+
         {/* ─── Generating Content Strategy Animation ─── */}
         <AnimatePresence>
           {scanState === "generating" && (
