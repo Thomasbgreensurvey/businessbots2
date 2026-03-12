@@ -232,18 +232,21 @@ const SEOGauge = ({ score, size = 160 }: { score: number; size?: number }) => {
   );
 };
 
-/* ── Solid Badge ── */
+/* ── Solid Badge (all inline styles to guarantee solid rendering) ── */
+const badgeStyles: Record<string, { bg: string; text: string; border: string }> = {
+  blue: { bg: BRAND_BLUE_LIGHT, text: BRAND_BLUE, border: BRAND_BLUE_BORDER },
+  emerald: { bg: "#ECFDF5", text: "#059669", border: "#A7F3D0" },
+  amber: { bg: "#FFFBEB", text: "#D97706", border: "#FDE68A" },
+  red: { bg: "#FEF2F2", text: "#DC2626", border: "#FECACA" },
+  slate: { bg: "#F8FAFC", text: "#475569", border: "#E2E8F0" },
+};
+
 const SolidBadge = ({ children, color = "blue" }: { children: React.ReactNode; color?: string }) => {
-  const colors: Record<string, string> = {
-    blue: `bg-[${BRAND_BLUE_LIGHT}] text-[${BRAND_BLUE}] border-[${BRAND_BLUE_BORDER}]`,
-    emerald: "bg-[#ECFDF5] text-[#059669] border-[#A7F3D0]",
-    amber: "bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]",
-    red: "bg-[#FEF2F2] text-[#DC2626] border-[#FECACA]",
-    slate: "bg-[#F8FAFC] text-[#475569] border-[#E2E8F0]",
-  };
+  const s = badgeStyles[color] || badgeStyles.blue;
   return (
-    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border ${colors[color] || colors.blue}`}
-      style={color === "blue" ? { backgroundColor: BRAND_BLUE_LIGHT, color: BRAND_BLUE, borderColor: BRAND_BLUE_BORDER } : {}}
+    <span
+      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold"
+      style={{ backgroundColor: s.bg, color: s.text, borderWidth: "1px", borderStyle: "solid", borderColor: s.border }}
     >
       {children}
     </span>
