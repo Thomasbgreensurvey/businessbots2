@@ -114,25 +114,42 @@ function generateScheduleDate(dayOffset: number): string {
   return d.toLocaleDateString("en-GB", { month: "short", day: "numeric", year: "numeric" });
 }
 
-/* ── Blog card image with fallback ── */
-const BlogImage = ({ src, title, className = "" }: { src: string; title: string; className?: string }) => {
+/* ── Keyword-themed gradients for blog cards ── */
+const CARD_GRADIENTS = [
+  "linear-gradient(135deg, #0066FF, #4F46E5)",
+  "linear-gradient(135deg, #059669, #0D9488)",
+  "linear-gradient(135deg, #D97706, #DC2626)",
+  "linear-gradient(135deg, #7C3AED, #2563EB)",
+  "linear-gradient(135deg, #0891B2, #0066FF)",
+  "linear-gradient(135deg, #059669, #2563EB)",
+  "linear-gradient(135deg, #DC2626, #9333EA)",
+  "linear-gradient(135deg, #0066FF, #059669)",
+];
+
+/* ── Blog card image with keyword overlay ── */
+const BlogImage = ({ src, title, keyword, index, className = "" }: { src: string; title: string; keyword: string; index: number; className?: string }) => {
   const [failed, setFailed] = useState(false);
-  const initials = title.split(" ").slice(0, 2).map(w => w[0]?.toUpperCase() || "").join("");
+  const gradient = CARD_GRADIENTS[index % CARD_GRADIENTS.length];
 
   if (failed) {
     return (
-      <div className={`flex items-center justify-center text-white text-2xl font-extrabold ${className}`}
-        style={{ background: `linear-gradient(135deg, ${BRAND_BLUE}, #4F46E5)` }}>
-        {initials}
+      <div className={`flex flex-col items-center justify-center text-white ${className}`}
+        style={{ background: gradient }}>
+        <span className="text-2xl font-extrabold mb-1 drop-shadow-lg text-center px-4 leading-tight">{keyword}</span>
+        <span className="text-[10px] font-semibold uppercase tracking-widest opacity-70">AI Blog Content</span>
       </div>
     );
   }
 
   return (
-    <>
+    <div className={`relative ${className}`}>
       <div className="absolute inset-0 animate-pulse bg-slate-200" />
-      <img src={src} alt={title} className={`relative z-10 ${className}`} loading="lazy" onError={() => setFailed(true)} />
-    </>
+      <img src={src} alt={title} className="absolute inset-0 w-full h-full object-cover" loading="lazy" onError={() => setFailed(true)} />
+      {/* Keyword overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 flex items-end p-3">
+        <span className="text-white text-[10px] font-bold uppercase tracking-wider drop-shadow-md">{keyword}</span>
+      </div>
+    </div>
   );
 };
 
@@ -209,8 +226,9 @@ const AutopilotSEO = () => {
       const kw = scanResult.keywords[i % scanResult.keywords.length];
       const titleFn = blogTitleTemplates[i % blogTitleTemplates.length];
       const excerptFn = blogExcerptTemplates[i % blogExcerptTemplates.length];
-      const imagePrompt = kw.imageQuery || kw.keyword;
-      const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt + " professional high quality editorial photography")}?width=800&height=400&nologo=true`;
+      // Use picsum with a seed from keyword hash for unique, reliable images
+      const seed = Math.abs([...kw.keyword].reduce((a, c) => a + c.charCodeAt(0), 0) + i);
+      const aiImageUrl = `https://picsum.photos/seed/${seed}/800/400`;
       blogs.push({
         title: titleFn(kw.keyword),
         excerpt: excerptFn(kw.keyword),
@@ -600,7 +618,7 @@ const AutopilotSEO = () => {
                   >
                     {/* Cover Image — AI generated from keyword */}
                     <div className="relative h-48 overflow-hidden rounded-t-2xl bg-slate-200">
-                      <BlogImage src={blog.image} title={blog.title} className="w-full h-48 object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-500" />
+                      <BlogImage src={blog.image} title={blog.title} keyword={blog.sourceKeyword} index={index} className="w-full h-48 object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-500" />
                       <div className="absolute top-3 right-3">
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-white border-2" style={{ color: BRAND_EMERALD_DARK, borderColor: "#A7F3D0" }}>
                           <CheckCircle2 className="w-3 h-3" /> {blog.seoScore}%
@@ -662,7 +680,7 @@ const AutopilotSEO = () => {
                     {/* Frosted background content */}
                     <div className="filter blur-[8px] saturate-150 pointer-events-none select-none">
                       <div className="relative h-48 overflow-hidden bg-slate-200">
-                        <BlogImage src={blog.image} title={blog.title} className="w-full h-48 object-cover rounded-t-2xl" />
+                        <BlogImage src={blog.image} title={blog.title} keyword={blog.sourceKeyword} index={index + 2} className="w-full h-48 object-cover rounded-t-2xl" />
                       </div>
                       <div className="p-5">
                         <h3 className="text-sm font-bold text-[#0F172A] leading-snug mb-2 line-clamp-2">{blog.title}</h3>
