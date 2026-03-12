@@ -64,17 +64,19 @@ serve(async (req) => {
       });
     }
 
+    // Safely parse AI response — gateway may return HTML on errors
     const aiText = await aiRes.text();
-    let aiData;
+    let aiData: any;
     try {
       aiData = JSON.parse(aiText);
-    } catch {
-      console.error("AI returned non-JSON:", aiText.substring(0, 200));
-      return new Response(JSON.stringify({ success: false, error: "AI returned an invalid response. Please retry." }), {
+    } catch (_parseErr) {
+      console.error("AI gateway returned non-JSON (len:", aiText.length, "):", aiText.substring(0, 300));
+      return new Response(JSON.stringify({ success: false, error: "AI gateway returned an invalid response. Please retry." }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    const imageData = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
+    const imageData = aiData?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
     if (!imageData || !imageData.startsWith("data:image")) {
       console.error("No image returned from AI");
