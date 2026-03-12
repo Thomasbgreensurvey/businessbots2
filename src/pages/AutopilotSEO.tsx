@@ -126,12 +126,56 @@ const CARD_GRADIENTS = [
   "linear-gradient(135deg, #0066FF, #059669)",
 ];
 
-/* ── Blog card image with keyword overlay ── */
-const BlogImage = ({ src, title, keyword, index, className = "" }: { src: string; title: string; keyword: string; index: number; className?: string }) => {
+/* ── Blog card image with AI generation and keyword overlay ── */
+const BlogImage = ({ keyword, industry, index, className = "" }: { keyword: string; industry: string; index: number; className?: string }) => {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const gradient = CARD_GRADIENTS[index % CARD_GRADIENTS.length];
 
-  if (failed) {
+  useEffect(() => {
+    let cancelled = false;
+    const fetchImage = async () => {
+      setLoading(true);
+      setFailed(false);
+      try {
+        const { data, error } = await supabase.functions.invoke("generate-cover-image", {
+          body: { keyword, industry },
+        });
+        if (cancelled) return;
+        if (error || !data?.success || !data?.url) {
+          console.warn("AI image generation failed for:", keyword, error || data?.error);
+          setFailed(true);
+        } else {
+          setImageUrl(data.url);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          console.warn("AI image fetch error:", err);
+          setFailed(true);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    fetchImage();
+    return () => { cancelled = true; };
+  }, [keyword, industry]);
+
+  // Loading skeleton with spinner
+  if (loading) {
+    return (
+      <div className={`flex items-center justify-center bg-slate-200 animate-pulse ${className}`}>
+        <div className="flex flex-col items-center gap-2">
+          <Loader2 className="w-6 h-6 text-slate-400 animate-spin" />
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Generating AI image...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback gradient with keyword
+  if (failed || !imageUrl) {
     return (
       <div className={`flex flex-col items-center justify-center text-white ${className}`}
         style={{ background: gradient }}>
@@ -143,8 +187,7 @@ const BlogImage = ({ src, title, keyword, index, className = "" }: { src: string
 
   return (
     <div className={`relative ${className}`}>
-      <div className="absolute inset-0 animate-pulse bg-slate-200" />
-      <img src={src} alt={title} className="absolute inset-0 w-full h-full object-cover" loading="lazy" onError={() => setFailed(true)} />
+      <img src={imageUrl} alt={keyword} className="absolute inset-0 w-full h-full object-cover" loading="lazy" onError={() => setFailed(true)} />
       {/* Keyword overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 flex items-end p-3">
         <span className="text-white text-[10px] font-bold uppercase tracking-wider drop-shadow-md">{keyword}</span>
