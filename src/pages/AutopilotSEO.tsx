@@ -264,18 +264,13 @@ const AutopilotSEO = () => {
   const generatedBlogs = useMemo(() => {
     if (!scanResult?.keywords?.length) return [];
     const blogs = [];
-    // Generate up to 6 blogs by cycling through keywords
     for (let i = 0; i < Math.min(6, scanResult.keywords.length * 2); i++) {
       const kw = scanResult.keywords[i % scanResult.keywords.length];
       const titleFn = blogTitleTemplates[i % blogTitleTemplates.length];
       const excerptFn = blogExcerptTemplates[i % blogExcerptTemplates.length];
-      // Use picsum with a seed from keyword hash for unique, reliable images
-      const seed = Math.abs([...kw.keyword].reduce((a, c) => a + c.charCodeAt(0), 0) + i);
-      const aiImageUrl = `https://picsum.photos/seed/${seed}/800/400`;
       blogs.push({
         title: titleFn(kw.keyword),
         excerpt: excerptFn(kw.keyword),
-        image: aiImageUrl,
         seoScore: 88 + Math.floor(Math.random() * 10),
         words: 1200 + Math.floor(Math.random() * 500),
         keywords: Math.min(kw.keyword.split(" ").length + 2, 7),
