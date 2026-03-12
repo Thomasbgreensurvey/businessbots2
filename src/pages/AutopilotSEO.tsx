@@ -600,14 +600,7 @@ const AutopilotSEO = () => {
                   >
                     {/* Cover Image — AI generated from keyword */}
                     <div className="relative h-48 overflow-hidden rounded-t-2xl bg-slate-200">
-                      <div className="absolute inset-0 animate-pulse bg-slate-200" />
-                      <img
-                        src={blog.image}
-                        alt={blog.title}
-                        className="relative z-10 w-full h-48 object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                        onError={(e) => handleImageError(e, blog.title)}
-                      />
+                      <BlogImage src={blog.image} title={blog.title} className="w-full h-48 object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-500" />
                       <div className="absolute top-3 right-3">
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-white border-2" style={{ color: BRAND_EMERALD_DARK, borderColor: "#A7F3D0" }}>
                           <CheckCircle2 className="w-3 h-3" /> {blog.seoScore}%
