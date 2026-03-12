@@ -201,12 +201,12 @@ const AutopilotSEO = () => {
       const kw = scanResult.keywords[i % scanResult.keywords.length];
       const titleFn = blogTitleTemplates[i % blogTitleTemplates.length];
       const excerptFn = blogExcerptTemplates[i % blogExcerptTemplates.length];
-      const imageQuery = kw.imageQuery || kw.keyword.split(" ").slice(0, 3).join(" ");
+      const imagePrompt = kw.imageQuery || kw.keyword;
+      const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt + " professional high quality editorial photography")}?width=800&height=400&nologo=true`;
       blogs.push({
         title: titleFn(kw.keyword),
         excerpt: excerptFn(kw.keyword),
-        image: `https://images.unsplash.com/photo-placeholder?w=800&q=90`,
-        unsplashQuery: encodeURIComponent(imageQuery),
+        image: aiImageUrl,
         seoScore: 88 + Math.floor(Math.random() * 10),
         words: 1200 + Math.floor(Math.random() * 500),
         keywords: Math.min(kw.keyword.split(" ").length + 2, 7),
@@ -590,12 +590,13 @@ const AutopilotSEO = () => {
                     transition={{ delay: 0.15 + index * 0.1 }}
                     className={`bg-white rounded-2xl ${deepShadow} overflow-hidden group hover:translate-y-[-4px] transition-all duration-300`}
                   >
-                    {/* Cover Image — dynamic from keyword */}
-                    <div className="relative h-48 overflow-hidden">
+                    {/* Cover Image — AI generated from keyword */}
+                    <div className="relative h-48 overflow-hidden rounded-t-2xl bg-slate-200">
+                      <div className="absolute inset-0 animate-pulse bg-slate-200" />
                       <img
-                        src={`https://loremflickr.com/800/400/${blog.unsplashQuery}`}
+                        src={blog.image}
                         alt={blog.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="relative z-10 w-full h-48 object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                         onError={(e) => handleImageError(e, blog.title)}
                       />
@@ -659,8 +660,9 @@ const AutopilotSEO = () => {
                   >
                     {/* Frosted background content */}
                     <div className="filter blur-[8px] saturate-150 pointer-events-none select-none">
-                      <div className="h-48 overflow-hidden">
-                        <img src={`https://loremflickr.com/800/400/${blog.unsplashQuery}`} alt="" className="w-full h-full object-cover" loading="lazy" onError={(e) => handleImageError(e, blog.title)} />
+                      <div className="h-48 overflow-hidden bg-slate-200">
+                        <div className="absolute inset-0 animate-pulse bg-slate-200" />
+                        <img src={blog.image} alt="" className="relative z-10 w-full h-48 object-cover rounded-t-2xl" loading="lazy" onError={(e) => handleImageError(e, blog.title)} />
                       </div>
                       <div className="p-5">
                         <h3 className="text-sm font-bold text-[#0F172A] leading-snug mb-2 line-clamp-2">{blog.title}</h3>
