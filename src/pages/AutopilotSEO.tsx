@@ -660,8 +660,9 @@ const AutopilotSEO = () => {
                   >
                     {/* Frosted background content */}
                     <div className="filter blur-[8px] saturate-150 pointer-events-none select-none">
-                      <div className="h-48 overflow-hidden">
-                        <img src={`https://loremflickr.com/800/400/${blog.unsplashQuery}`} alt="" className="w-full h-full object-cover" loading="lazy" onError={(e) => handleImageError(e, blog.title)} />
+                      <div className="h-48 overflow-hidden bg-slate-200">
+                        <div className="absolute inset-0 animate-pulse bg-slate-200" />
+                        <img src={blog.image} alt="" className="relative z-10 w-full h-48 object-cover rounded-t-2xl" loading="lazy" onError={(e) => handleImageError(e, blog.title)} />
                       </div>
                       <div className="p-5">
                         <h3 className="text-sm font-bold text-[#0F172A] leading-snug mb-2 line-clamp-2">{blog.title}</h3>
