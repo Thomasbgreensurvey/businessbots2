@@ -680,7 +680,7 @@ const AutopilotSEO = () => {
                     {/* Frosted background content */}
                     <div className="filter blur-[8px] saturate-150 pointer-events-none select-none">
                       <div className="relative h-48 overflow-hidden bg-slate-200">
-                        <BlogImage src={blog.image} title={blog.title} className="w-full h-48 object-cover rounded-t-2xl" />
+                        <BlogImage src={blog.image} title={blog.title} keyword={blog.sourceKeyword} index={index + 2} className="w-full h-48 object-cover rounded-t-2xl" />
                       </div>
                       <div className="p-5">
                         <h3 className="text-sm font-bold text-[#0F172A] leading-snug mb-2 line-clamp-2">{blog.title}</h3>
