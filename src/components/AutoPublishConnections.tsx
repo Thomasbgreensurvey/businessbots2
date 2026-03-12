@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { CheckCircle2, Loader2, LogOut } from "lucide-react";
+import { CheckCircle2, Loader2, LogOut, Lock, Sparkles, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const BRAND_BLUE = "#0066FF";
-const BRAND_BLUE_DARK = "#0052CC";
 
 /* ── Official Brand SVGs ── */
 const FacebookLogo = () => (
@@ -30,10 +30,16 @@ interface Connection {
   is_active: boolean;
 }
 
-const AutoPublishConnections = () => {
+interface AutoPublishConnectionsProps {
+  isPaid?: boolean;
+}
+
+const AutoPublishConnections = ({ isPaid = false }: AutoPublishConnectionsProps) => {
+  const navigate = useNavigate();
   const [connections, setConnections] = useState<Connection[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
     const loadConnections = async () => {
@@ -56,6 +62,12 @@ const AutoPublishConnections = () => {
   const googleConnection = connections.find(c => c.provider === "google_business");
 
   const handleToggle = async (provider: string, currentState: boolean) => {
+    // Paywall gate: if not paid and trying to turn ON, show modal
+    if (!isPaid && !currentState) {
+      setShowPaywall(true);
+      return;
+    }
+
     if (!userId) return;
     const { error } = await supabase
       .from("oauth_connections")
@@ -121,89 +133,186 @@ const AutoPublishConnections = () => {
   ];
 
   return (
-    <div className="grid sm:grid-cols-2 gap-5">
-      {cards.map((card) => {
-        const isConnected = !!card.connection;
-        const isActive = card.connection?.is_active ?? false;
+    <>
+      <div className="grid sm:grid-cols-2 gap-5">
+        {cards.map((card) => {
+          const isConnected = !!card.connection;
+          const isActive = card.connection?.is_active ?? false;
 
-        return (
-          <motion.div
-            key={card.provider}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-2xl p-6 border-2 transition-all"
-            style={{
-              borderColor: isConnected ? card.brandColor : "#E2E8F0",
-              boxShadow: isConnected
-                ? `0 8px 30px ${card.brandColor}20`
-                : "0 8px 30px rgb(0,0,0,0.04)",
-            }}
-          >
-            {/* Header */}
-            <div className="flex items-center gap-3 mb-4">
-              <card.Logo />
-              <div className="flex-1">
-                <h3 className="text-sm font-bold text-[#0F172A]">{card.label}</h3>
-                <p className="text-[11px] text-[#64748B]">{card.description}</p>
-              </div>
-            </div>
-
-            {/* State 1: Unconnected */}
-            {!isConnected && (
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => handleConnect(card.provider)}
-                className="w-full py-3 rounded-xl text-white text-sm font-bold transition-all"
-                style={{
-                  background: `linear-gradient(135deg, ${card.brandColor}, ${card.brandColor}CC)`,
-                  boxShadow: `0 6px 20px ${card.brandColor}4D`,
-                }}
-              >
-                Connect {card.label}
-              </motion.button>
-            )}
-
-            {/* State 3: Active / Connected */}
-            {isConnected && (
-              <div className="space-y-3">
-                {/* Connected badge */}
-                <div className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ backgroundColor: "#ECFDF5", border: "2px solid #A7F3D0" }}>
-                  <CheckCircle2 className="w-4 h-4" style={{ color: "#10B981" }} />
-                  <span className="text-xs font-bold" style={{ color: "#047857" }}>
-                    Connected to {card.connectedName || card.label}
-                  </span>
+          return (
+            <motion.div
+              key={card.provider}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-2xl p-6 border-2 transition-all"
+              style={{
+                borderColor: isConnected ? card.brandColor : "#E2E8F0",
+                boxShadow: isConnected
+                  ? `0 8px 30px ${card.brandColor}20`
+                  : "0 8px 30px rgb(0,0,0,0.04)",
+              }}
+            >
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-4">
+                <card.Logo />
+                <div className="flex-1">
+                  <h3 className="text-sm font-bold text-[#0F172A]">{card.label}</h3>
+                  <p className="text-[11px] text-[#64748B]">{card.description}</p>
                 </div>
+              </div>
 
-                {/* Toggle + Disconnect */}
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-[#64748B]">Auto-publish</span>
+              {/* Unconnected */}
+              {!isConnected && (
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleConnect(card.provider)}
+                  className="w-full py-3 rounded-xl text-white text-sm font-bold transition-all"
+                  style={{
+                    background: `linear-gradient(135deg, ${card.brandColor}, ${card.brandColor}CC)`,
+                    boxShadow: `0 6px 20px ${card.brandColor}4D`,
+                  }}
+                >
+                  Connect {card.label}
+                </motion.button>
+              )}
+
+              {/* Connected */}
+              {isConnected && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ backgroundColor: "#ECFDF5", border: "2px solid #A7F3D0" }}>
+                    <CheckCircle2 className="w-4 h-4" style={{ color: "#10B981" }} />
+                    <span className="text-xs font-bold" style={{ color: "#047857" }}>
+                      Connected to {card.connectedName || card.label}
+                    </span>
+                  </div>
+
+                  {/* Toggle + Disconnect */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-semibold text-[#64748B]">Auto-publish</span>
+                      {!isPaid && !isActive && (
+                        <Lock className="w-3 h-3 text-[#94A3B8]" />
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleToggle(card.provider, isActive)}
+                      className="relative w-12 h-[26px] rounded-full transition-colors cursor-pointer"
+                      style={{
+                        backgroundColor: isActive
+                          ? card.brandColor
+                          : !isPaid
+                            ? "#E2E8F0"
+                            : "#CBD5E1",
+                        opacity: !isPaid && !isActive ? 0.6 : 1,
+                      }}
+                    >
+                      <motion.div
+                        className="absolute top-[3px] w-5 h-5 rounded-full bg-white"
+                        style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.2)" }}
+                        animate={{ left: isActive ? 24 : 3 }}
+                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                      />
+                    </button>
+                  </div>
+
                   <button
-                    onClick={() => handleToggle(card.provider, isActive)}
-                    className="relative w-12 h-[26px] rounded-full transition-colors cursor-pointer"
-                    style={{ backgroundColor: isActive ? card.brandColor : "#CBD5E1" }}
+                    onClick={() => handleDisconnect(card.provider)}
+                    className="flex items-center gap-1.5 text-[11px] font-semibold text-[#EF4444] hover:underline"
                   >
-                    <motion.div
-                      className="absolute top-[3px] w-5 h-5 rounded-full bg-white"
-                      style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.2)" }}
-                      animate={{ left: isActive ? 24 : 3 }}
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                    />
+                    <LogOut className="w-3 h-3" /> Disconnect
                   </button>
                 </div>
+              )}
+            </motion.div>
+          );
+        })}
+      </div>
 
-                <button
-                  onClick={() => handleDisconnect(card.provider)}
-                  className="flex items-center gap-1.5 text-[11px] font-semibold text-[#EF4444] hover:underline"
+      {/* Premium Paywall Modal */}
+      <AnimatePresence>
+        {showPaywall && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+            onClick={() => setShowPaywall(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              className="bg-white rounded-3xl p-8 max-w-md w-full relative"
+              style={{ boxShadow: "0 30px 80px rgba(0,0,0,0.25)" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowPaywall(false)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#F1F5F9] flex items-center justify-center hover:bg-[#E2E8F0] transition-colors"
+              >
+                <X className="w-4 h-4 text-[#64748B]" />
+              </button>
+
+              <div className="text-center">
+                <div
+                  className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center"
+                  style={{
+                    background: `linear-gradient(135deg, ${BRAND_BLUE}, #4F46E5)`,
+                    boxShadow: `0 8px 24px ${BRAND_BLUE}4D`,
+                  }}
                 >
-                  <LogOut className="w-3 h-3" /> Disconnect
-                </button>
+                  <Sparkles className="w-8 h-8 text-white" />
+                </div>
+
+                <h3 className="text-xl font-extrabold text-[#0F172A] mb-2">
+                  Unlock Auto-Publishing
+                </h3>
+                <p className="text-sm text-[#64748B] leading-relaxed mb-6">
+                  Upgrade to <strong className="text-[#0F172A]">£199/mo</strong> to start your 24-hour
+                  content engine. AI-generated posts published automatically to Facebook &amp; Google.
+                </p>
+
+                <div className="space-y-3 text-left mb-6">
+                  {[
+                    "Daily AI-generated blog posts",
+                    "Auto-publish to Facebook Pages",
+                    "Auto-publish to Google Business",
+                    "SEO-optimised content engine",
+                  ].map((feature) => (
+                    <div key={feature} className="flex items-center gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: "#10B981" }} />
+                      <span className="text-sm text-[#334155]">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setShowPaywall(false);
+                    navigate("/pricing");
+                  }}
+                  className="w-full py-3.5 rounded-xl text-white text-sm font-bold transition-all"
+                  style={{
+                    background: `linear-gradient(135deg, ${BRAND_BLUE}, #4F46E5)`,
+                    boxShadow: `0 6px 24px ${BRAND_BLUE}4D`,
+                  }}
+                >
+                  Start Free Trial →
+                </motion.button>
+
+                <p className="text-[11px] text-[#94A3B8] mt-3">
+                  No credit card required · Cancel anytime
+                </p>
               </div>
-            )}
+            </motion.div>
           </motion.div>
-        );
-      })}
-    </div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
