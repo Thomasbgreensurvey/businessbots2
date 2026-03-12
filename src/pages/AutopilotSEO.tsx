@@ -114,18 +114,26 @@ function generateScheduleDate(dayOffset: number): string {
   return d.toLocaleDateString("en-GB", { month: "short", day: "numeric", year: "numeric" });
 }
 
-/* ── Image fallback handler ── */
-const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>, title: string) => {
-  const img = e.currentTarget;
-  const parent = img.parentElement;
-  if (parent) {
-    const initials = title.split(" ").slice(0, 2).map(w => w[0]?.toUpperCase() || "").join("");
-    const fallback = document.createElement("div");
-    fallback.className = "w-full h-full flex items-center justify-center text-white text-2xl font-extrabold";
-    fallback.style.background = `linear-gradient(135deg, ${BRAND_BLUE}, #4F46E5)`;
-    fallback.textContent = initials;
-    img.replaceWith(fallback);
+/* ── Blog card image with fallback ── */
+const BlogImage = ({ src, title, className = "" }: { src: string; title: string; className?: string }) => {
+  const [failed, setFailed] = useState(false);
+  const initials = title.split(" ").slice(0, 2).map(w => w[0]?.toUpperCase() || "").join("");
+
+  if (failed) {
+    return (
+      <div className={`flex items-center justify-center text-white text-2xl font-extrabold ${className}`}
+        style={{ background: `linear-gradient(135deg, ${BRAND_BLUE}, #4F46E5)` }}>
+        {initials}
+      </div>
+    );
   }
+
+  return (
+    <>
+      <div className="absolute inset-0 animate-pulse bg-slate-200" />
+      <img src={src} alt={title} className={`relative z-10 ${className}`} loading="lazy" onError={() => setFailed(true)} />
+    </>
+  );
 };
 
 /* ── Circular Gauge Component ── */
@@ -592,14 +600,7 @@ const AutopilotSEO = () => {
                   >
                     {/* Cover Image — AI generated from keyword */}
                     <div className="relative h-48 overflow-hidden rounded-t-2xl bg-slate-200">
-                      <div className="absolute inset-0 animate-pulse bg-slate-200" />
-                      <img
-                        src={blog.image}
-                        alt={blog.title}
-                        className="relative z-10 w-full h-48 object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                        onError={(e) => handleImageError(e, blog.title)}
-                      />
+                      <BlogImage src={blog.image} title={blog.title} className="w-full h-48 object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-500" />
                       <div className="absolute top-3 right-3">
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-white border-2" style={{ color: BRAND_EMERALD_DARK, borderColor: "#A7F3D0" }}>
                           <CheckCircle2 className="w-3 h-3" /> {blog.seoScore}%
@@ -660,9 +661,8 @@ const AutopilotSEO = () => {
                   >
                     {/* Frosted background content */}
                     <div className="filter blur-[8px] saturate-150 pointer-events-none select-none">
-                      <div className="h-48 overflow-hidden bg-slate-200">
-                        <div className="absolute inset-0 animate-pulse bg-slate-200" />
-                        <img src={blog.image} alt="" className="relative z-10 w-full h-48 object-cover rounded-t-2xl" loading="lazy" onError={(e) => handleImageError(e, blog.title)} />
+                      <div className="relative h-48 overflow-hidden bg-slate-200">
+                        <BlogImage src={blog.image} title={blog.title} className="w-full h-48 object-cover rounded-t-2xl" />
                       </div>
                       <div className="p-5">
                         <h3 className="text-sm font-bold text-[#0F172A] leading-snug mb-2 line-clamp-2">{blog.title}</h3>

@@ -169,16 +169,35 @@ CRITICAL RULES:
     const aiData = await aiRes.json();
     const rawContent = aiData.choices?.[0]?.message?.content || "";
 
-    // Parse JSON from the AI response (strip any markdown fences)
-    const jsonStr = rawContent.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
+    // Parse JSON from the AI response — robust extraction
+    let jsonStr = rawContent;
+    // Strip markdown code fences
+    const fenceMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (fenceMatch) {
+      jsonStr = fenceMatch[1];
+    }
+    // Fallback: find first { to last }
+    const firstBrace = jsonStr.indexOf("{");
+    const lastBrace = jsonStr.lastIndexOf("}");
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      jsonStr = jsonStr.slice(firstBrace, lastBrace + 1);
+    }
+    jsonStr = jsonStr.trim();
+
     let analysis;
     try {
       analysis = JSON.parse(jsonStr);
     } catch {
-      console.error("Failed to parse AI JSON:", rawContent);
-      return new Response(JSON.stringify({ success: false, error: "AI returned invalid analysis. Please try again." }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      console.error("Failed to parse AI JSON. Raw length:", rawContent.length, "Extracted:", jsonStr.slice(0, 200));
+      // Retry once with lenient cleanup (fix common AI typos like ], instead of },)
+      try {
+        const fixed = jsonStr.replace(/\]\s*,\s*\{/g, "},\n    {").replace(/\]\s*\n\s*\{/g, "},\n    {");
+        analysis = JSON.parse(fixed);
+      } catch {
+        return new Response(JSON.stringify({ success: false, error: "AI returned invalid analysis. Please try again." }), {
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
     }
 
     // Ensure counts match actual arrays
