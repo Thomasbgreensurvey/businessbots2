@@ -114,18 +114,26 @@ function generateScheduleDate(dayOffset: number): string {
   return d.toLocaleDateString("en-GB", { month: "short", day: "numeric", year: "numeric" });
 }
 
-/* ── Image fallback handler ── */
-const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>, title: string) => {
-  const img = e.currentTarget;
-  const parent = img.parentElement;
-  if (parent) {
-    const initials = title.split(" ").slice(0, 2).map(w => w[0]?.toUpperCase() || "").join("");
-    const fallback = document.createElement("div");
-    fallback.className = "w-full h-full flex items-center justify-center text-white text-2xl font-extrabold";
-    fallback.style.background = `linear-gradient(135deg, ${BRAND_BLUE}, #4F46E5)`;
-    fallback.textContent = initials;
-    img.replaceWith(fallback);
+/* ── Blog card image with fallback ── */
+const BlogImage = ({ src, title, className = "" }: { src: string; title: string; className?: string }) => {
+  const [failed, setFailed] = useState(false);
+  const initials = title.split(" ").slice(0, 2).map(w => w[0]?.toUpperCase() || "").join("");
+
+  if (failed) {
+    return (
+      <div className={`flex items-center justify-center text-white text-2xl font-extrabold ${className}`}
+        style={{ background: `linear-gradient(135deg, ${BRAND_BLUE}, #4F46E5)` }}>
+        {initials}
+      </div>
+    );
   }
+
+  return (
+    <>
+      <div className="absolute inset-0 animate-pulse bg-slate-200" />
+      <img src={src} alt={title} className={`relative z-10 ${className}`} loading="lazy" onError={() => setFailed(true)} />
+    </>
+  );
 };
 
 /* ── Circular Gauge Component ── */
