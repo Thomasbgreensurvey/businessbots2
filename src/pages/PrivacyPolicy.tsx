@@ -140,6 +140,40 @@ const PrivacyPolicy = () => {
             </p>
           </div>
 
+          {/* Third-Party Integrations (OAuth) */}
+          <div className="bg-gray-50 rounded-2xl p-6 md:p-8 mb-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Third-Party Integrations (OAuth)</h3>
+            <p className="text-gray-600 leading-relaxed mb-4">
+              Our Autopilot SEO service allows you to connect third-party accounts via OAuth to enable automated content publishing. Specifically:
+            </p>
+            <ul className="list-disc pl-6 text-gray-600 space-y-2">
+              <li><strong>Facebook Pages:</strong> We request OAuth access to your Facebook Page strictly for the purpose of auto-publishing blog content and SEO-optimised posts on your behalf. We access only the permissions necessary to publish to your selected Page.</li>
+              <li><strong>Google Business Profile:</strong> We request OAuth access to your Google Business Profile strictly for the purpose of auto-publishing updates and posts to your business listing.</li>
+            </ul>
+            <p className="text-gray-600 leading-relaxed mt-4">
+              <strong>Token Storage:</strong> We securely store your OAuth access tokens and refresh tokens in an encrypted database. These tokens are used solely to maintain your authorised connection and publish content as instructed by you. We never sell, share, or use your tokens or connected account data for any purpose other than delivering the service you have enabled.
+            </p>
+            <p className="text-gray-600 leading-relaxed mt-4">
+              <strong>Scope of Access:</strong> We request only the minimum permissions required (e.g., <code className="bg-gray-200 px-1 rounded text-sm">pages_manage_posts</code> for Facebook). We do not read your private messages, access your personal profile, or harvest your followers' data.
+            </p>
+          </div>
+
+          {/* Data Deletion Instructions */}
+          <div className="bg-gray-50 rounded-2xl p-6 md:p-8 mb-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Data Deletion Instructions</h3>
+            <p className="text-gray-600 leading-relaxed mb-4">
+              You can revoke third-party access and request data deletion at any time through the following methods:
+            </p>
+            <ul className="list-disc pl-6 text-gray-600 space-y-2">
+              <li><strong>Via Dashboard:</strong> Navigate to your Autopilot SEO dashboard and click "Disconnect" on any connected account. This immediately revokes our access and deletes your stored OAuth tokens.</li>
+              <li><strong>Via Email:</strong> Send a request to <a href="mailto:support@businessbots.co.uk" className="underline" style={{ color: SKOOL_BLUE }}>support@businessbots.co.uk</a> with the subject line "Data Deletion Request". We will delete all stored API tokens, account data, and any associated content within 30 days.</li>
+              <li><strong>Via Platform Settings:</strong> You can also revoke our app's access directly from your Facebook or Google account settings at any time.</li>
+            </ul>
+            <p className="text-gray-600 leading-relaxed mt-4">
+              Upon deletion, all stored access tokens, refresh tokens, page/location identifiers, and associated metadata will be permanently removed from our systems.
+            </p>
+          </div>
+
           {/* Data Sharing */}
           <div className="bg-gray-50 rounded-2xl p-6 md:p-8 mb-8">
             <h3 className="text-xl font-bold text-gray-900 mb-4">Data Sharing and Third Parties</h3>
