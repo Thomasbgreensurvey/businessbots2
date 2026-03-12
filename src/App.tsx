@@ -28,6 +28,8 @@ import PreviewArticle from "./pages/PreviewArticle";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import AutopilotSEO from "./pages/AutopilotSEO";
+import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient();
 
