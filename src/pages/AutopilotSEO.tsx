@@ -27,6 +27,23 @@ interface KeywordResult {
   imageQuery?: string;
 }
 
+interface TechnicalHealthItem {
+  element: string;
+  status: "Pass" | "Warning" | "Fail";
+  recommendation: string;
+}
+
+interface ContentMetricItem {
+  metric: string;
+  value: string;
+  optimal: string;
+}
+
+interface TopicClusterItem {
+  clusterName: string;
+  relevanceScore: number;
+}
+
 interface ScanResult {
   industry: string;
   seoScore: number;
@@ -34,6 +51,9 @@ interface ScanResult {
   keywordsFound: number;
   opportunitiesFound: number;
   keywords: KeywordResult[];
+  technicalHealth?: TechnicalHealthItem[];
+  contentMetrics?: ContentMetricItem[];
+  topicClusters?: TopicClusterItem[];
 }
 
 /* ── Official Brand SVG Icons ── */
