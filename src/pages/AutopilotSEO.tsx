@@ -226,8 +226,9 @@ const AutopilotSEO = () => {
       const kw = scanResult.keywords[i % scanResult.keywords.length];
       const titleFn = blogTitleTemplates[i % blogTitleTemplates.length];
       const excerptFn = blogExcerptTemplates[i % blogExcerptTemplates.length];
-      const imageQuery = encodeURIComponent(kw.imageQuery || kw.keyword);
-      const aiImageUrl = `https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&h=400&fit=crop&q=80`;
+      // Use picsum with a seed from keyword hash for unique, reliable images
+      const seed = Math.abs([...kw.keyword].reduce((a, c) => a + c.charCodeAt(0), 0) + i);
+      const aiImageUrl = `https://picsum.photos/seed/${seed}/800/400`;
       blogs.push({
         title: titleFn(kw.keyword),
         excerpt: excerptFn(kw.keyword),
