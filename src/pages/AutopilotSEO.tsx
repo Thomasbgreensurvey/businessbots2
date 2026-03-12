@@ -648,18 +648,18 @@ const AutopilotSEO = () => {
                           <tr key={i} className="hover:bg-[#FAFBFC] transition-colors">
                             <td className="py-3 px-4">
                               {item.status === "Pass" && (
-                                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full" style={{ backgroundColor: "#D1FAE5" }}>
-                                  <CheckCircle2 className="w-3.5 h-3.5" style={{ color: "#10B981" }} />
+                                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full" style={{ backgroundColor: "#10B981" }}>
+                                  <CheckCircle2 className="w-4 h-4" style={{ color: "#FFFFFF" }} />
                                 </span>
                               )}
                               {item.status === "Warning" && (
-                                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full" style={{ backgroundColor: "#FEF3C7" }}>
-                                  <AlertCircle className="w-3.5 h-3.5" style={{ color: "#F59E0B" }} />
+                                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full" style={{ backgroundColor: "#F59E0B" }}>
+                                  <AlertCircle className="w-4 h-4" style={{ color: "#FFFFFF" }} />
                                 </span>
                               )}
                               {item.status === "Fail" && (
-                                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full" style={{ backgroundColor: "#FEE2E2" }}>
-                                  <AlertCircle className="w-3.5 h-3.5" style={{ color: "#EF4444" }} />
+                                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full" style={{ backgroundColor: "#EF4444" }}>
+                                  <AlertCircle className="w-4 h-4" style={{ color: "#FFFFFF" }} />
                                 </span>
                               )}
                             </td>
@@ -691,12 +691,12 @@ const AutopilotSEO = () => {
                           <tr key={i} className="hover:bg-[#FAFBFC] transition-colors">
                             <td className="py-3 px-4 text-xs font-bold text-[#0F172A]">{item.metric}</td>
                             <td className="py-3 px-4">
-                              <span className="inline-flex px-2 py-0.5 rounded text-[11px] font-bold" style={{ backgroundColor: "#E2E8F0", color: "#334155" }}>
+                              <span className="inline-flex px-2.5 py-1 rounded text-[11px] font-bold" style={{ backgroundColor: "#0F172A", color: "#FFFFFF" }}>
                                 {item.value}
                               </span>
                             </td>
                             <td className="py-3 px-4">
-                              <span className="inline-flex px-2 py-0.5 rounded text-[11px] font-bold" style={{ backgroundColor: "#D1FAE5", color: "#047857" }}>
+                              <span className="inline-flex px-2.5 py-1 rounded text-[11px] font-bold" style={{ backgroundColor: BRAND_BLUE, color: "#FFFFFF" }}>
                                 {item.optimal}
                               </span>
                             </td>
