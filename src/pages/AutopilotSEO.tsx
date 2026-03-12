@@ -7,6 +7,7 @@ import {
   Target, Activity, ArrowUpRight, FileText, Lock, Pencil, Eye, Calendar
 } from "lucide-react";
 import OptimizedImage from "@/components/OptimizedImage";
+import AutoPublishConnections from "@/components/AutoPublishConnections";
 import zenImg from "@/assets/agents/zen-new.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
