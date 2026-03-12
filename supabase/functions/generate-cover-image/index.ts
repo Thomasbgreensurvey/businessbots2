@@ -64,7 +64,16 @@ serve(async (req) => {
       });
     }
 
-    const aiData = await aiRes.json();
+    const aiText = await aiRes.text();
+    let aiData;
+    try {
+      aiData = JSON.parse(aiText);
+    } catch {
+      console.error("AI returned non-JSON:", aiText.substring(0, 200));
+      return new Response(JSON.stringify({ success: false, error: "AI returned an invalid response. Please retry." }), {
+        status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const imageData = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
     if (!imageData || !imageData.startsWith("data:image")) {
