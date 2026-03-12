@@ -7,6 +7,7 @@ import {
   Target, Activity, ArrowUpRight, FileText, Lock, Pencil, Eye, Calendar
 } from "lucide-react";
 import OptimizedImage from "@/components/OptimizedImage";
+import AutoPublishConnections from "@/components/AutoPublishConnections";
 import zenImg from "@/assets/agents/zen-new.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -914,6 +915,23 @@ const AutopilotSEO = () => {
             </motion.section>
           )}
         </AnimatePresence>
+
+        {/* ─── Auto-Publish Connections (Facebook Pages & Google Business) ─── */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12 }}
+          className={`bg-white rounded-2xl ${deepShadow} p-5 md:p-8`}
+        >
+          <div className="flex items-center gap-2 mb-5">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{ background: `linear-gradient(135deg, ${BRAND_BLUE}, ${BRAND_BLUE_DARK})` }}>
+              <Zap className="w-3.5 h-3.5 text-white" />
+            </div>
+            <h2 className="text-base font-bold text-[#0F172A]">Auto-Publish Connections</h2>
+          </div>
+          <AutoPublishConnections />
+        </motion.section>
 
         {/* ─── Social Distribution Channels ─── */}
         <motion.section

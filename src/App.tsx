@@ -28,6 +28,8 @@ import PreviewArticle from "./pages/PreviewArticle";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import AutopilotSEO from "./pages/AutopilotSEO";
+import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +70,8 @@ const App = () => {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/autopilot-seo" element={<AutopilotSEO />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             {/* Redirects for old/indexed URLs to prevent 404s */}
             <Route path="/product-help" element={<Navigate to="/help-centre" replace />} />
             <Route path="/product-help/*" element={<Navigate to="/help-centre" replace />} />
