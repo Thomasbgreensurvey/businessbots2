@@ -111,7 +111,7 @@ serve(async (req) => {
       });
     }
 
-    const systemPrompt = `You are an expert SEO analyst. You will receive scraped data from a website. Analyse it and return a JSON object with EXACTLY this structure (no markdown, no code fences, just raw JSON):
+const systemPrompt = `You are an expert SEO analyst. You will receive scraped data from a website. Analyse it and return a JSON object with EXACTLY this structure (no markdown, no code fences, just raw JSON):
 
 {
   "industry": "string - the business industry/niche based on ACTUAL page content",
@@ -127,6 +127,26 @@ serve(async (req) => {
       "competition": "Low" | "Medium" | "High",
       "imageQuery": "string - a 2-3 word Unsplash search query for a photo related to this specific keyword"
     }
+  ],
+  "technicalHealth": [
+    {
+      "element": "string - e.g. Meta Description, Title Tag, H1 Tag, Image Alt Tags, HTTPS, Mobile Viewport, Open Graph Tags, Canonical Tag",
+      "status": "Pass" | "Warning" | "Fail",
+      "recommendation": "string - specific actionable recommendation based on what was found"
+    }
+  ],
+  "contentMetrics": [
+    {
+      "metric": "string - e.g. Readability, Word Count, Keyword Density, Internal Links, Content Freshness, Heading Structure",
+      "value": "string - the actual current value found",
+      "optimal": "string - the ideal/optimal target value"
+    }
+  ],
+  "topicClusters": [
+    {
+      "clusterName": "string - a topic cluster derived from the page content",
+      "relevanceScore": number (0-100)
+    }
   ]
 }
 
@@ -136,7 +156,10 @@ CRITICAL RULES:
 3. DYNAMIC ENTROPY: Every keyword MUST have a DIFFERENT opportunity score AND a DIFFERENT volume number. Never repeat the same values. Spread volumes realistically from hundreds to tens of thousands.
 4. The "imageQuery" for each keyword must describe a REAL photo related to that keyword (e.g., for "running shoes" use "running shoes closeup", for "travel agent" use "travel booking office"). Never use generic tech/AI imagery unless the site is actually about AI.
 5. The industry, summary, and keywords must ALL reflect the SAME business. If the site sells shoes, everything must be about shoes.
-6. The seoScore should reflect actual SEO quality signals: does it have a good title, meta description, headings structure, content depth?`;
+6. The seoScore should reflect actual SEO quality signals: does it have a good title, meta description, headings structure, content depth?
+7. technicalHealth MUST have 6-8 items covering real on-page SEO elements found (or missing) in the HTML. Base status on ACTUAL scraped data.
+8. contentMetrics MUST have 5-7 items with realistic current values derived from the scraped text.
+9. topicClusters MUST have 4-6 items representing genuine topic groupings from the page content. Each MUST have a DIFFERENT relevanceScore.`;
 
     const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
