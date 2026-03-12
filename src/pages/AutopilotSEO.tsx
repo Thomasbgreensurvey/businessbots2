@@ -590,12 +590,13 @@ const AutopilotSEO = () => {
                     transition={{ delay: 0.15 + index * 0.1 }}
                     className={`bg-white rounded-2xl ${deepShadow} overflow-hidden group hover:translate-y-[-4px] transition-all duration-300`}
                   >
-                    {/* Cover Image — dynamic from keyword */}
-                    <div className="relative h-48 overflow-hidden">
+                    {/* Cover Image — AI generated from keyword */}
+                    <div className="relative h-48 overflow-hidden rounded-t-2xl bg-slate-200">
+                      <div className="absolute inset-0 animate-pulse bg-slate-200" />
                       <img
-                        src={`https://loremflickr.com/800/400/${blog.unsplashQuery}`}
+                        src={blog.image}
                         alt={blog.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="relative z-10 w-full h-48 object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                         onError={(e) => handleImageError(e, blog.title)}
                       />
