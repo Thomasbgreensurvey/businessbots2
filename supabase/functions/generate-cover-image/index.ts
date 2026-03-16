@@ -1,13 +1,55 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-serve(async (req) => {
+async function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function generateWithRetry(prompt: string, apiKey: string, maxRetries = 3): Promise<Response> {
+  const models = [
+    "google/gemini-3.1-flash-image-preview",
+    "google/gemini-3-pro-image-preview",
+  ];
+
+  for (const model of models) {
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: "user", content: prompt }],
+          modalities: ["image", "text"],
+        }),
+      });
+
+      if (res.ok) return res;
+
+      const body = await res.text();
+
+      if (res.status === 429) {
+        const delay = Math.pow(2, attempt + 1) * 1000 + Math.random() * 1000;
+        console.log(`Rate limited on ${model}, attempt ${attempt + 1}/${maxRetries}. Waiting ${Math.round(delay)}ms...`);
+        await sleep(delay);
+        continue;
+      }
+
+      // Non-retryable error — return as-is
+      return new Response(body, { status: res.status, headers: res.headers });
+    }
+    console.log(`All retries exhausted for ${model}, trying next model...`);
+  }
+
+  return new Response(JSON.stringify({ error: "All models rate limited" }), { status: 429 });
+}
+
+Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -33,24 +75,13 @@ serve(async (req) => {
 
     console.log("Generating image for:", keyword, "| Industry:", industry);
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3.1-flash-image-preview",
-        messages: [{ role: "user", content: prompt }],
-        modalities: ["image", "text"],
-      }),
-    });
+    const aiRes = await generateWithRetry(prompt, LOVABLE_API_KEY);
 
     if (!aiRes.ok) {
       const errText = await aiRes.text();
       console.error("AI image error:", aiRes.status, errText);
       if (aiRes.status === 429) {
-        return new Response(JSON.stringify({ success: false, error: "Rate limited. Please try again shortly." }), {
+        return new Response(JSON.stringify({ success: false, error: "Rate limited. Please try again in a minute." }), {
           status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
@@ -64,7 +95,6 @@ serve(async (req) => {
       });
     }
 
-    // Safely parse AI response — gateway may return HTML on errors
     const aiText = await aiRes.text();
     let aiData: any;
     try {
@@ -85,7 +115,6 @@ serve(async (req) => {
       });
     }
 
-    // Extract base64 data and upload to storage
     const base64Match = imageData.match(/^data:image\/(\w+);base64,(.+)$/);
     if (!base64Match) {
       return new Response(JSON.stringify({ success: false, error: "Invalid image data format" }), {
@@ -101,12 +130,12 @@ serve(async (req) => {
       bytes[i] = binaryStr.charCodeAt(i);
     }
 
-    // Generate a unique filename from the keyword
     const slug = keyword.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     const fileName = `covers/${slug}-${Date.now()}.${ext}`;
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.49.1");
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const { error: uploadError } = await supabase.storage
